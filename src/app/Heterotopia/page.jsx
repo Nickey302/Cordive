@@ -2,8 +2,8 @@
 
 import { useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei'
 import Header from '../components/Header.jsx';
+import Experience from '../components/Heterotopia/Experience.jsx';
 
 const Heterotopia = () => {
   useEffect(() => {
@@ -24,16 +24,10 @@ const Heterotopia = () => {
           fov: 35,
           near: 0.1,
           far: 300,
-          position: [-4, 3, 100],
+          position: [ -4, 3, 12],
         }}
       >
-        <OrbitControls makeDefault/>
-        <ambientLight />
-        <directionalLight />
-        <mesh position-x={2} scale={0.7}>
-          <boxGeometry />
-          <meshStandardMaterial color="orange" />
-        </mesh>
+        <Experience />
       </Canvas>
     </div>
     </div>

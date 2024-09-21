@@ -21,7 +21,7 @@ const Utopia = () => {
           fov: 75,
           near: 0.1,
           far: 500,
-          position: [ - 10, 15, 50 ]
+          position: [ - 10, 15, 300 ]
         } }
       >
         <Experience />

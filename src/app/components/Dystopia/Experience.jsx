@@ -13,13 +13,13 @@ export default function Experience() {
 
             <Float>
                 <Text
-                    position={[0, 20, 0]}    // Center the text
+                    position={[0, 20, 0]}
                     font='./assets/fonts/Montserrat-VariableFont_wght.ttf'
-                    fontSize={20}             // Adjust font size
-                    color="white"            // Color of the text
-                    anchorX="center"         // Align text horizontally to the center
-                    anchorY="middle"         // Align text vertically to the middle
-                    maxWidth={10}            // Limit the text width if needed
+                    fontSize={20}
+                    color="white"
+                    anchorX="center"
+                    anchorY="middle"
+                    maxWidth={10}
                     bevel={ 10 }
                 >
                     DYSTOPIA

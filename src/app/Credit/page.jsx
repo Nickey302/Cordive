@@ -1,17 +1,18 @@
 'use client';
 
-// pages/credit.jsx
 import Head from 'next/head';
-import './credit.css'; // CSS 파일 가져오기
+import styles from '../styles/Credit.module.css';
+import Header from '../components/Header.jsx';
 
 const Credit = () => {
   return (
-    <>
+    <div className={styles.credit}>
+      <Header />
       <Head>
         <title>Credit</title>
       </Head>
-      <div className="credit-container">
-        <div className="credit-scroll">
+      <div className={styles.creditContainer}>
+        <div className={styles.creditScroll}>
           <h1>CREDIT</h1>
           <h2>CORDIVE</h2>
           <h3>Team Compassion+</h3>
@@ -22,7 +23,7 @@ const Credit = () => {
           <h3>Thank You</h3>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

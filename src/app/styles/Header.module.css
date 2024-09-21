@@ -1,0 +1,63 @@
+.header {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: rgba(126, 126, 126, 0.0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    z-index: 10;
+    transition: all 0.4s ease;
+    font-family: './assets/fonts/Montserrat-VariableFont_wght.ttf';
+  }
+  
+  .header.expanded {
+    width: 30%;
+    height: 60px;
+    border-radius: 10px;
+    justify-content: space-between;
+    background-color: rgba(126, 126, 126, 0.5);
+    padding: 0 20px;
+  }
+  
+  .logo {
+    color: rgb(182, 178, 157);
+    font-size: 13px;
+    transition: all 0.4s ease;
+  }
+  
+  .navLinks {
+    display: none;
+    gap: 20px;
+  }
+  
+  .header.expanded .navLinks {
+    display: flex;
+  }
+
+  .header.expanded .logo {
+    color: ivory;
+  }
+  
+  .header.expanded .navLinks a {
+    opacity: 1;
+    transition: opacity 1s ease;
+  }
+  
+  .navLinks a {
+    color: white;
+    text-decoration: none;
+    font-size: 13px;
+    transition: opacity 0.4s ease, color 0.1s ease, font-size 0.1s ease;
+    opacity: 0;
+  }
+  
+  .navLinks a:hover {
+    font-size: 13.2px;
+    color: antiquewhite;
+  }
+  

@@ -6,12 +6,12 @@ import * as THREE from 'three'
 // import { useControls } from 'leva'
 
 export default function Experience() {
-    const love = useGLTF('./Models/love.glb')
-    const liberation = useGLTF('./Models/liberation.glb')
-    const revolution = useGLTF('./Models/revolution.glb')
-    const resistance = useGLTF('./Models/resistance.glb')
-    const isolation = useGLTF('./Models/isolation.glb')
-    const compliance = useGLTF('./Models/compliance.glb')
+    const love = useGLTF('./assets/Models/love.glb')
+    const liberation = useGLTF('./assets/Models/liberation.glb')
+    const revolution = useGLTF('./assets/Models/revolution.glb')
+    const resistance = useGLTF('./assets/Models/resistance.glb')
+    const isolation = useGLTF('./assets/Models/isolation.glb')
+    const compliance = useGLTF('./assets/Models/compliance.glb')
     // console.log(love);
 
     // Refs for models
@@ -59,7 +59,7 @@ export default function Experience() {
 
             <Text
                 position={[0, 40, 0]}    // Center the text
-                font='./Montserrat-VariableFont_wght.ttf'
+                font='./assets/fonts/Montserrat-VariableFont_wght.ttf'
                 fontSize={20}             // Adjust font size
                 color="white"            // Color of the text
                 anchorX="center"         // Align text horizontally to the center
@@ -89,6 +89,7 @@ export default function Experience() {
                 <primitive ref={resistanceRef} object={resistance.scene} position={[0, 0, 0]} scale={5} />
                 <primitive ref={isolationRef} object={isolation.scene} position={[18, 10, 30]} scale={5} />
                 <primitive ref={liberationRef} object={liberation.scene} position={[0, 12, -18]} scale={5} />
+
             </Stage>
         </>
     )

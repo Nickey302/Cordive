@@ -1,10 +1,10 @@
 'use client'
 
-import './page.module.css'
+import styles from './page.module.css'
 import { useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import Header from '../Header.jsx';
-import Experience from '.../components/Dystopia/Experience.jsx';
+import Experience from '../../components/Dystopia/Experience.jsx';
 //
 //
 //

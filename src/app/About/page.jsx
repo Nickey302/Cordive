@@ -1,8 +1,10 @@
 'use client'
 
-import Header from '../components/Header.jsx'
-import styles from '../styles/About.module.css'
-
+import Header from '../Header.jsx'
+import styles from './page.module.css'
+//
+//
+//
 export default function About() {
     return (
         <div className={styles.about}>

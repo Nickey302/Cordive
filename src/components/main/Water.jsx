@@ -1,12 +1,14 @@
 import React, { useRef, useMemo } from "react";
 import { extend, useThree, useLoader, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-
 import { Water } from "three/examples/jsm/objects/Water.js";
-
+//
+//
+//
 extend({ Water });
 
-function Ocean() {
+export default function Ocean()
+{
   const ref = useRef();
   const gl = useThree((state) => state.gl);
   const waterNormals = useLoader(
@@ -43,5 +45,3 @@ function Ocean() {
     />
   );
 }
-
-export default Ocean;

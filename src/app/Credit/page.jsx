@@ -1,9 +1,11 @@
 'use client';
 
 import Head from 'next/head';
-import styles from '../styles/Credit.module.css';
-import Header from '../components/Header.jsx';
-
+import styles from './page.module.css';
+import Header from '../Header.jsx';
+//
+//
+//
 const Credit = () => {
   return (
     <div className={styles.credit}>

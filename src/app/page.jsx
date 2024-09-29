@@ -1,24 +1,19 @@
-'use client'
+'use client';
 
-import { useEffect } from 'react';
+import styles from './page.module.css';
 import { Canvas } from '@react-three/fiber';
-import Experience from './components/Dystopia/Experience.jsx';
-import Header from './components/Header.jsx';
-
-const Main = () => {
-  useEffect(() => {
-    return () => {
-      console.log('Cleaning up Three.js scene');
-    };
-  }, []);
-
+import Experience from '../components/main/Experience.jsx';
+import Header from './Header.jsx';
+//
+//
+//
+export default function MainPage(){
   return (
     <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
       <Header />
-
-      <div id="canvas-container" style={{ height: '100%', width: '100%' }}>
+      <div className={styles.canvasContainer}>
         <Canvas
-          shadows={true}
+          shadows
           camera={{
             fov: 35,
             near: 0.1,
@@ -29,9 +24,6 @@ const Main = () => {
           <Experience />
         </Canvas>
       </div>
-
     </div>
   );
 };
-
-export default Main;

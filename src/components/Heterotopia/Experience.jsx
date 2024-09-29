@@ -1,14 +1,12 @@
-import { Float, Text, useGLTF, OrbitControls } from "@react-three/drei";
+import { Float, Text, useGLTF, OrbitControls, Preload } from "@react-three/drei";
 import { useEffect } from "react";
 
 export default function Experience() {
-    const Clouds = useGLTF('./assets/Models/Clouds.glb');
+    const Clouds = useGLTF('./Models/Clouds.glb');
 
     useEffect(() => {
-        // Traverse through all children in the scene and apply wireframe
         Clouds.scene.traverse((child) => {
             if (child.isMesh) {
-                // Enable wireframe mode on the material
                 child.material.wireframe = true;
             }
         });
@@ -26,7 +24,7 @@ export default function Experience() {
             <Float>
                 <Text
                     position={[0, 2.5, 0]}
-                    font='./assets/fonts/Montserrat-VariableFont_wght.ttf'
+                    font='./fonts/Montserrat-VariableFont_wght.ttf'
                     fontSize={1.5}
                     fontWeight="bold"
                     color="#5CA3A5"
@@ -42,3 +40,5 @@ export default function Experience() {
         </>
     );
 }
+
+useGLTF.preload('./Models/Clouds.glb');

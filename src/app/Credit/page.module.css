@@ -5,7 +5,7 @@
     background: #ffffff33;
     color: #f5f5f4;
     overflow: hidden;
-    font-family: './assets/fonts/Montserrat-VariableFont_wght.ttf';
+    font-family: './fonts/Montserrat-VariableFont_wght.ttf';
   }
   
   .creditContainer {
@@ -25,12 +25,3 @@
     line-height: 2.5;  
   }
   
-  /* @keyframes scroll {
-    0% {
-      transform: translateY(100%);
-    }
-    100% {
-      transform: translateY(-100%);
-    }
-  }
-   */

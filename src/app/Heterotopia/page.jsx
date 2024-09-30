@@ -1,8 +1,9 @@
 'use client'
 
 import styles from './page.module.css'
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
+import gsap from 'gsap';
 import Header from '../Header.jsx';
 import Experience from '../../components/Heterotopia/Experience.jsx';
 //
@@ -10,14 +11,18 @@ import Experience from '../../components/Heterotopia/Experience.jsx';
 //
 export default function Heterotopia()
 {
-  useEffect(() => {
-    return () => {
-      console.log('Cleaning up Three.js scene...');
-    };
-  }, []);
+  const containerRef = useRef();
 
+  useEffect(() => {
+    gsap.fromTo(
+      containerRef.current,
+      { opacity: 0 },
+      { opacity: 1, duration: 2, ease: 'power2.inOut' }
+    );
+  }, []);
+  
   return (
-    <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
+    <div ref={containerRef} style={{ position: 'relative', height: '100vh', width: '100vw' }}>
       <Header />
       <div className={styles.canvasContainer} >
         <Canvas

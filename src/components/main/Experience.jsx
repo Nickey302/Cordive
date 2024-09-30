@@ -1,4 +1,3 @@
-// src/components/main/Experience.jsx
 'use client';
 
 import { useFrame, useThree } from '@react-three/fiber';
@@ -6,60 +5,54 @@ import { OrbitControls, Text } from '@react-three/drei';
 import { useControls } from 'leva';
 import Particles from './Particles.jsx';
 import { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // App Directory 사용 시
+import { useRouter } from 'next/navigation';
 import * as THREE from 'three'
-
+//
+//
+//
 export default function Experience() {
   const router = useRouter();
   const { camera, mouse } = useThree();
 
-  // Leva를 사용하여 제어할 프로퍼티들 (fov과 aperture는 직접 관리)
   const { focus, speed, curl } = useControls({
     focus: { value: 5.1, min: 3, max: 7, step: 0.01 },
     speed: { value: 12.8, min: 0.1, max: 100, step: 0.1 },
     curl: { value: 0.25, min: 0.01, max: 0.5, step: 0.01 },
   });
 
-  // fov과 aperture를 상태로 관리
   const [fov, setFov] = useState(20);
   const [aperture, setAperture] = useState(1.8);
 
-  // fov과 aperture의 최대값 정의
   const maxFov = 200;
   const maxAperture = 5.6;
 
-  // 홀딩 상태 및 진행도 관리
   const [isHolding, setIsHolding] = useState(false);
-  const [holdProgress, setHoldProgress] = useState(0); // 0에서 1까지
+  const [holdProgress, setHoldProgress] = useState(0);
 
   const holdTimerRef = useRef(null);
 
   useEffect(() => {
     if (isHolding) {
       // console.log('Holding started');
-      // 홀딩 시작
       setHoldProgress(0);
       const startTime = Date.now();
 
-      // 3초 동안 holdProgress를 0에서 1로 증가
       holdTimerRef.current = setInterval(() => {
         const elapsed = Date.now() - startTime;
-        const progress = Math.min(elapsed / 2000, 1); // 3초
+        const progress = Math.min(elapsed / 2000, 1);
         setHoldProgress(progress);
-        setFov(THREE.MathUtils.lerp(20, maxFov, progress)); // 초기값 20에서 maxFov로
-        setAperture(THREE.MathUtils.lerp(1.8, maxAperture, progress)); // 초기값 1.8에서 maxAperture로
+        setFov(THREE.MathUtils.lerp(20, maxFov, progress));
+        setAperture(THREE.MathUtils.lerp(1.8, maxAperture, progress));
         // console.log(`Hold Progress: ${progress}`);
 
         if (progress >= 1) {
           clearInterval(holdTimerRef.current);
           setIsHolding(false);
           // console.log('Holding completed, navigating to next page');
-          // 애니메이션 완료 후 페이지 이동
-          router.push('/Dystopia'); // 원하는 페이지 경로로 변경
+          router.push('/Dystopia');
         }
-      }, 50); // 50ms마다 업데이트
+      }, 50);
     } else {
-      // 홀딩 취소 (사용자가 홀딩을 중간에 멈춘 경우)
       if (holdTimerRef.current) {
         clearInterval(holdTimerRef.current);
         console.log('Holding cancelled');
@@ -76,7 +69,6 @@ export default function Experience() {
     };
   }, [isHolding, router]);
 
-  // 카메라 위치 및 회전 업데이트
   useFrame((state, delta) => {
     camera.position.x = THREE.MathUtils.lerp(camera.position.x, mouse.x * 0.5, 0.1);
     camera.position.y = THREE.MathUtils.lerp(camera.position.y, mouse.y * 0.5, 0.1);

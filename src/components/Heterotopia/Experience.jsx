@@ -1,6 +1,10 @@
+'use client';
+
 import { Float, Text, useGLTF, OrbitControls, Preload } from "@react-three/drei";
 import { useEffect } from "react";
-
+//
+//
+//
 export default function Experience() {
     const Clouds = useGLTF('./Models/Clouds.glb');
 

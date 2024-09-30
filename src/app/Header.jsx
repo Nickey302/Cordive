@@ -16,7 +16,8 @@ export default function Header()
     >
       <div className={styles.logo}>CORDIVE</div>
       <nav className={styles.navLinks}>
-        <Link href="/">Dystopia</Link>
+        <Link href="/">Main</Link>
+        <Link href="/Dystopia">Dystopia</Link>
         <Link href="/Heterotopia">Heterotopia</Link>
         <Link href="/Utopia">Utopia</Link>
         <Link href="/About">About</Link>

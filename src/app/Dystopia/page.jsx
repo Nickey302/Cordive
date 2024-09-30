@@ -30,8 +30,8 @@ export default function Dystopia()
           camera={{
             fov: 35,
             near: 0.1,
-            far: 300,
-            position: [ -4, 3, 12],
+            far: 500,
+            position: [ 6, 2, 12],
           }}
         >
           <Experience />

@@ -1,16 +1,15 @@
-'use client'
-
 import * as THREE from 'three'
 import { useMemo, useState, useRef } from 'react'
 import { createPortal, useFrame } from '@react-three/fiber'
 import { useFBO } from '@react-three/drei'
 import './shaders/simulationMaterial'
 import './shaders/dofPointsMaterial'
-
+//
+//
+//
 export default function Particles({ speed, fov, aperture, focus, curl, size = 512, ...props }) {
   const simRef = useRef()
   const renderRef = useRef()
-  // Set up FBO
   const [scene] = useState(() => new THREE.Scene())
   const [camera] = useState(() => new THREE.OrthographicCamera(-1, 1, 1, -1, 1 / Math.pow(2, 53), 1))
   const [positions] = useState(() => new Float32Array([-1, -1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, 1, 0, -1, 1, 0]))
@@ -21,7 +20,7 @@ export default function Particles({ speed, fov, aperture, focus, curl, size = 51
     format: THREE.RGBAFormat,
     type: THREE.FloatType
   })
-  // Normalize points
+
   const particles = useMemo(() => {
     const length = size * size
     const particles = new Float32Array(length * 3)
@@ -32,7 +31,7 @@ export default function Particles({ speed, fov, aperture, focus, curl, size = 51
     }
     return particles
   }, [size])
-  // Update FBO and pointcloud every frame
+
   useFrame((state) => {
     state.gl.setRenderTarget(target)
     state.gl.clear()
@@ -48,7 +47,6 @@ export default function Particles({ speed, fov, aperture, focus, curl, size = 51
   })
   return (
     <>
-      {/* Simulation goes into a FBO/Off-buffer */}
       {createPortal(
         <mesh>
           <simulationMaterial ref={simRef} />
@@ -59,7 +57,7 @@ export default function Particles({ speed, fov, aperture, focus, curl, size = 51
         </mesh>,
         scene
       )}
-      {/* The result of which is forwarded into a pointcloud via data-texture */}
+
       <points {...props}>
         <dofPointsMaterial ref={renderRef} />
         <bufferGeometry>

@@ -18,7 +18,7 @@ export default function MainPage(){
           camera={{
             fov: 25,
             near: 0.1,
-            far: 2000,
+            far: 100,
             position: [0, 0, 6],
           }}
         >

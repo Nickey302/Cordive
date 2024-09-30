@@ -1,24 +1,28 @@
 'use client'
 
 import styles from './page.module.css'
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
 import Header from '../Header.jsx';
 import Experience from '../../components/Dystopia/Experience.jsx';
+import gsap from 'gsap';
 //
 //
 //
 export default function Dystopia()
 {
+  const containerRef = useRef();
+
   useEffect(() => {
-    return () => {
-      // 페이지가 전환되거나 컴포넌트가 unmount될 때 Three.js 리소스를 정리
-      console.log('Cleaning up Three.js scene...');
-    };
+    gsap.fromTo(
+      containerRef.current,
+      { opacity: 0 },
+      { opacity: 1, duration: 2, ease: 'power2.inOut' }
+    );
   }, []);
 
   return (
-    <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
+    <div ref={containerRef} style={{ position: 'relative', height: '100vh', width: '100vw' }}>
       <Header />
       <div className={styles.canvasContainer}>
         <Canvas

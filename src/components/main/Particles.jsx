@@ -1,3 +1,5 @@
+'use client'
+
 import * as THREE from 'three'
 import { useMemo, useState, useRef } from 'react'
 import { createPortal, useFrame } from '@react-three/fiber'
@@ -5,7 +7,7 @@ import { useFBO } from '@react-three/drei'
 import './shaders/simulationMaterial'
 import './shaders/dofPointsMaterial'
 
-export function Particles({ speed, fov, aperture, focus, curl, size = 512, ...props }) {
+export default function Particles({ speed, fov, aperture, focus, curl, size = 512, ...props }) {
   const simRef = useRef()
   const renderRef = useRef()
   // Set up FBO

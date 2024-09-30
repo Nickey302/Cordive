@@ -55,7 +55,7 @@ export default function Experience() {
     } else {
       if (holdTimerRef.current) {
         clearInterval(holdTimerRef.current);
-        console.log('Holding cancelled');
+        // console.log('Holding cancelled');
         setHoldProgress(0);
         setFov(20);
         setAperture(1.8);
@@ -119,10 +119,10 @@ export default function Experience() {
           setIsHolding(false);
         }}
       >
-        Hold to Dive
+        Hold To Dive
       </Text>
 
-      <group position={[0, -1.3, -2]}>
+      <group position={[0, -0.7, 1]}>
         {/* 배경 게이지 */}
         <mesh>
           <planeGeometry args={[0.5, 0.05]} />

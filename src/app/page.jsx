@@ -4,6 +4,7 @@ import styles from './page.module.css';
 import { Canvas } from '@react-three/fiber';
 import Experience from '../components/main/Experience.jsx';
 import Header from './Header.jsx';
+import * as THREE from 'three'
 //
 //
 //
@@ -15,10 +16,10 @@ export default function MainPage(){
         <Canvas
           shadows
           camera={{
-            fov: 35,
+            fov: 25,
             near: 0.1,
             far: 2000,
-            position: [-4, 85, 140],
+            position: [0, 0, 6],
           }}
         >
           <Experience />

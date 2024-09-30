@@ -21,19 +21,19 @@
     "vercel": "^37.5.3"
   },
   "devDependencies": {
-    "@pmndrs/assets": "1.6.0",
-    "@react-three/drei": "^9.108.1",
-    "@react-three/fiber": "^8.16.8",
+    "@react-three/drei": "^9.114.0",
+    "@react-three/fiber": "^8.17.8",
+    "@react-three/postprocessing": "^2.16.2",
     "@types/react": "^18.3.8",
     "@types/three": "^0.168.0",
-    "@react-three/postprocessing": "^2.16.2",
     "eslint": "^8",
     "eslint-config-next": "14.2.13",
+    "gsap": "^3.12.5",
     "husky": "^9.1.6",
     "leva": "^0.9.35",
+    "maath": "0.10.7",
     "r3f-perf": "^7.2.1",
-    "gsap": "^3.12.5",
-    "three": "^0.169.0",
-    "maath": "0.10.7"
+    "raw-loader": "^4.0.2",
+    "three": "^0.169.0"
   }
 }

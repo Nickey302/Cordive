@@ -16,7 +16,7 @@ export default function Experience() {
 
   const { focus, speed, curl } = useControls({
     focus: { value: 5.1, min: 3, max: 7, step: 0.01 },
-    speed: { value: 12.8, min: 0.1, max: 100, step: 0.1 },
+    speed: { value: 1.1, min: 0.1, max: 100, step: 0.1 },
     curl: { value: 0.25, min: 0.01, max: 0.5, step: 0.01 },
   });
 

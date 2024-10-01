@@ -1,26 +1,27 @@
 'use client'
 
 import { Float, Text, useGLTF, OrbitControls } from "@react-three/drei";
+import Water from './Water.jsx'
 //
 //
 //
 export default function Experience() {
     return (
         <>
-            <color args={ [ '#667B9D' ] } attach="background" />
+            <color args={ [ '#333345' ] } attach="background" />
 
             <OrbitControls makeDefault />
 
-            <ambientLight intensity={ 1.0 }/>
-            <directionalLight />
+            <ambientLight intensity={ 1.5 }/>
+            <directionalLight color={ [ '#633ccf' ] } intensity={3} />
 
             <Float>
                 <Text
-                    position={[0, 2.5, 0]}
+                    position={[0, 0.5, 0]}
                     font='./fonts/Montserrat-VariableFont_wght.ttf'
                     fontSize={1.5}
                     fontWeight="bold"
-                    color="#5CA3A5"
+                    color="#eeeeff"
                     anchorX="center"
                     anchorY="middle"
                     maxWidth={10}
@@ -29,6 +30,7 @@ export default function Experience() {
                     DYSTOPIA
                 </Text>
             </Float>
+            <Water />
         </>
     );
 }

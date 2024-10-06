@@ -4,10 +4,31 @@ import { Float, Text, AccumulativeShadows, RandomizedLight, OrbitControls, Envir
 import { EffectComposer, Bloom, HueSaturation, TiltShift2, WaterEffect, Grid, Noise } from '@react-three/postprocessing'
 import { Perf } from 'r3f-perf'
 import * as THREE from 'three'
+import { useThree, useFrame } from '@react-three/fiber'
+import { Suspense, useRef, useEffect, useState } from 'react'
+import Water from './Water'
+
 
 //
 //
 export default function Experience() {
+    const { camera } = useThree()
+    const [audioListener] = useState(() => new THREE.AudioListener())
+    const audioRef = useRef()
+
+    useEffect(() => {
+        camera.add(audioListener)
+        return () => camera.remove(audioListener)
+    }, [camera, audioListener])
+
+    useFrame((state) => {
+        if (audioRef.current) {
+            audioRef.current.setDistanceModel('linear')
+            audioRef.current.setRefDistance(20)
+            audioRef.current.setRolloffFactor(1)
+        }
+    })
+
     return (
         <>
             <color attach="background" args={['#242424']} />
@@ -60,6 +81,14 @@ export default function Experience() {
             
             <Environment preset="city" />
             <Postpro />
+            <PositionalAudio
+                ref={audioRef}
+                url="/audio/underwater.wav"
+                distance={1}
+                loop
+                autoplay
+            />
+
         </>
     );
 }

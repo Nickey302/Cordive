@@ -3,6 +3,7 @@
 import { Text, Stage, Environment, OrbitControls } from '@react-three/drei'
 import { Perf } from 'r3f-perf'
 import Model from './Model'
+import { Autofocus, ChromaticAberration, ColorAverage, ColorDepth, Depth, DotScreen, EffectComposer, GodRays, Grid, LensFlare, LUT, Noise, Outline, Pixelation, Sepia, ToneMapping } from '@react-three/postprocessing'
 //
 //
 //
@@ -16,6 +17,9 @@ export default function Experience() {
             <Perf position="top-left" />
 
             <OrbitControls makeDefault />
+
+            <ambientLight intensity={ 1.5 } />
+            <directionalLight color="#666699" intensity={ 3 } />
 
             <Text
                 position={[0, 40, 0]}
@@ -33,7 +37,7 @@ export default function Experience() {
             <Environment
                 preset="sunset"
                 resolution={128}
-                intensity={10 }
+                intensity={10}
             />
 
             <Stage

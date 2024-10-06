@@ -1,0 +1,36 @@
+.credit {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: #ffffff33;
+    color: #f5f5f4;
+    overflow: hidden;
+    font-family: './assets/fonts/Montserrat-VariableFont_wght.ttf';
+  }
+  
+  .creditContainer {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    margin: 20px;
+  }
+  
+  .creditScroll {
+    text-align: center;
+    /* animation: scroll 20s linear infinite; */
+    padding: 20px;
+    margin: 20px;
+    line-height: 2.5;  
+  }
+  
+  /* @keyframes scroll {
+    0% {
+      transform: translateY(100%);
+    }
+    100% {
+      transform: translateY(-100%);
+    }
+  }
+   */

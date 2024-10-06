@@ -7,9 +7,9 @@ export default function Model()
     const love = useGLTF('./Models/love.glb')
     const liberation = useGLTF('./Models/liberation.glb')
     const revolution = useGLTF('./Models/revolution.glb')
-    const resistance = useGLTF('./Models/resistance.glb')
+    const resistance = useGLTF('./Models/resistance2.glb')
     const isolation = useGLTF('./Models/isolation.glb')
-    const compliance = useGLTF('./Models/compliance.glb')
+    const compliance = useGLTF('./Models/compliance2.glb')
     // console.log(love);
 
     const loveRef = useRef()
@@ -24,7 +24,7 @@ export default function Model()
         revolutionRef.current.rotation.y += delta * 0.2
         complianceRef.current.rotation.y += delta * 0.2
         resistanceRef.current.rotation.y += delta * 0.2
-        liberationRef.current.rotation.y += delta * 0.2
+        // liberationRef.current.rotation.y += delta * 0.2
     })
 
     return(
@@ -34,7 +34,7 @@ export default function Model()
             <primitive ref={complianceRef} object={compliance.scene} position={[0, 24, 0]} scale={5} />
             <primitive ref={resistanceRef} object={resistance.scene} position={[0, 0, 0]} scale={5} />
             <primitive ref={isolationRef} object={isolation.scene} position={[18, 10, 30]} scale={5} />
-            <primitive ref={liberationRef} object={liberation.scene} position={[0, 12, -18]} scale={5} />
+            {/* <primitive ref={liberationRef} object={liberation.scene} position={[0, 12, -18]} scale={5} /> */}
         </>
     )
 }

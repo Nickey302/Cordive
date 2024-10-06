@@ -1,7 +1,7 @@
 'use client'
 
 import { Float, Text, AccumulativeShadows, RandomizedLight, OrbitControls, Environment, useGLTF, useVideoTexture } from '@react-three/drei'
-import { EffectComposer, Bloom, HueSaturation, TiltShift2, WaterEffect } from '@react-three/postprocessing'
+import { EffectComposer, Bloom, HueSaturation, TiltShift2, WaterEffect, Grid, Noise } from '@react-three/postprocessing'
 import { Perf } from 'r3f-perf'
 import * as THREE from 'three'
 
@@ -94,8 +94,10 @@ function Postpro() {
       <EffectComposer disableNormalPass multisampling={0}>
         <HueSaturation saturation={-1} />
         <WaterEffect factor={0.75} />
-        <TiltShift2 samples={12} blur={0.5} />
-        <Bloom mipmapBlur luminanceThreshold={0} intensity={4} />
+        {/* <TiltShift2 samples={12} blur={0.5} resolutionScale={256}/> */}
+        <Bloom mipmapBlur luminanceThreshold={0.5} intensity={1} />
+        {/* <Grid /> */}
+        <Noise premultiply  />
       </EffectComposer>
     );
 }

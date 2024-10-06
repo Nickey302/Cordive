@@ -1,6 +1,6 @@
 'use client'
 
-import { Float, Text, AccumulativeShadows, RandomizedLight, OrbitControls, Environment, useGLTF, useVideoTexture } from '@react-three/drei'
+import { Float, Text, AccumulativeShadows, RandomizedLight, OrbitControls, Environment, useGLTF, useVideoTexture, PositionalAudio } from '@react-three/drei'
 import { EffectComposer, Bloom, HueSaturation, TiltShift2, WaterEffect, Grid, Noise } from '@react-three/postprocessing'
 import { Perf } from 'r3f-perf'
 import * as THREE from 'three'

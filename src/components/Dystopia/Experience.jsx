@@ -7,6 +7,7 @@ import * as THREE from 'three'
 import { useThree, useFrame } from '@react-three/fiber'
 import { Suspense, useRef, useEffect, useState } from 'react'
 import Water from './Water'
+import City from './City'
 
 
 //
@@ -60,10 +61,8 @@ export default function Experience() {
                 <RandomizedLight radius={4} ambient={0.5} position={[5, 8, -10]} bias={0.001} />
             </AccumulativeShadows>
             
-            {/* 기본 도형을 이용한 건물 생성 */}
             <City />
 
-            {/* 중앙 오브젝트들 */}
             <mesh castShadow position={[-1.5, -0.245, 1]}>
                 <sphereGeometry args={[0.25, 64, 64]} />
                 <meshStandardMaterial color="#353535" />
@@ -73,7 +72,6 @@ export default function Experience() {
                 <meshStandardMaterial color="#353535" />
             </mesh>
             
-            {/* 바닥 */}
             <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.51, 0]} scale={100}>
                 <planeGeometry />
                 <meshLambertMaterial color="#353535" />
@@ -93,31 +91,6 @@ export default function Experience() {
     );
 }
 
-function City() {
-    // 다양한 건물들 정의
-    const buildings = [
-        { position: [-2, 1.5, -6], scale: [1, 4, 1] },
-        { position: [-3, 2.5, -4], scale: [2, 6, 2] },
-        { position: [0, 3.5, -9], scale: [1.5, 8, 1.5] },
-        { position: [3, 1.5, -8], scale: [1, 4, 1] },
-        { position: [5, 2.5, -3], scale: [1.5, 6, 1.5] },
-        { position: [-4, 4.5, -6], scale: [2, 10, 2] },
-        { position: [4, 5.5, -8], scale: [2, 12, 2] },
-        { position: [-5, 2.5, -5], scale: [1.5, 6, 1.5] },
-    ];
-
-    return (
-        <>
-            {buildings.map((building, index) => (
-                <mesh key={index} position={building.position} scale={building.scale} castShadow receiveShadow>
-                    <boxGeometry />
-                    <meshStandardMaterial color="#131313" />
-                </mesh>
-            ))}
-        </>
-    );
-}
-
 function Postpro() {
     return (
       <EffectComposer disableNormalPass multisampling={0}>
@@ -126,12 +99,12 @@ function Postpro() {
         {/* <TiltShift2 samples={12} blur={0.5} resolutionScale={256}/> */}
         <Bloom mipmapBlur luminanceThreshold={0.5} intensity={1} />
         {/* <Grid /> */}
-        <Noise premultiply  />
+        <Noise opacity={0.05} />
       </EffectComposer>
     );
 }
 
 function Cookie(props) {
     const texture = useVideoTexture('./vids/caustics.mp4');
-    return <spotLight decay={0} map={texture} castShadow {...props} />;
+    return <spotLight decay={0} map={texture} castShadow {...props} scale={10} />;
 }

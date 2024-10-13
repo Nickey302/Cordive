@@ -7,6 +7,7 @@ import Particles from './Particles.jsx';
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import * as THREE from 'three'
+import { Noise , EffectComposer} from '@react-three/postprocessing';
 //
 //
 //
@@ -139,6 +140,10 @@ export default function Experience() {
       </group>
 
       <Particles focus={focus} speed={speed} aperture={aperture} fov={fov} curl={curl} />
+      
+      <EffectComposer multisampling={0}>
+        <Noise opacity={0.9} blendFunction={THREE.MultiplyBlending} />
+      </EffectComposer>
     </>
   );
 }

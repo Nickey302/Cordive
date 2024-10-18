@@ -2,24 +2,21 @@
 
 import { useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Text } from '@react-three/drei';
-import { useControls } from 'leva';
+// import { useControls } from 'leva'; // 제거
 import Particles from './Particles.jsx';
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import * as THREE from 'three'
 import { Noise , EffectComposer} from '@react-three/postprocessing';
-//
-//
-//
+
 export default function Experience() {
   const router = useRouter();
   const { camera, mouse } = useThree();
 
-  const { focus, speed, curl } = useControls({
-    focus: { value: 5.1, min: 3, max: 7, step: 0.01 },
-    speed: { value: 1.1, min: 0.1, max: 100, step: 0.1 },
-    curl: { value: 0.25, min: 0.01, max: 0.5, step: 0.01 },
-  });
+  // useControls 대신 고정된 값 사용
+  const focus = 5.1;
+  const speed = 1.1;
+  const curl = 0.25;
 
   const [fov, setFov] = useState(20);
   const [aperture, setAperture] = useState(1.8);
@@ -34,7 +31,6 @@ export default function Experience() {
 
   useEffect(() => {
     if (isHolding) {
-      // console.log('Holding started');
       setHoldProgress(0);
       const startTime = Date.now();
 
@@ -44,19 +40,16 @@ export default function Experience() {
         setHoldProgress(progress);
         setFov(THREE.MathUtils.lerp(20, maxFov, progress));
         setAperture(THREE.MathUtils.lerp(1.8, maxAperture, progress));
-        // console.log(`Hold Progress: ${progress}`);
-
+          
         if (progress >= 1) {
           clearInterval(holdTimerRef.current);
           setIsHolding(false);
-          // console.log('Holding completed, navigating to next page');
           router.push('/Dystopia');
         }
       }, 50);
     } else {
       if (holdTimerRef.current) {
         clearInterval(holdTimerRef.current);
-        // console.log('Holding cancelled');
         setHoldProgress(0);
         setFov(20);
         setAperture(1.8);
@@ -90,7 +83,7 @@ export default function Experience() {
 
       <Text
         position={[0, 0, 2]}
-        font="./fonts/Montserrat-VariableFont_wght.ttf"
+        font="./assets/fonts/Montserrat-VariableFont_wght.ttf"
         fontSize={0.3}
         color="white"
         anchorX="center"
@@ -103,7 +96,7 @@ export default function Experience() {
 
       <Text
         position={[0, -0.5, 2]}
-        font="./fonts/Montserrat-VariableFont_wght.ttf"
+        font="./assets/fonts/Montserrat-VariableFont_wght.ttf"
         fontSize={0.1}
         color="white"
         anchorX="center"

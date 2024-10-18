@@ -23,7 +23,7 @@ export default function Experience() {
 
             <Text
                 position={[0, 40, 0]}
-                font='./fonts/Montserrat-VariableFont_wght.ttf'
+                font='./assets/fonts/Montserrat-VariableFont_wght.ttf'
                 fontSize={20}
                 color="white"
                 anchorX="center"

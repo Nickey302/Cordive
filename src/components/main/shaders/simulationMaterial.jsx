@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { extend } from '@react-three/fiber';
-import { getSphere } from '../../../utils/main/getSphere.jsx';
+import { getSphere } from '../getSphere.jsx';
 //
 //
 //

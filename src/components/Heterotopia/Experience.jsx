@@ -6,7 +6,7 @@ import { useEffect } from "react";
 //
 //
 export default function Experience() {
-    const Clouds = useGLTF('./Models/Clouds.glb');
+    const Clouds = useGLTF('./assets/Models/Clouds.glb');
 
     useEffect(() => {
         Clouds.scene.traverse((child) => {
@@ -28,7 +28,7 @@ export default function Experience() {
             <Float>
                 <Text
                     position={[0, 2.5, 0]}
-                    font='./fonts/Montserrat-VariableFont_wght.ttf'
+                    font='./assets/fonts/Montserrat-VariableFont_wght.ttf'
                     fontSize={1.5}
                     fontWeight="bold"
                     color="#5CA3A5"
@@ -45,4 +45,4 @@ export default function Experience() {
     );
 }
 
-useGLTF.preload('./Models/Clouds.glb');
+useGLTF.preload('./assets/Models/Clouds.glb');

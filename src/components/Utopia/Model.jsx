@@ -4,13 +4,12 @@ import { useGLTF } from '@react-three/drei'
 
 export default function Model()
 {
-    const love = useGLTF('./Models/love4.glb')
-    const liberation = useGLTF('./Models/liberation2.glb')
-    const revolution = useGLTF('./Models/revolution.glb')
-    const resistance = useGLTF('./Models/resistance2.glb')
-    const isolation = useGLTF('./Models/isolation.glb')
-    const compliance = useGLTF('./Models/compliance2.glb')
-    // console.log(love);
+    const love = useGLTF('./assets/Models/love4.glb')
+    const liberation = useGLTF('./assets/Models/liberation2.glb')
+    const revolution = useGLTF('./assets/Models/revolution.glb')
+    const resistance = useGLTF('./assets/Models/resistance2.glb')
+    const isolation = useGLTF('./assets/Models/isolation.glb')
+    const compliance = useGLTF('./assets/Models/compliance2.glb')
 
     const loveRef = useRef()
     const revolutionRef = useRef()
@@ -39,9 +38,9 @@ export default function Model()
     )
 }
 
-useGLTF.preload('./Models/love4.glb');
-useGLTF.preload('./Models/liberation2.glb');
-useGLTF.preload('./Models/revolution.glb');
-useGLTF.preload('./Models/resistance2.glb');
-useGLTF.preload('./Models/isolation.glb');
-useGLTF.preload('./Models/compliance2.glb');
+useGLTF.preload('./assets/Models/love4.glb');
+useGLTF.preload('./assets/Models/liberation2.glb');
+useGLTF.preload('./assets/Models/revolution.glb');
+useGLTF.preload('./assets/Models/resistance2.glb');
+useGLTF.preload('./assets/Models/isolation.glb');
+useGLTF.preload('./assets/Models/compliance2.glb');

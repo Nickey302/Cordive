@@ -43,7 +43,7 @@ export default function Experience() {
             <Float>
                 <Text
                     position={[0, 0.5, 0]}
-                    font='./fonts/Montserrat-VariableFont_wght.ttf'
+                    font='./assets/fonts/Montserrat-VariableFont_wght.ttf'
                     fontSize={1.5}
                     fontWeight="bold"
                     color="#eeeeff"
@@ -81,7 +81,7 @@ export default function Experience() {
             <Postpro />
             <PositionalAudio
                 ref={audioRef}
-                url="/audio/underwater.wav"
+                url="./assets/audio/underwater.wav"
                 distance={1}
                 loop
                 autoplay
@@ -105,6 +105,6 @@ function Postpro() {
 }
 
 function Cookie(props) {
-    const texture = useVideoTexture('./vids/caustics.mp4');
+    const texture = useVideoTexture('./assets/vids/caustics.mp4');
     return <spotLight decay={0} map={texture} castShadow {...props} scale={10} />;
 }

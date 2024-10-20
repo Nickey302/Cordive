@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './NamePrompt.module.css';
 import gsap from 'gsap';
@@ -16,7 +16,7 @@ export default function NamePrompt() {
   useEffect(() => {
     gsap.to(containerRef.current, { opacity: 1, duration: 1, ease: 'power2.inOut' });
 
-    const text = "ENNTER YOUR NAME: ";
+    const text = "ENNTER YOUR NAME ";
     let i = 0;
     const typingInterval = setInterval(() => {
       if (i < text.length) {
@@ -37,17 +37,22 @@ export default function NamePrompt() {
     }
   }, [showInput]);
 
-  const handleKeyPress = (e) => {
+  const handleKeyPress = useCallback((e) => {
     if (e.key === 'Enter' && name.trim()) {
-      console.log('입력된 이름:', name);
-      gsap.to(containerRef.current, {
-        opacity: 0,
-        duration: 1,
-        ease: 'power2.inOut',
-        onComplete: () => router.push('/Dystopia')
-      });
+      try {
+        console.log('입력된 이름:', name);
+        gsap.to(containerRef.current, {
+          opacity: 0,
+          duration: 1,
+          ease: 'power2.inOut',
+          onComplete: () => router.push('/Dystopia')
+        });
+      } catch (error) {
+        console.error('Error navigating to Dystopia:', error);
+        // 사용자에게 에러 메시지 표시
+      }
     }
-  };
+  }, [name, router]);
 
   const handleContainerClick = () => {
     if (showInput && inputRef.current) {

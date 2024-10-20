@@ -1,14 +1,16 @@
 {
   "name": "cordive-2024",
   "version": "0.1.0",
+  "description": "Cordive 2024 website",
+  "author": "Compassion+",
+  "keywords": ["cordive", "next.js", "react", "three.js"],
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "deploy": "vercel --prod",
-    "generate-types": "npx supabase gen types typescript --project-id yrffjkchezfzxpquevjz --schema public > types_db.ts"
+    "deploy": "vercel --prod"
   },
   "husky": {
     "hooks": {

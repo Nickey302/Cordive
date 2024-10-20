@@ -1,15 +1,13 @@
 'use client'
 
 import { Float, Text, AccumulativeShadows, RandomizedLight, OrbitControls, Environment, useGLTF, useVideoTexture, PositionalAudio } from '@react-three/drei'
-import { EffectComposer, Bloom, HueSaturation, TiltShift2, WaterEffect, Grid, Noise } from '@react-three/postprocessing'
+import { EffectComposer, Bloom, HueSaturation, TiltShift2, WaterEffect, Grid, Noise, DotScreen, Glitch } from '@react-three/postprocessing'
 import { Perf } from 'r3f-perf'
 import * as THREE from 'three'
 import { useThree, useFrame } from '@react-three/fiber'
 import { Suspense, useRef, useEffect, useState } from 'react'
-import Water from './Water'
 import City from './City'
-
-
+//
 //
 //
 export default function Experience() {
@@ -38,7 +36,7 @@ export default function Experience() {
 
             <OrbitControls autoRotate autoRotateSpeed={0.1} enableZoom={false} minPolarAngle={0} maxPolarAngle={Math.PI / 2.5} />
 
-            <Perf />
+            {/* <Perf /> */}
 
             <Float>
                 <Text
@@ -96,10 +94,17 @@ function Postpro() {
       <EffectComposer disableNormalPass multisampling={0}>
         <HueSaturation saturation={-1} />
         <WaterEffect factor={0.75} />
-        {/* <TiltShift2 samples={12} blur={0.5} resolutionScale={256}/> */}
+        <TiltShift2 samples={12} blur={0.5} resolutionScale={256}/>
         <Bloom mipmapBlur luminanceThreshold={0.5} intensity={1} />
         {/* <Grid /> */}
         <Noise opacity={0.05} />
+        <Glitch 
+          delay={[1.5, 5.5]}
+          duration={[0.6, 1.0]}
+          strength={[0.05, 0.06]}
+          active
+          ratio={0.85}
+        />
       </EffectComposer>
     );
 }

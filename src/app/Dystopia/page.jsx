@@ -6,9 +6,7 @@ import { Canvas } from '@react-three/fiber';
 import Header from '../Header.jsx';
 import Experience from '../../components/Dystopia/Experience.jsx';
 import gsap from 'gsap';
-//
-//
-//
+
 export default function Dystopia()
 {
   const containerRef = useRef();
@@ -22,7 +20,7 @@ export default function Dystopia()
   }, []);
 
   return (
-    <div ref={containerRef} style={{ position: 'relative', height: '100vh', width: '100vw' }}>
+    <div ref={containerRef} style={{ position: 'relative', height: '100vh', width: '100vw', opacity: 0 }}>
       <Header />
       <div className={styles.canvasContainer}>
         <Canvas

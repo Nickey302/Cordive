@@ -1,63 +1,70 @@
 .header {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background-color: rgba(126, 126, 126, 0.0);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0;
-    z-index: 10;
-    transition: all 0.4s ease;
-    font-family: './assets/fonts/Montserrat-VariableFont_wght.ttf';
-  }
-  
-  .header.expanded {
-    width: 30%;
-    height: 60px;
-    border-radius: 10px;
-    justify-content: space-between;
-    background-color: rgba(126, 126, 126, 0.5);
-    padding: 0 20px;
-  }
-  
-  .logo {
-    color: rgb(182, 178, 157);
-    font-size: 13px;
-    transition: all 0.4s ease;
-  }
-  
-  .navLinks {
-    display: none;
-    gap: 20px;
-  }
-  
-  .header.expanded .navLinks {
-    display: flex;
-  }
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  width: 65px;
+  height: 65px;
+  border-radius: 32.5px;
+  background-color: rgba(255, 255, 255, 0.0);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  z-index: 1000;
+  transition: all 1s ease-in-out;
+  font-family: './assets/fonts/Montserrat-VariableFont_wght.ttf';
+  overflow: hidden;
+  border: 0.5px solid rgb(127, 130, 137);
+}
 
-  .header.expanded .logo {
-    color: ivory;
-  }
-  
-  .header.expanded .navLinks a {
-    opacity: 1;
-    transition: opacity 1s ease;
-  }
-  
-  .navLinks a {
-    color: white;
-    text-decoration: none;
-    font-size: 13px;
-    transition: opacity 0.4s ease, color 0.1s ease, font-size 0.1s ease;
-    opacity: 0;
-  }
-  
-  .navLinks a:hover {
-    font-size: 13.2px;
-    color: antiquewhite;
-  }
-  
+.header:hover {
+  width: 35vw;
+  padding: 0 20px;
+  border: 0.75px solid rgb(127, 130, 137);
+}
+
+.logo {
+  color: rgb(182, 178, 157);
+  font-size: 12px;
+  transition: all 1s ease;
+  white-space: nowrap;
+  margin-left: 20px;
+}
+
+.header:hover .logo {
+  font-size: 13.5px;
+}
+
+.navLinks {
+  display: flex;
+  gap: 20px;
+  margin-left: 20px;
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+  transition: all 1.2s ease-in-out;
+}
+
+.header:hover .navLinks {
+  opacity: 1;
+  width: 35vw;
+}
+
+.navLinks a {
+  color: white;
+  text-decoration: none;
+  font-size: 13px;
+  transition: opacity 1s ease-in-out, color 0.2s ease, font-size 0.2s ease;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.header:hover .navLinks a {
+  opacity: 1;
+}
+
+.navLinks a:hover {
+  font-size: 14.5px;
+  color: antiquewhite;
+}

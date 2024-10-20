@@ -7,7 +7,8 @@ import Particles from './Particles.jsx';
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import * as THREE from 'three'
-import { Noise , EffectComposer} from '@react-three/postprocessing';
+import { Noise , EffectComposer, Glitch, Grid } from '@react-three/postprocessing';
+import { useSpring } from '@react-spring/three';
 
 export default function Experience() {
   const router = useRouter();
@@ -29,6 +30,20 @@ export default function Experience() {
 
   const holdTimerRef = useRef(null);
 
+  const [cameraPosition, setCameraPosition] = useState([0, 0, 6]);
+  const [cameraRotation, setCameraRotation] = useState([0, 0, 0]);
+
+  const springProps = useSpring({
+    position: cameraPosition,
+    rotation: cameraRotation,
+    config: { mass: 1, tension: 20, friction: 10 }
+  });
+
+  useFrame((state) => {
+    state.camera.position.set(...springProps.position.get());
+    state.camera.rotation.set(...springProps.rotation.get());
+  });
+
   useEffect(() => {
     if (isHolding) {
       setHoldProgress(0);
@@ -44,7 +59,7 @@ export default function Experience() {
         if (progress >= 1) {
           clearInterval(holdTimerRef.current);
           setIsHolding(false);
-          router.push('/Dystopia');
+          router.push('/NamePrompt');
         }
       }, 50);
     } else {
@@ -63,20 +78,22 @@ export default function Experience() {
     };
   }, [isHolding, router]);
 
-  useFrame((state, delta) => {
-    camera.position.x = THREE.MathUtils.lerp(camera.position.x, mouse.x * 0.5, 0.1);
-    camera.position.y = THREE.MathUtils.lerp(camera.position.y, mouse.y * 0.5, 0.1);
-    camera.position.z = THREE.MathUtils.lerp(camera.position.z, 6, 0.1);
-
-    camera.rotation.x = THREE.MathUtils.lerp(camera.rotation.x, mouse.y * -Math.PI * 0.05, 0.1);
-    camera.rotation.y = THREE.MathUtils.lerp(camera.rotation.y, mouse.x * -Math.PI * 0.05, 0.1);
-  });
-
   return (
     <>
       <color args={['black']} attach="background" />
 
-      <OrbitControls makeDefault zoomSpeed={0.1} />
+      <OrbitControls
+        makeDefault
+        zoomSpeed={0.8}
+        rotateSpeed={1.4}
+        panSpeed={1.4}
+        minPolarAngle={Math.PI / 4}
+        maxPolarAngle={Math.PI / 1.5}
+        onChange={(e) => {
+          setCameraPosition([e.target.object.position.x, e.target.object.position.y, e.target.object.position.z]);
+          setCameraRotation([e.target.object.rotation.x, e.target.object.rotation.y, e.target.object.rotation.z]);
+        }}
+      />
 
       <ambientLight intensity={1.5} />
       <directionalLight />
@@ -95,7 +112,7 @@ export default function Experience() {
       </Text>
 
       <Text
-        position={[0, -0.5, 2]}
+        position={[0, -0.55, 2]}
         font="./assets/fonts/Montserrat-VariableFont_wght.ttf"
         fontSize={0.1}
         color="white"
@@ -116,7 +133,7 @@ export default function Experience() {
         Hold To Dive
       </Text>
 
-      <group position={[0, -0.7, 1]}>
+      <group position={[0, -0.7, 2]}>
         {/* 배경 게이지 */}
         <mesh>
           <planeGeometry args={[0.5, 0.05]} />
@@ -136,6 +153,7 @@ export default function Experience() {
       
       <EffectComposer multisampling={0}>
         <Noise opacity={0.9} blendFunction={THREE.MultiplyBlending} />
+        <Grid />
       </EffectComposer>
     </>
   );

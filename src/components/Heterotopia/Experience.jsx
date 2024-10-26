@@ -1,12 +1,13 @@
 'use client';
 
-import { Float, Text, useGLTF, OrbitControls, Preload } from "@react-three/drei";
-import { useEffect } from "react";
-//
-//
-//
-export default function Experience() {
+import { useState, useEffect } from "react";
+import { Float, Text, useGLTF, OrbitControls } from "@react-three/drei";
+import { useSpring, animated } from '@react-spring/three';
+
+export default function Experience({ analysisResult }) {
     const Clouds = useGLTF('./assets/Models/Clouds.glb');
+    const [displayText, setDisplayText] = useState('');
+    const [showText, setShowText] = useState(false);
 
     useEffect(() => {
         Clouds.scene.traverse((child) => {
@@ -15,6 +16,16 @@ export default function Experience() {
             }
         });
     }, [Clouds]);
+
+    useEffect(() => {
+        setDisplayText(analysisResult);
+        setShowText(true);
+    }, [analysisResult]);
+
+    const textSpring = useSpring({
+        opacity: showText ? 1 : 0,
+        config: { duration: 3000 },
+    });
 
     return (
         <>
@@ -41,6 +52,22 @@ export default function Experience() {
                 </Text>
             </Float>
             <primitive object={Clouds.scene} scale={10} />
+
+            {showText && (
+                <animated.group style={textSpring}>
+                    <Text
+                        position={[0.5, 1, 3]}
+                        font='./assets/fonts/Montserrat-VariableFont_wght.ttf'
+                        fontSize={1}
+                        color="#FFFFFF"
+                        anchorX="center"
+                        anchorY="middle"
+                        maxWidth={10}
+                    >
+                        {displayText}
+                    </Text>
+                </animated.group>
+            )}
         </>
     );
 }

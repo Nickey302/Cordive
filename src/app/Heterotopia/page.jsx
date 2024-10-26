@@ -1,17 +1,17 @@
 'use client'
 
-import styles from './page.module.css'
-import { useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
 import gsap from 'gsap';
+import styles from './page.module.css'
 import Header from '../Header.jsx';
 import Experience from '../../components/Heterotopia/Experience.jsx';
-//
-//
-//
+import InputForm from '../../components/Heterotopia/InputForm.jsx';
+
 export default function Heterotopia()
 {
   const containerRef = useRef();
+  const [analysisResult, setAnalysisResult] = useState('');
 
   useEffect(() => {
     gsap.fromTo(
@@ -29,15 +29,16 @@ export default function Heterotopia()
           shadows
           gl={{ antialias: true }}
           camera={{
-            position: [ - 1.5, 1, 5.5 ],
+            position: [ - 4, 1, 10 ],
             fov: 45,
             near: 1,
             far: 200
           }}
         >
-          <Experience />
+          <Experience analysisResult={analysisResult} />
         </Canvas>
       </div>
+      <InputForm onAnalyze={setAnalysisResult} />
     </div>
   );
 };

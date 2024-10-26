@@ -27,6 +27,7 @@ return (
       <div className={styles.canvasContainer}>
         <Canvas
           shadows
+          gl={{ antialias: true }}
           camera={ {
             fov: 75,
             near: 0.1,

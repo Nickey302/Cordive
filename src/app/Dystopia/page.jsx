@@ -25,6 +25,7 @@ export default function Dystopia()
       <div className={styles.canvasContainer}>
         <Canvas
           shadows
+          gl={{ antialias: true }}
           camera={{
             fov: 35,
             near: 0.1,

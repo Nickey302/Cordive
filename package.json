@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Cordive 2024 website",
   "author": "Compassion+",
-  "keywords": ["cordive", "next.js", "react", "three.js"],
+  "keywords": ["next.js", "react", "three.js"],
   "private": true,
   "scripts": {
     "dev": "next dev",

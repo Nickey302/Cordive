@@ -1,11 +1,11 @@
 'use client'
 
 import { Float, Text, AccumulativeShadows, RandomizedLight, OrbitControls, Environment, useGLTF, useVideoTexture, PositionalAudio } from '@react-three/drei'
-import { EffectComposer, Bloom, HueSaturation, TiltShift2, WaterEffect, Grid, Noise, DotScreen, Glitch } from '@react-three/postprocessing'
+import { EffectComposer, Bloom, HueSaturation, TiltShift2, WaterEffect, Noise, Glitch } from '@react-three/postprocessing'
 import { Perf } from 'r3f-perf'
 import * as THREE from 'three'
 import { useThree, useFrame } from '@react-three/fiber'
-import { Suspense, useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import City from './City'
 //
 //
@@ -54,8 +54,8 @@ export default function Experience() {
                 </Text>
             </Float>
 
-            <Cookie distance={50} intensity={15} angle={0.6} penumbra={1} position={[2, 5, 0]} />
-            <AccumulativeShadows receiveShadow temporal frames={100} opacity={0.8} alphaTest={0.9} scale={12} position={[0, -0.5, 0]}>
+            <Cookie distance={10} intensity={30} angle={0.6} penumbra={1} position={[2, 3, 0]} />
+            <AccumulativeShadows receiveShadow temporal frames={100} opacity={0.8} alphaTest={0.9} scale={20} position={[0, -0.5, 0]}>
                 <RandomizedLight radius={4} ambient={0.5} position={[5, 8, -10]} bias={0.001} />
             </AccumulativeShadows>
             
@@ -72,7 +72,7 @@ export default function Experience() {
             
             <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.51, 0]} scale={100}>
                 <planeGeometry />
-                <meshLambertMaterial color="#353535" />
+                <meshStandardMaterial metalness={0} roughness={0.1} transparent opacity={0.5} color="#131313" />
             </mesh>
             
             <Environment preset="city" />
@@ -92,15 +92,14 @@ export default function Experience() {
 function Postpro() {
     return (
       <EffectComposer disableNormalPass multisampling={0}>
-        <HueSaturation saturation={-1} />
+        {/* <HueSaturation saturation={-1} /> */}
         <WaterEffect factor={0.75} />
         <TiltShift2 samples={12} blur={0.5} resolutionScale={256}/>
         <Bloom mipmapBlur luminanceThreshold={0.5} intensity={1} />
-        {/* <Grid /> */}
         <Noise opacity={0.05} />
         <Glitch 
-          delay={[1.5, 5.5]}
-          duration={[0.6, 1.0]}
+          delay={[1.5, 8.5]}
+          duration={[0.3, 0.65]}
           strength={[0.05, 0.06]}
           active
           ratio={0.85}

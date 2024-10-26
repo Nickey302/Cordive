@@ -27,6 +27,7 @@ export default function Heterotopia()
       <div className={styles.canvasContainer} >
         <Canvas
           shadows
+          gl={{ antialias: true }}
           camera={{
             position: [ - 1.5, 1, 5.5 ],
             fov: 45,

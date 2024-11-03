@@ -14,6 +14,7 @@ export default function WaterSurface() {
             uColorB: { value: new THREE.Color('#0099dd') },
         },
         vertexShader: `
+            uniform float uTime; // uTime Uniform 값으로 추가함
             varying vec2 vUv;
             varying float vElevation;
             
@@ -77,7 +78,7 @@ export default function WaterSurface() {
                     transparent
                     opacity={0.3}
                     blending={THREE.AdditiveBlending}
-                    map={new THREE.TextureLoader().load('./assets/textures/caustics.jpg')}
+                    map={new THREE.TextureLoader().load('/assets/textures/gradient.png')} // 뭔지 몰라서 아무거나 적용해놓음
                     side={THREE.DoubleSide}
                 />
             </mesh>

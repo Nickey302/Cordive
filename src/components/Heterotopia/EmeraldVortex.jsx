@@ -7,7 +7,7 @@ export default function EmeraldVortex() {
     const points = useRef()
 
     const bubbleTexture = useMemo(() => {
-        return new THREE.TextureLoader().load('./assets/textures/bubble.png')
+        return new THREE.TextureLoader().load('/assets/textures/bubble.png')
     }, [])
     
     const particles = useMemo(() => {

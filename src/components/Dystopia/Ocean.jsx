@@ -17,7 +17,7 @@ export default function Ocean()
 
 
   waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
-  const geom = useMemo(() => new THREE.PlaneGeometry(500, 500), []);
+  const geom = useMemo(() => new THREE.PlaneGeometry(100, 100), []);
   const config = useMemo(
     () => ({
       textureWidth: 1024,
@@ -27,7 +27,7 @@ export default function Ocean()
       sunColor: 0x626A78,
       waterColor: 0x001B2E,
       distortionScale: 20,
-      fog: false,
+      fog: true,
       format: gl.encoding,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -40,8 +40,8 @@ export default function Ocean()
     <water
       ref={ref}
       args={[geom, config]}
-      rotation-x={-Math.PI / 2}
-      position={[0, -2, 0]}
+      // rotation-x={-Math.PI / 2}
+      position={[0, -20, -10]}
     />
   );
 }

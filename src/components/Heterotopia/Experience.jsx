@@ -1,32 +1,21 @@
 'use client';
 
-import { Float, Text, OrbitControls, useVideoTexture } from "@react-three/drei";
-import { EffectComposer, Bloom, HueSaturation, WaterEffect, Noise, Glitch } from '@react-three/postprocessing'
-import EmeraldVortex from "./EmeraldVortex";
+import { Float, Text, useGLTF, OrbitControls, Preload } from "@react-three/drei";
 import { useEffect } from "react";
-
-function VideoBackground() {
-    const videoTexture = useVideoTexture('./assets/vids/Underwater.mp4', {
-        loop: true,
-        muted: true,
-        start: true,
-    });
-
-    return (
-        <mesh position={[0, 0, -15]}>
-            <planeGeometry args={[40, 25]} /> {/* 화면 비율에 맞게 조정 */}
-            <meshBasicMaterial 
-                map={videoTexture} 
-                transparent 
-                opacity={0.3} 
-                color="#00ffcc"
-                toneMapped={false}
-            />
-        </mesh>
-    );
-}
-
+//
+//
+//
 export default function Experience() {
+    const Clouds = useGLTF('./assets/Models/Clouds.glb');
+
+    useEffect(() => {
+        Clouds.scene.traverse((child) => {
+            if (child.isMesh) {
+                child.material.wireframe = true;
+            }
+        });
+    }, [Clouds]);
+
     return (
         <>
             <color args={['#001a1a']} attach="background" />
@@ -59,26 +48,9 @@ export default function Experience() {
                     HETEROTOPIA
                 </Text>
             </Float>
-
-            <EmeraldVortex />
-
-            <EffectComposer disableNormalPass multisampling={0}>
-                <HueSaturation saturation={0.5} />
-                <WaterEffect factor={0.2} />
-                <Bloom 
-                    mipmapBlur 
-                    luminanceThreshold={0.2} 
-                    intensity={2} 
-                />
-                <Noise opacity={0.02} />
-                <Glitch 
-                    delay={[5, 10]}
-                    duration={[0.2, 0.5]}
-                    strength={[0.02, 0.03]}
-                    active
-                    ratio={0.85}
-                />
-            </EffectComposer>
+            <primitive object={Clouds.scene} scale={10} />
         </>
     );
 }
+
+useGLTF.preload('./assets/Models/Clouds.glb');

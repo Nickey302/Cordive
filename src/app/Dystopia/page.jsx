@@ -20,15 +20,16 @@ export default function Dystopia()
   }, []);
 
   return (
-    <div ref={containerRef} style={{ position: 'relative', height: '100vh', width: '100vw', opacity: 0 }}>
+    <div ref={containerRef} style={{ position: 'fixed', height: '100vh', width: '100vw', opacity: 0 }}>
       <Header />
       <div className={styles.canvasContainer}>
         <Canvas
           shadows
+          gl={{ antialias: true }}
           camera={{
             fov: 35,
             near: 0.1,
-            far: 500,
+            far: 100,
             position: [ 6, 2, 12],
           }}
         >

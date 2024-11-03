@@ -1,12 +1,17 @@
 'use client'
 
-import { Float, Text, AccumulativeShadows, RandomizedLight, OrbitControls, Environment, useGLTF, useVideoTexture, PositionalAudio } from '@react-three/drei'
-import { EffectComposer, Bloom, HueSaturation, TiltShift2, WaterEffect, Grid, Noise, DotScreen, Glitch } from '@react-three/postprocessing'
+import { Float, Text, AccumulativeShadows, RandomizedLight, PointerLockControls, Environment, PositionalAudio } from '@react-three/drei'
+import { EffectComposer, Bloom, HueSaturation, TiltShift2, WaterEffect, Noise, Glitch } from '@react-three/postprocessing'
 import { Perf } from 'r3f-perf'
 import * as THREE from 'three'
 import { useThree, useFrame } from '@react-three/fiber'
-import { Suspense, useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import City from './City'
+import Bubbles from './Bubbles'
+import gsap from 'gsap'
+import Cookie from './Cookie'
+import { Water } from 'three/examples/jsm/objects/Water.js'
+import Ocean from './Ocean'
 //
 //
 //
@@ -14,17 +19,59 @@ export default function Experience() {
     const { camera } = useThree()
     const [audioListener] = useState(() => new THREE.AudioListener())
     const audioRef = useRef()
+    const scrollSpeed = useRef(0.005)
+    const cameraY = useRef(camera.position.y)
+    const [isUnderwater, setIsUnderwater] = useState(false)
+    const environmentRef = useRef('city')
+    const controlsRef = useRef()
+    const lightRef = useRef()
 
     useEffect(() => {
         camera.add(audioListener)
-        return () => camera.remove(audioListener)
+        camera.position.set(0, 4, 10)
+        camera.lookAt(0, 2, 0)
+        
+        const handleScroll = (event) => {
+            scrollSpeed.current = Math.abs(event.deltaY) * 0.0001 + 0.005
+        }
+
+        const handleKeyDown = (event) => {
+            if (event.code === 'Space') {
+                controlsRef.current?.lock()
+            }
+        }
+        
+        window.addEventListener('wheel', handleScroll)
+        window.addEventListener('keydown', handleKeyDown)
+        
+        return () => {
+            camera.remove(audioListener)
+            window.removeEventListener('wheel', handleScroll)
+            window.removeEventListener('keydown', handleKeyDown)
+        }
     }, [camera, audioListener])
 
     useFrame((state) => {
-        if (audioRef.current) {
-            audioRef.current.setDistanceModel('linear')
-            audioRef.current.setRefDistance(20)
-            audioRef.current.setRolloffFactor(1)
+        cameraY.current -= scrollSpeed.current * 2
+        camera.position.y = Math.max(-20, cameraY.current)
+        
+        if (camera.position.y < 0 && !isUnderwater) {
+            setIsUnderwater(true)
+        } else if (camera.position.y >= 0 && isUnderwater) {
+            setIsUnderwater(false)
+        }
+        
+        scrollSpeed.current = THREE.MathUtils.lerp(
+            scrollSpeed.current,
+            0.0005,
+            0.005
+        )
+
+        if (lightRef.current) {
+            const time = state.clock.getElapsedTime()
+            lightRef.current.position.x = Math.sin(time * 0.2) * 20
+            lightRef.current.position.z = Math.cos(time * 0.2) * 20
+            lightRef.current.lookAt(0, -30, 0)
         }
     })
 
@@ -32,11 +79,12 @@ export default function Experience() {
         <>
             <color attach="background" args={['#242424']} />
             <fog attach="fog" args={['#242424', 10, 25]} />
+
             <ambientLight intensity={2} />
 
-            <OrbitControls autoRotate autoRotateSpeed={0.1} enableZoom={false} minPolarAngle={0} maxPolarAngle={Math.PI / 2.5} />
+            <PointerLockControls ref={controlsRef} dampingFactor={0.1} enabledDamping />
 
-            {/* <Perf /> */}
+            <Perf />
 
             <Float>
                 <Text
@@ -54,9 +102,14 @@ export default function Experience() {
                 </Text>
             </Float>
 
-            <Cookie distance={50} intensity={15} angle={0.6} penumbra={1} position={[2, 5, 0]} />
-            <AccumulativeShadows receiveShadow temporal frames={100} opacity={0.8} alphaTest={0.9} scale={12} position={[0, -0.5, 0]}>
-                <RandomizedLight radius={4} ambient={0.5} position={[5, 8, -10]} bias={0.001} />
+            <Cookie distance={10} intensity={30} angle={0.6} penumbra={1} position={[2, 3, 0]} />
+            {/* <Cookie distance={12} intensity={25} angle={0.5} penumbra={0.8} position={[-3, 4, 2]} />
+            <Cookie distance={8} intensity={35} angle={0.7} penumbra={1.2} position={[4, 2, -2]} />
+            <Cookie distance={15} intensity={20} angle={0.4} penumbra={0.9} position={[-2, 5, -3]} />
+            <Cookie distance={10} intensity={28} angle={0.6} penumbra={1} position={[3, 3, 3]} /> */}
+
+            <AccumulativeShadows receiveShadow temporal frames={100} opacity={0.8} alphaTest={0.9} scale={20} position={[0, -0.5, 0]}>
+                <RandomizedLight radius={8} ambient={0.5} position={[5, 8, -10]} bias={0.001} />
             </AccumulativeShadows>
             
             <City />
@@ -72,11 +125,33 @@ export default function Experience() {
             
             <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.51, 0]} scale={100}>
                 <planeGeometry />
-                <meshLambertMaterial color="#353535" />
+                <meshStandardMaterial metalness={0} roughness={0.1} transparent opacity={0.3} color="#131313" side={THREE.DoubleSide} />
             </mesh>
+
+            <directionalLight 
+                ref={lightRef}
+                intensity={10} 
+                position={[3, -30, -10]} 
+                color="#333344"
+                castShadow
+                shadow-mapSize={[1024, 1024]}
+                shadow-camera-far={100}
+                shadow-camera-left={-20}
+                shadow-camera-right={20}
+                shadow-camera-top={20}
+                shadow-camera-bottom={-20}
+            />
+            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[10, -30, 10]} scale={100}>
+                <planeGeometry />
+                <meshStandardMaterial metalness={0} roughness={0.1} transparent opacity={1} color="#333344" />
+            </mesh>
+
+            <Bubbles />
+
+            {/* <Ocean /> */}
             
-            <Environment preset="city" />
-            <Postpro />
+            <Environment preset={environmentRef.current} />
+            <Postpro isUnderwater={isUnderwater} />
             <PositionalAudio
                 ref={audioRef}
                 url="./assets/audio/underwater.wav"
@@ -89,27 +164,43 @@ export default function Experience() {
     );
 }
 
-function Postpro() {
+function Postpro({ isUnderwater }) {
+    const effectsRef = useRef({
+        waterFactor: 0.75,
+        bloomIntensity: 1,
+        noiseOpacity: 0.05,
+        saturation: 0
+    })
+
+    useEffect(() => {
+        gsap.to(effectsRef.current, {
+            waterFactor: isUnderwater ? 1.5 : 0.75,
+            bloomIntensity: isUnderwater ? 1.5 : 1,
+            noiseOpacity: isUnderwater ? 0.1 : 0.05,
+            saturation: isUnderwater ? 0.5 : 0,
+            duration: 1,
+            ease: "power2.inOut"
+        })
+    }, [isUnderwater])
+
     return (
       <EffectComposer disableNormalPass multisampling={0}>
-        <HueSaturation saturation={-1} />
-        <WaterEffect factor={0.75} />
+        <WaterEffect factor={effectsRef.current.waterFactor} />
         <TiltShift2 samples={12} blur={0.5} resolutionScale={256}/>
-        <Bloom mipmapBlur luminanceThreshold={0.5} intensity={1} />
-        {/* <Grid /> */}
-        <Noise opacity={0.05} />
+        <Bloom 
+          mipmapBlur 
+          luminanceThreshold={0.5} 
+          intensity={effectsRef.current.bloomIntensity} 
+        />
+        <Noise opacity={effectsRef.current.noiseOpacity} />
+        <HueSaturation saturation={effectsRef.current.saturation} />
         <Glitch 
-          delay={[1.5, 5.5]}
-          duration={[0.6, 1.0]}
+          delay={[1.5, 8.5]}
+          duration={[0.3, 0.65]}
           strength={[0.05, 0.06]}
           active
           ratio={0.85}
         />
       </EffectComposer>
     );
-}
-
-function Cookie(props) {
-    const texture = useVideoTexture('./assets/vids/caustics.mp4');
-    return <spotLight decay={0} map={texture} castShadow {...props} scale={10} />;
 }

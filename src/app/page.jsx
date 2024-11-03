@@ -26,6 +26,7 @@ export default function MainPage(){
       <div className={`${styles.canvasContainer} ${styles.noSelect}`}>
         <Canvas
           shadows
+          gl={{ antialias: true }}
           camera={{
             fov: 25,
             near: 0.1,

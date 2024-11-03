@@ -3,7 +3,12 @@
   "version": "0.1.0",
   "description": "Cordive 2024 website",
   "author": "Compassion+",
-  "keywords": ["cordive", "next.js", "react", "three.js"],
+  "keywords": [
+    "cordive",
+    "next.js",
+    "react",
+    "three.js"
+  ],
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -22,11 +27,12 @@
     "next": "14.2.13",
     "react": "^18",
     "react-dom": "^18",
-    "vercel": "^37.5.3"
+    "tone": "^15.0.4",
+    "vercel": "^32.3.0"
   },
   "devDependencies": {
     "@react-three/drei": "^9.114.0",
-    "@react-three/fiber": "^8.17.8",
+    "@react-three/fiber": "^8.17.10",
     "@react-three/postprocessing": "^2.16.2",
     "@types/react": "^18.3.8",
     "@types/three": "^0.168.0",

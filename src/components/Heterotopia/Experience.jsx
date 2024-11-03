@@ -16,8 +16,7 @@ import WaterSurface from './WaterSurface';
 function DeepSeaBackground() {
     return (
         <mesh position={[0, 0, -100]} rotation={[0, 0, 0]}>
-            <planeGeometry args={[300, 300]} /> // 크기 증가
-            <shaderMaterial
+            <planeGeometry args={[300, 300]} /> {/* 크기 증가 */}            <shaderMaterial
                 fragmentShader={`
                     varying vec2 vUv;
                     void main() {

@@ -8,7 +8,7 @@ export default function Bubbles() {
 
     // 버블 텍스처 로드
     const bubbleTexture = useMemo(() => {
-        return new THREE.TextureLoader().load('./assets/textures/bubble.png')
+        return new THREE.TextureLoader().load('/assets/textures/bubble.png')
     }, [])
 
     const particles = useMemo(() => {
@@ -73,10 +73,10 @@ export default function Bubbles() {
                 />
             </bufferGeometry>
             <pointsMaterial
-                color="#4fc1e9"
+                color="#4e7fa0"
                 transparent
                 opacity={0.7}
-                size={1.5}
+                size={0.5}
                 sizeAttenuation={true}
                 blending={THREE.AdditiveBlending}
                 depthWrite={false}

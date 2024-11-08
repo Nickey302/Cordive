@@ -9,7 +9,7 @@ export default function UnderwaterEnvironment() {
     
     // 해저 바닥 텍스처
     const floorTexture = useMemo(() => {
-        const texture = new THREE.TextureLoader().load('./assets/textures/sand.jpg')
+        const texture = new THREE.TextureLoader().load('/assets/textures/sand.png') // 텍스쳐 적용함
         texture.wrapS = texture.wrapT = THREE.RepeatWrapping
         texture.repeat.set(10, 10)
         return texture
@@ -75,7 +75,7 @@ export default function UnderwaterEnvironment() {
                 rotation={[-Math.PI / 2, 0, 0]} 
                 position={[0, -30, 0]}
             >
-                <planeGeometry args={[200, 200, 50, 50]} />
+                <planeGeometry args={[500, 500, 50, 50]} />
                 <meshStandardMaterial
                     color="#1a4a5f"
                     normalMap={floorTexture}
@@ -104,7 +104,7 @@ export default function UnderwaterEnvironment() {
                     ]}
                 >
                     <meshStandardMaterial
-                        color="#2a5a6f"
+                        color="#426363"
                         roughness={0.9}
                         metalness={0.1}
                     />
@@ -132,11 +132,11 @@ export default function UnderwaterEnvironment() {
             </points>
 
             {/* 주변 조명 */}
-            <ambientLight intensity={0.2} />
+            <ambientLight intensity={1.0} />
             <directionalLight 
                 position={[50, 50, -50]} 
                 intensity={0.5}
-                color="#447799"
+                color="#3c7475"
             />
         </group>
     )

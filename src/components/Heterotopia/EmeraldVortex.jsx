@@ -7,7 +7,7 @@ export default function EmeraldVortex() {
     const points = useRef()
 
     const bubbleTexture = useMemo(() => {
-        return new THREE.TextureLoader().load('./assets/textures/bubble.png')
+        return new THREE.TextureLoader().load('/assets/textures/bubble.png')
     }, [])
     
     const particles = useMemo(() => {
@@ -105,7 +105,7 @@ export default function EmeraldVortex() {
                 color="#4fc1e9"
                 transparent
                 opacity={0.9}
-                size={4} // 기본 크기 더 증가
+                size={1} // 기본 크기 더 증가
                 sizeAttenuation={true}
                 blending={THREE.AdditiveBlending}
                 depthWrite={false}

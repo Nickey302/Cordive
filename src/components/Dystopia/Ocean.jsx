@@ -1,47 +1,34 @@
-import React, { useRef, useMemo } from "react";
-import { extend, useThree, useLoader, useFrame } from "@react-three/fiber";
-import * as THREE from "three";
-import { Water } from "three/examples/jsm/objects/Water.js";
-//
-//
-//
-extend({ Water });
+import * as THREE from 'three'
+import React, { Suspense, useRef, useMemo } from 'react'
+import { Canvas, extend, useThree, useLoader, useFrame } from '@react-three/fiber'
+import { OrbitControls, Sky } from '@react-three/drei'
+import { Water } from 'three-stdlib'
 
-export default function Ocean()
-{
-  const ref = useRef();
-  const gl = useThree((state) => state.gl);
-  const waterNormals = useLoader(
-    THREE.TextureLoader, "https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/waternormals.jpg"
-  );
+extend({ Water })
 
-
-  waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
-  const geom = useMemo(() => new THREE.PlaneGeometry(100, 100), []);
+export default function Ocean() {
+  const ref = useRef()
+  const gl = useThree((state) => state.gl)
+  const waterNormals = useLoader(THREE.TextureLoader, '/assets/textures/Waternormals.jpeg')
+  waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping
+  const geom = useMemo(() => new THREE.PlaneGeometry(10000, 10000), [])
   const config = useMemo(
     () => ({
-      textureWidth: 1024,
-      textureHeight: 1024,
+      textureWidth: 512,
+      textureHeight: 512,
       waterNormals,
       sunDirection: new THREE.Vector3(),
-      sunColor: 0x626A78,
-      waterColor: 0x001B2E,
-      distortionScale: 20,
-      fog: true,
+      sunColor: 0x333344,
+      waterColor: 0xffffff,
+      distortionScale: 3.7,
+      fog: false,
+      transparent: true,
+      opacity: 0.3,
       format: gl.encoding,
+      side: THREE.DoubleSide
     }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [waterNormals]
-  );
-  useFrame(
-    (state, delta) => (ref.current.material.uniforms.time.value += delta)
-  );
-  return (
-    <water
-      ref={ref}
-      args={[geom, config]}
-      // rotation-x={-Math.PI / 2}
-      position={[0, -20, -10]}
-    />
-  );
+  )
+  useFrame((state, delta) => (ref.current.material.uniforms.time.value += delta))
+  return <water ref={ref} args={[geom, config]} position={[0, -0.55, 0]} rotation-x={-Math.PI / 2} />
 }

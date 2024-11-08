@@ -6,16 +6,21 @@ import { Canvas } from '@react-three/fiber';
 import Header from '../Header.jsx';
 import Experience from '../../components/Dystopia/Experience.jsx';
 import gsap from 'gsap';
-
+import { AdaptiveDpr, AdaptiveEvents, PerformanceMonitor } from '@react-three/drei';
+import { useState } from 'react';
+//
+//
+//
 export default function Dystopia()
 {
   const containerRef = useRef();
+  const [dpr, setDpr] = useState(1)
 
   useEffect(() => {
     gsap.fromTo(
       containerRef.current,
       { opacity: 0 },
-      { opacity: 1, duration: 2, ease: 'power2.inOut' }
+      { opacity: 1, duration: 1, ease: 'power2.inOut' }
     );
   }, []);
 
@@ -25,7 +30,9 @@ export default function Dystopia()
       <div className={styles.canvasContainer}>
         <Canvas
           shadows
-          gl={{ antialias: true }}
+          frameloop="always"
+          dpr={dpr}
+          gl={{ antialias: true, powerPreference: "high-performance" }}
           camera={{
             fov: 35,
             near: 0.1,
@@ -33,7 +40,17 @@ export default function Dystopia()
             position: [ 6, 2, 12],
           }}
         >
-          <Experience />
+          <AdaptiveDpr pixelated />
+          <AdaptiveEvents />
+          <PerformanceMonitor
+              onIncline={() => {
+                setDpr(Math.min(2, window.devicePixelRatio))
+              }}
+              onDecline={() => {
+              setDpr(1)
+            }}>
+            <Experience />
+          </PerformanceMonitor>
         </Canvas>
       </div>
     </div>

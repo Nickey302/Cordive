@@ -10,7 +10,6 @@ import City from './City'
 import Bubbles from './Bubbles'
 import gsap from 'gsap'
 import Cookie from './Cookie'
-import { Water } from 'three/examples/jsm/objects/Water.js'
 import Ocean from './Ocean'
 //
 //
@@ -77,7 +76,7 @@ export default function Experience() {
 
     return (
         <>
-            <color attach="background" args={['#242424']} />
+            <color attach="background" args={['#464646']} />
             <fog attach="fog" args={['#242424', 10, 25]} />
 
             <ambientLight intensity={2} />
@@ -103,10 +102,6 @@ export default function Experience() {
             </Float>
 
             <Cookie distance={10} intensity={30} angle={0.6} penumbra={1} position={[2, 3, 0]} />
-            {/* <Cookie distance={12} intensity={25} angle={0.5} penumbra={0.8} position={[-3, 4, 2]} />
-            <Cookie distance={8} intensity={35} angle={0.7} penumbra={1.2} position={[4, 2, -2]} />
-            <Cookie distance={15} intensity={20} angle={0.4} penumbra={0.9} position={[-2, 5, -3]} />
-            <Cookie distance={10} intensity={28} angle={0.6} penumbra={1} position={[3, 3, 3]} /> */}
 
             <AccumulativeShadows receiveShadow temporal frames={100} opacity={0.8} alphaTest={0.9} scale={20} position={[0, -0.5, 0]}>
                 <RandomizedLight radius={8} ambient={0.5} position={[5, 8, -10]} bias={0.001} />
@@ -123,16 +118,18 @@ export default function Experience() {
                 <meshStandardMaterial color="#353535" />
             </mesh>
             
-            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.51, 0]} scale={100}>
+            {/* <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.51, 0]} scale={100}>
                 <planeGeometry />
                 <meshStandardMaterial metalness={0} roughness={0.1} transparent opacity={0.3} color="#131313" side={THREE.DoubleSide} />
-            </mesh>
+            </mesh> */}
+
+            <Ocean />
 
             <directionalLight 
                 ref={lightRef}
-                intensity={10} 
+                intensity={3} 
                 position={[3, -30, -10]} 
-                color="#333344"
+                color="#ffffff"
                 castShadow
                 shadow-mapSize={[1024, 1024]}
                 shadow-camera-far={100}
@@ -147,8 +144,6 @@ export default function Experience() {
             </mesh>
 
             <Bubbles />
-
-            {/* <Ocean /> */}
             
             <Environment preset={environmentRef.current} />
             <Postpro isUnderwater={isUnderwater} />

@@ -2,29 +2,18 @@
 
 import styles from './page.module.css'
 import { Canvas } from '@react-three/fiber';
-import { useEffect, useRef, useState } from 'react';
-import gsap from 'gsap';
+import { useState } from 'react';
 import Experience from '../../components/Utopia/Experience.jsx';
 import Header from '../Header.jsx';
 import { AdaptiveDpr, AdaptiveEvents, PerformanceMonitor } from '@react-three/drei';
 //
 //
 //
-export default function Utopia()
-{
-const containerRef = useRef();
+export default function Utopia() {
 const [dpr, setDpr] = useState(1)
 
-useEffect(() => {
-  gsap.fromTo(
-    containerRef.current,
-    { opacity: 0 },
-    { opacity: 1, duration: 2, ease: 'power2.inOut' }
-  );
-}, []);
-
 return (
-  <div ref={containerRef} style={{ position: 'relative', height: '100vh', width: '100vw' }}>
+  <div style={{ position: 'fixed', height: '100vh', width: '100vw' }}>
       <Header />
       <div className={styles.canvasContainer}>
         <Canvas

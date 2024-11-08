@@ -1,7 +1,6 @@
 .canvasContainer {
   box-sizing: border-box;
-  overflow-x: hidden;
-  display: block;
+  overflow: hidden;
   position: fixed; /* Makes sure the canvas sticks to the viewport */
   top: 0;
   left: 0;
@@ -17,4 +16,19 @@
 
 .canvas::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.canvasContainer {
+  opacity: 0;
+  touch-action: none;
+  animation: fade-in 3s ease-in 0.5s forwards;
 }

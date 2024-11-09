@@ -30,22 +30,6 @@ export default function Experience() {
 
             <Model />
 
-            <Text3D
-                position={[-25, 40, 0]}
-                // font='./assets/fonts/Montserrat-VariableFont_wght.ttf'
-                // font='./assets/fonts/NeoCode.woff'
-                font='/assets/fonts/RobotoRegular.json'
-                scale={10}
-                thickness={0.1}
-            >
-                UTOPIA
-                <MeshTransmissionMaterial
-                    transmission={0.7}
-                    clearcoat={0.8}
-                    color="#b8cfd8"
-                />
-            </Text3D>
-
             <Effects />
         </>
     )

@@ -28,7 +28,7 @@ export default function Experience({ onShowNamePrompt }) {
         duration: 1,
         ease: 'power2.inOut'
       });
-  }, []);
+  }, [camera.position]);
 
   // useControls 대신 고정된 값 사용
   const focus = 5.1;

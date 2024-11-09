@@ -27,7 +27,7 @@ export default function Ocean() {
       format: gl.encoding,
       side: THREE.DoubleSide
     }),
-    [waterNormals]
+    [waterNormals, gl.encoding]
   )
   useFrame((state, delta) => (ref.current.material.uniforms.time.value += delta))
   return <water ref={ref} args={[geom, config]} position={[0, -0.55, 0]} rotation-x={-Math.PI / 2} />

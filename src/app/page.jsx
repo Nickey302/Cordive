@@ -1,42 +1,74 @@
 'use client'
 
-import styles from './page.module.css';
+import styles from './page.module.css'
 import { Canvas } from '@react-three/fiber';
-import { useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
+import Experience from '@/components/main/Experience';
+import Header from './Header';
+import NamePrompt from '@/components/main/NamePrompt';
+import { AdaptiveEvents, PerformanceMonitor } from '@react-three/drei';
+import { useRouter } from 'next/navigation';
 import gsap from 'gsap';
-import Experience from '../components/main/Experience.jsx';
-import Header from './Header.jsx';
-//
-//
-//
-export default function MainPage(){
-  const containerRef = useRef();
 
-  useEffect(() => {
-    gsap.fromTo(
-      containerRef.current,
-      { opacity: 0 },
-      { opacity: 1, duration: 2, ease: 'power2.inOut' }
-    );
-  }, []);
+export default function Home() {
+  const [dpr, setDpr] = useState(1);
+  const [showNamePrompt, setShowNamePrompt] = useState(false);
+  const canvasContainerRef = useRef(null);
+  const router = useRouter();
+
+  const handleNameComplete = (name) => {
+    gsap.to(canvasContainerRef.current, {
+      opacity: 0,
+      duration: 0.5,
+      ease: 'power2.inOut'
+    });
+
+    console.log('Entered name:', name);
+    setTimeout(() => {
+      router.push('/Dystopia');
+    }, 1000);
+  };
 
   return (
-    <div ref={containerRef} style={{ position: 'relative', height: '100vh', width: '100vw' }}>
+    <div style={{ position: 'fixed', height: '100vh', width: '100vw' }}>
       <Header />
-      <div className={`${styles.canvasContainer} ${styles.noSelect}`}>
+      <div 
+        ref={canvasContainerRef}
+        className={styles.canvasContainer}
+        style={{
+          opacity: showNamePrompt ? 0.4 : 1,
+          transition: 'opacity 0.5s ease'
+        }}
+      >
         <Canvas
           shadows
-          gl={{ antialias: true, powerPreference: "high-performance" }}
+          frameloop="always"
+          gl={{
+            antialias: true,
+            powerPreference: "high-performance",
+          }}
           camera={{
             fov: 25,
             near: 0.1,
             far: 100,
-            position: [0, 0, 6],
+            position: [0, 0, 0],
           }}
         >
-          <Experience />
+          <AdaptiveEvents />
+          <PerformanceMonitor
+            onIncline={() => {
+              setDpr(Math.min(2, window.devicePixelRatio))
+            }}
+            onDecline={() => {
+              setDpr(1)
+            }}>
+            <Experience onShowNamePrompt={setShowNamePrompt} />
+          </PerformanceMonitor>
         </Canvas>
       </div>
+      {showNamePrompt && (
+        <NamePrompt onComplete={handleNameComplete} />
+      )}
     </div>
   );
-};
+}

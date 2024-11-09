@@ -99,7 +99,7 @@ export default function Experience() {
             <color args={['#48546d']} attach="background" />
             <fog attach="fog" args={['#48546d', 400, 400]} />
 
-            <Perf position="top-left" /> {/* 성능 확인용으로 추가함 초반에 프레임 55-60 유지 권장 */}
+            {/* <Perf position="top-left" /> 성능 확인용으로 추가함 초반에 프레임 55-60 유지 권장 */}
 
             <ambientLight intensity={10} />
             <directionalLight position={[10, 10, 10]} intensity={1} color="#ffffff" />

@@ -2,17 +2,33 @@
 
 import { useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Text } from '@react-three/drei';
-// import { useControls } from 'leva'; // 제거
 import Particles from './Particles.jsx';
 import { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import * as THREE from 'three'
-import { Noise , EffectComposer, Glitch, Grid } from '@react-three/postprocessing';
+import { Noise , EffectComposer, Grid } from '@react-three/postprocessing';
 import { useSpring } from '@react-spring/three';
-
-export default function Experience() {
-  const router = useRouter();
+import gsap from 'gsap';
+//
+//
+//
+export default function Experience({ onShowNamePrompt }) {
   const { camera, mouse } = useThree();
+
+  useEffect(() => {
+    camera.position.z = 0;
+    
+    gsap.timeline()
+      .to(camera.position, {
+        z: 6.5,
+        duration: 2,
+        ease: 'power2.inOut'
+      })
+      .to(camera.position, {
+        z: 5,
+        duration: 1,
+        ease: 'power2.inOut'
+      });
+  }, []);
 
   // useControls 대신 고정된 값 사용
   const focus = 5.1;
@@ -30,7 +46,7 @@ export default function Experience() {
 
   const holdTimerRef = useRef(null);
 
-  const [cameraPosition, setCameraPosition] = useState([0, 0, 6]);
+  const [cameraPosition, setCameraPosition] = useState([0, 0, 0]);
   const [cameraRotation, setCameraRotation] = useState([0, 0, 0]);
 
   const springProps = useSpring({
@@ -59,7 +75,7 @@ export default function Experience() {
         if (progress >= 1) {
           clearInterval(holdTimerRef.current);
           setIsHolding(false);
-          router.push('/NamePrompt');
+          onShowNamePrompt(true);
         }
       }, 50);
     } else {
@@ -76,7 +92,7 @@ export default function Experience() {
         clearInterval(holdTimerRef.current);
       }
     };
-  }, [isHolding, router]);
+  }, [isHolding, onShowNamePrompt]);
 
   return (
     <>
@@ -100,9 +116,11 @@ export default function Experience() {
 
       <Text
         position={[0, 0, 2]}
-        font="./assets/fonts/Montserrat-VariableFont_wght.ttf"
+        // font="./assets/fonts/Montserrat-VariableFont_wght.ttf"
+        font="/assets/fonts/NeoCode.woff"
+        // fontWeight={700}
         fontSize={0.3}
-        color="white"
+        color="#dddddd"
         anchorX="center"
         anchorY="middle"
         maxWidth={10}
@@ -113,9 +131,11 @@ export default function Experience() {
 
       <Text
         position={[0, -0.55, 2]}
-        font="./assets/fonts/Montserrat-VariableFont_wght.ttf"
+        font="/assets/fonts/Montserrat-VariableFont_wght.ttf"
+        // font="./assets/fonts/NeoCode.woff"
+        fontWeight={100}
         fontSize={0.1}
-        color="white"
+        color="#ededed"
         anchorX="center"
         anchorY="middle"
         maxWidth={5}
@@ -130,7 +150,7 @@ export default function Experience() {
           setIsHolding(false);
         }}
       >
-        Hold To Dive
+        HOLD TO DIVE
       </Text>
 
       <group position={[0, -0.7, 2]}>

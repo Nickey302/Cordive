@@ -1,29 +1,31 @@
 'use client'
 
 import { Float, Text, AccumulativeShadows, RandomizedLight, PointerLockControls, Environment, PositionalAudio } from '@react-three/drei'
-import { EffectComposer, Bloom, HueSaturation, TiltShift2, WaterEffect, Noise, Glitch } from '@react-three/postprocessing'
+import { EffectComposer, Bloom, TiltShift2, Noise, Glitch, Pixelation } from '@react-three/postprocessing'
 import { Perf } from 'r3f-perf'
 import * as THREE from 'three'
 import { useThree, useFrame } from '@react-three/fiber'
 import { useRef, useEffect, useState } from 'react'
 import City from './City'
 import Bubbles from './Bubbles'
-import gsap from 'gsap'
 import Cookie from './Cookie'
 import Ocean from './Ocean'
+import FirstPersonControls from './FirstPersonControls'
 //
 //
 //
-export default function Experience() {
+export default function Experience({ onCameraYChange }) {
     const { camera } = useThree()
     const [audioListener] = useState(() => new THREE.AudioListener())
     const audioRef = useRef()
     const scrollSpeed = useRef(0.005)
     const cameraY = useRef(camera.position.y)
     const [isUnderwater, setIsUnderwater] = useState(false)
-    const environmentRef = useRef('city')
     const controlsRef = useRef()
     const lightRef = useRef()
+    const floatingOffset = useRef(0)
+    const floatingSpeed = 2.0
+    const floatingAmplitude = 0.15
 
     useEffect(() => {
         camera.add(audioListener)
@@ -31,7 +33,7 @@ export default function Experience() {
         camera.lookAt(0, 2, 0)
         
         const handleScroll = (event) => {
-            scrollSpeed.current = Math.abs(event.deltaY) * 0.0001 + 0.005
+            scrollSpeed.current = Math.abs(event.deltaY) * 0.001
         }
 
         const handleKeyDown = (event) => {
@@ -51,8 +53,16 @@ export default function Experience() {
     }, [camera, audioListener])
 
     useFrame((state) => {
-        cameraY.current -= scrollSpeed.current * 2
-        camera.position.y = Math.max(-20, cameraY.current)
+        cameraY.current -= scrollSpeed.current * 3
+        camera.position.y = Math.max(-38, cameraY.current)
+        
+        if (isUnderwater) {
+            floatingOffset.current += floatingSpeed * state.clock.getDelta()
+            const floatingY = Math.sin(floatingOffset.current) * floatingAmplitude
+            camera.position.y += floatingY
+        }
+        
+        onCameraYChange?.(camera.position.y)
         
         if (camera.position.y < 0 && !isUnderwater) {
             setIsUnderwater(true)
@@ -76,14 +86,27 @@ export default function Experience() {
 
     return (
         <>
-            <color attach="background" args={['#464646']} />
-            <fog attach="fog" args={['#242424', 10, 25]} />
+            <Perf position="bottom-left" />
+
+            <color attach="background" args={['#45474c']} />
+            <fog attach="fog" args={['#45474c', 10, 100]} />
 
             <ambientLight intensity={2} />
+            <directionalLight intensity={10} position={[20, -30, 10]} color="#ffffff" />
 
-            <PointerLockControls ref={controlsRef} dampingFactor={0.1} enabledDamping />
+            <PointerLockControls ref={controlsRef} makeDefault pointerSpeed={0.5}  />
+            {/* <OrbitControls /> */}
 
-            <Perf />
+            <FirstPersonControls />
+
+            <Environment
+                files={'/assets/HDRI/mud_road_puresky_2k.hdr'}
+                background
+                backgroundBlurriness={0.5}
+                backgroundIntensity={0.3}
+                environmentIntensity={0.5}
+                blur={0.5}
+            />
 
             <Float>
                 <Text
@@ -101,28 +124,28 @@ export default function Experience() {
                 </Text>
             </Float>
 
-            <Cookie distance={10} intensity={30} angle={0.6} penumbra={1} position={[2, 3, 0]} />
+            <Cookie distance={10} intensity={3} angle={0.6} penumbra={1} position={[2, 3, 0]} />
 
             <AccumulativeShadows receiveShadow temporal frames={100} opacity={0.8} alphaTest={0.9} scale={20} position={[0, -0.5, 0]}>
                 <RandomizedLight radius={8} ambient={0.5} position={[5, 8, -10]} bias={0.001} />
             </AccumulativeShadows>
             
-            <City />
+            <City castShadow />
 
-            <mesh castShadow position={[-1.5, -0.245, 1]}>
-                <sphereGeometry args={[0.25, 64, 64]} />
-                <meshStandardMaterial color="#353535" />
-            </mesh>
-            <mesh castShadow position={[1.5, -0.24, 1]} rotation={[0, Math.PI / 4, 0]}>
-                <boxGeometry args={[0.5, 0.5, 0.5]} />
-                <meshStandardMaterial color="#353535" />
-            </mesh>
-            
-            {/* <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.51, 0]} scale={100}>
-                <planeGeometry />
-                <meshStandardMaterial metalness={0} roughness={0.1} transparent opacity={0.3} color="#131313" side={THREE.DoubleSide} />
-            </mesh> */}
-
+            <Float
+                floatIntensity={1}
+                speed={5}
+            >
+                <mesh castShadow position={[-1.5, -0.5, 1]}>
+                    <sphereGeometry args={[0.25, 64, 64]} />
+                    <meshStandardMaterial color="#020f10" />
+                </mesh>
+                <mesh castShadow position={[1.5, -0.5, 1]} rotation={[0, Math.PI / 4, 0]}>
+                    <boxGeometry args={[0.5, 0.5, 0.5]} />
+                    <meshStandardMaterial color="#020f10" />
+                </mesh>
+            </Float>
+        
             <Ocean />
 
             <directionalLight 
@@ -130,65 +153,35 @@ export default function Experience() {
                 intensity={3} 
                 position={[3, -30, -10]} 
                 color="#ffffff"
-                castShadow
-                shadow-mapSize={[1024, 1024]}
-                shadow-camera-far={100}
-                shadow-camera-left={-20}
-                shadow-camera-right={20}
-                shadow-camera-top={20}
-                shadow-camera-bottom={-20}
             />
-            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[10, -30, 10]} scale={100}>
-                <planeGeometry />
-                <meshStandardMaterial metalness={0} roughness={0.1} transparent opacity={1} color="#333344" />
-            </mesh>
 
             <Bubbles />
-            
-            <Environment preset={environmentRef.current} />
-            <Postpro isUnderwater={isUnderwater} />
+        
+            <Postpro />
             <PositionalAudio
                 ref={audioRef}
                 url="./assets/audio/underwater.wav"
                 distance={1}
                 loop
                 autoplay
+                volume={10}
             />
 
         </>
     );
 }
 
-function Postpro({ isUnderwater }) {
-    const effectsRef = useRef({
-        waterFactor: 0.75,
-        bloomIntensity: 1,
-        noiseOpacity: 0.05,
-        saturation: 0
-    })
-
-    useEffect(() => {
-        gsap.to(effectsRef.current, {
-            waterFactor: isUnderwater ? 1.5 : 0.75,
-            bloomIntensity: isUnderwater ? 1.5 : 1,
-            noiseOpacity: isUnderwater ? 0.1 : 0.05,
-            saturation: isUnderwater ? 0.5 : 0,
-            duration: 1,
-            ease: "power2.inOut"
-        })
-    }, [isUnderwater])
+function Postpro() {
 
     return (
       <EffectComposer disableNormalPass multisampling={0}>
-        <WaterEffect factor={effectsRef.current.waterFactor} />
-        <TiltShift2 samples={12} blur={0.5} resolutionScale={256}/>
+        <TiltShift2 samples={12} blur={0.2} resolutionScale={256}/>
         <Bloom 
           mipmapBlur 
-          luminanceThreshold={0.5} 
-          intensity={effectsRef.current.bloomIntensity} 
+          luminanceThreshold={0.8} 
+          intensity={0.5} 
         />
-        <Noise opacity={effectsRef.current.noiseOpacity} />
-        <HueSaturation saturation={effectsRef.current.saturation} />
+        <Noise opacity={0.01} />
         <Glitch 
           delay={[1.5, 8.5]}
           duration={[0.3, 0.65]}
@@ -196,6 +189,7 @@ function Postpro({ isUnderwater }) {
           active
           ratio={0.85}
         />
+        <Pixelation />
       </EffectComposer>
     );
 }

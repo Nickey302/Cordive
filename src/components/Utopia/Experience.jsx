@@ -1,6 +1,6 @@
 'use client'
 
-import { Text, Stage, Environment, OrbitControls } from '@react-three/drei'
+import { Text, Stage, Environment, OrbitControls, Text3D, MeshTransmissionMaterial } from '@react-three/drei'
 import { Perf } from 'r3f-perf'
 import Model from './Model'
 import dynamic from 'next/dynamic'
@@ -13,42 +13,38 @@ export default function Experience() {
 
     return (
         <>  
-            <color args={['#eeeeee']} attach="background" />
-
-            <Perf position="top-left" />
+            {/* <Perf position="top-left" /> */}
 
             <OrbitControls makeDefault enableDamping dampingFactor={0.01}/>
 
             <ambientLight intensity={ 1.5 } />
-            <directionalLight position={[10, 10, 10]} color="#666699" intensity={ 3 } />
-
-            <Text
-                position={[0, 40, 0]}
-                font='./assets/fonts/Montserrat-VariableFont_wght.ttf'
-                fontWeight={100}
-                fontSize={20}
-                color="black"
-                anchorX="center"
-                anchorY="middle"
-                maxWidth={10}
-                bevel={ 10 }
-            >
-                UTOPIA
-            </Text>
+            <directionalLight position={[10, 25, 3]} color="#dcb8d3" intensity={ 3 } />
 
             <Environment
-                preset="studio"
-                resolution={128}
-                intensity={0.5}
+                files={'/assets/HDRI/Utopia.hdr'}
+                background
+                environmentIntensity={0.5}
+                backgroundIntensity={0.5}
+                backgroundBlurriness={0.1}
             />
 
-                <Model />
-                {/* <Love /> */}
+            <Model />
 
-                {/* <mesh>
-                    <boxGeometry position={[10, 50, 10]} args={[10, 10, 10]}/>
-                    <meshStandardMaterial metalness={0.5} roughness={0.5} color="white" />
-                </mesh> */}
+            <Text3D
+                position={[-25, 40, 0]}
+                // font='./assets/fonts/Montserrat-VariableFont_wght.ttf'
+                // font='./assets/fonts/NeoCode.woff'
+                font='/assets/fonts/RobotoRegular.json'
+                scale={10}
+                thickness={0.1}
+            >
+                UTOPIA
+                <MeshTransmissionMaterial
+                    transmission={0.7}
+                    clearcoat={0.8}
+                    color="#b8cfd8"
+                />
+            </Text3D>
 
             <Effects />
         </>

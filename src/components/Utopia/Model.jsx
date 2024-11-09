@@ -37,3 +37,10 @@ export default function Model()
         </>
     )
 }
+
+useGLTF.preload('./assets/Models/Love.glb')
+useGLTF.preload('./assets/Models/Liberation.glb')
+useGLTF.preload('./assets/Models/Aversion.glb')
+useGLTF.preload('./assets/Models/Resist.glb')
+useGLTF.preload('./assets/Models/Isolation.glb')
+useGLTF.preload('./assets/Models/Adjust.glb')

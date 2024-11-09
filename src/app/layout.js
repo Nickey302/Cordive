@@ -2,16 +2,17 @@ import "../style/globals.css";
 
 export const metadata = {
   title: "CorDive",
-  description: "created by Team Compassion+",
+  description: "created by Team Compass+",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="ko">
       <head>
         <link rel="icon" href="/assets/icons/Logo.jpeg" />
+        <link rel="preload" href="/assets/fonts/NeoCode.woff" as="font" type="font/woff" crossOrigin="anonymous" />
       </head>
-      <body>
+      <body style={{ fontFamily: 'NeoCode, sans-serif' }}>
         {children}
       </body>
     </html>

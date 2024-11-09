@@ -13,7 +13,6 @@
   padding: 0;
   z-index: 1000;
   transition: all 1s ease-in-out;
-  font-family: './assets/fonts/Montserrat-VariableFont_wght.ttf';
   overflow: hidden;
   border: 0.5px solid rgb(127, 130, 137);
 }

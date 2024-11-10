@@ -1,21 +1,39 @@
 'use client'
 
-import { Text, Stage, Environment, OrbitControls, Text3D, MeshTransmissionMaterial } from '@react-three/drei'
-import { Perf } from 'r3f-perf'
+import { Environment, OrbitControls } from '@react-three/drei'
+import { useFrame } from '@react-three/fiber'
+import { useRef } from 'react'
 import Model from './Model'
 import dynamic from 'next/dynamic'
+import { Perf } from 'r3f-perf'
 const Effects = dynamic(() => import("../Heterotopia/Effects"), { ssr: false });
-//
-//
-//
-export default function Experience() {
 
+export default function Experience({ activeObject }) {
+    const orbitControlsRef = useRef()
+
+    useFrame((state) => {
+        if (orbitControlsRef.current) {
+            orbitControlsRef.current.update()
+        }
+    })
 
     return (
         <>  
-            {/* <Perf position="top-left" /> */}
+            <Perf position="top-left" />
 
-            <OrbitControls makeDefault enableDamping dampingFactor={0.01}/>
+            <OrbitControls 
+                ref={orbitControlsRef}
+                makeDefault 
+                enableDamping 
+                dampingFactor={0.05}
+                minDistance={50}
+                maxDistance={500}
+                enablePan={true}
+                enableZoom={true}
+                target={[0, 0, 0]}
+                // minPolarAngle={Math.PI / 4}
+                // maxPolarAngle={Math.PI / 2}
+            />
 
             <ambientLight intensity={ 1.5 } />
             <directionalLight position={[10, 25, 3]} color="#dcb8d3" intensity={ 3 } />
@@ -28,7 +46,7 @@ export default function Experience() {
                 backgroundBlurriness={0.1}
             />
 
-            <Model />
+            <Model activeObject={activeObject} />
 
             <Effects />
         </>

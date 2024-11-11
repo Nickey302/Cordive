@@ -16,7 +16,7 @@ export const Model = forwardRef(function Model(props, ref) {
         receiveShadow
         geometry={nodes.Cone002.geometry}
         material={materials['Material.001']}
-        position={[-3.858, 0.895, -1.889]}
+        position={[0.039, 0.895, 0.015]}
         rotation={[-Math.PI, 0, 0]}
       />
     </group>

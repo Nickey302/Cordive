@@ -13,7 +13,7 @@ export const Model = forwardRef(function Model(props, ref) {
         castShadow
         receiveShadow
         geometry={nodes.Sphere.geometry}
-        material={materials.Material}
+        material={materials['Material.001']}
         position={[-0.009, 0.064, -0.015]}
         scale={-0.153}
       />

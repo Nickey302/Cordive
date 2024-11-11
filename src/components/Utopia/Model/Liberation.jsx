@@ -22,7 +22,7 @@ export const Model = forwardRef(function Model(props, ref) {
         castShadow
         receiveShadow
         geometry={nodes.Icosphere.geometry}
-        material={materials['ruby.001']}
+        material={materials.Material}
         position={[0.587, 1.435, 0.155]}
         scale={[1.449, 1.134, 1.568]}
       />

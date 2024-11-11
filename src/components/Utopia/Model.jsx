@@ -67,7 +67,7 @@ const Model = forwardRef(({ activeObject }, ref) => {
                 },
                 Isolation: {
                     distance: 50,
-                    heightOffset: 35,
+                    heightOffset: 55,
                     angle: Math.PI / 4
                 },
                 Liberation: {
@@ -102,7 +102,7 @@ const Model = forwardRef(({ activeObject }, ref) => {
         Aversion: [-25 * positionAdd, 0, 0],
         Adjust: [0, 24 * positionAdd, 0],
         Resist: [0, -24 * positionAdd, 0],
-        Isolation: [30 * positionAdd, 0, 30 * positionAdd],
+        Isolation: [0, 0, 30 * positionAdd],
         Liberation: [0, 0, -25 * positionAdd],
         Landmark: [0, -15, 0]
     }
@@ -132,7 +132,7 @@ const Model = forwardRef(({ activeObject }, ref) => {
             <Isolation 
                 ref={refs.Isolation} 
                 position={positions.Isolation}
-                scale={[5 * scaleAdd, 5 * scaleAdd, 5 * scaleAdd]}
+                scale={[3.5 * scaleAdd, 3.5 * scaleAdd, 3.5 * scaleAdd]}
             />
             <Liberation 
                 ref={refs.Liberation} 

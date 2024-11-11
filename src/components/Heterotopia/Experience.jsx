@@ -9,7 +9,7 @@ import { Perf } from 'r3f-perf';
 import * as THREE from 'three';
 import { Model as Computer } from './Computer.jsx';
 import { Physics, RigidBody } from '@react-three/rapier';
-const Effects = dynamic(() => import('./Effects'), { ssr: false });
+// const Effects = dynamic(() => import('./Effects'), { ssr: false });
 //
 //
 //
@@ -39,7 +39,7 @@ export default function Experience() {
                 files={"/assets/HDRI/Dystopia.hdr"}
                 background
                 environmentIntensity={0.2}
-                backgroundBlurriness={0.2}
+                backgroundBlurriness={0.1}
             />
 
             <Water />
@@ -53,7 +53,8 @@ export default function Experience() {
                     color="#ffffff"
                     anchorX="center"
                     anchorY="middle"
-                    font="/assets/fonts/Montserrat-VariableFont_wght.ttf"
+                    // font="/assets/fonts/Montserrat-VariableFont_wght.ttf"
+                    font="/assets/fonts/Neocode.woff"
                 >
                     HETEROTOPIA
                 </Text>
@@ -103,10 +104,11 @@ export default function Experience() {
             <EffectComposer disableNormalPass multisampling={0}>
                 <Bloom 
                     mipmapBlur
-                    intensity={0.7}
-                    luminanceThreshold={0.8}
+                    intensity={0.8}
+                    luminanceThreshold={0.5}
+                    luminanceSmoothing={0.1}
                 />
-                <Noise opacity={0.1} />
+                <Noise opacity={0.08} />
             </EffectComposer>
         </>
     )

@@ -2,9 +2,9 @@
   position: fixed;
   top: 20px;
   left: 20px;
-  width: 65px;
-  height: 65px;
-  border-radius: 32.5px;
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
   background-color: rgba(255, 255, 255, 0.0);
   backdrop-filter: blur(10px);
   display: flex;
@@ -15,24 +15,34 @@
   transition: all 1s ease-in-out;
   overflow: hidden;
   border: 0.5px solid rgb(127, 130, 137);
+  cursor: pointer;
 }
 
-.header:hover {
-  width: 28rem;
+.header.expanded {
+  width: 31rem;
   padding: 0 20px;
   border: 0.75px solid rgb(127, 130, 137);
 }
 
-.logo {
-  color: rgb(182, 178, 157);
-  font-size: 12px;
-  transition: all 1s ease;
-  white-space: nowrap;
-  margin-left: 20px;
+.header.expanded .logo {
+  font-size: 13.5px;
 }
 
-.header:hover .logo {
-  font-size: 13.5px;
+.header.expanded .navLinks {
+  opacity: 1;
+  width: 35vw;
+}
+
+.header.expanded .navLinks a {
+  opacity: 1;
+}
+
+.logo {
+  /* position: absolute; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 1.5rem;
 }
 
 .navLinks {
@@ -45,11 +55,6 @@
   transition: all 1.2s ease-in-out;
 }
 
-.header:hover .navLinks {
-  opacity: 1;
-  width: 35vw;
-}
-
 .navLinks a {
   color: white;
   text-decoration: none;
@@ -57,10 +62,6 @@
   transition: opacity 1s ease-in-out, color 0.2s ease, font-size 0.2s ease;
   opacity: 0;
   cursor: pointer;
-}
-
-.header:hover .navLinks a {
-  opacity: 1;
 }
 
 .navLinks a:hover {

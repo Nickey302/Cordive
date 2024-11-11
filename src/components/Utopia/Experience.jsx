@@ -1,6 +1,6 @@
 'use client'
 
-import { Environment, OrbitControls } from '@react-three/drei'
+import { Environment, OrbitControls, Sky } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { useRef, useEffect } from 'react'
 import Model from './Model'
@@ -50,6 +50,7 @@ export default function Experience({ activeObject }) {
                 makeDefault
                 enableDamping
                 dampingFactor={0.01}
+                zoomSpeed={0.5}
                 minDistance={50}
                 maxDistance={500}
             />
@@ -60,9 +61,8 @@ export default function Experience({ activeObject }) {
             <Environment
                 files={'/assets/HDRI/Utopia.hdr'}
                 background
-                environmentIntensity={0.5}
-                backgroundIntensity={0.5}
-                backgroundBlurriness={0.1}
+                environmentIntensity={0.3}
+                backgroundBlurriness={0.07}
             />
 
             <Model ref={modelRef} activeObject={activeObject} />

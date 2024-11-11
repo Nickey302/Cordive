@@ -7,6 +7,7 @@ import Image from 'next/image';
 export default function Header()
 {
   const [isAboutOpen, setIsAboutOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const dummyCards = [
     { title: "Card 1", content: "This is the content of card 1", image: "/assets/images/image111.png" },
@@ -16,14 +17,22 @@ export default function Header()
 
   return (
     <>
-      <header className={styles.header}>
-        <div className={styles.logo}>CORDIVE</div>
+      <header 
+        className={`${styles.header} ${isExpanded ? styles.expanded : ''}`}
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <div className={styles.logo}>
+          <Image src="/assets/icons/logowhite.png" priority alt="Logo" width={60} height={60} />
+        </div>
         <nav className={styles.navLinks}>
-          <Link href="/">Home</Link>
+          <Link href="/">CORDIVE</Link>
           <Link href="/Dystopia">Dystopia</Link>
           <Link href="/Heterotopia">Heterotopia</Link>
           <Link href="/Utopia">Utopia</Link>
-          <a onClick={() => setIsAboutOpen(true)}>About</a>
+          <a onClick={(e) => {
+            e.stopPropagation();
+            setIsAboutOpen(true);
+          }}>About</a>
         </nav>
       </header>
 

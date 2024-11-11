@@ -94,7 +94,7 @@ const Model = forwardRef(({ activeObject }, ref) => {
                 ease: "power2.inOut"
             })
         }
-    }, [activeObject, camera])
+    }, [activeObject, camera, refs])
 
     const positions = {
         Love: [30 * positionAdd, 0, 0],
@@ -152,5 +152,8 @@ const Model = forwardRef(({ activeObject }, ref) => {
         </>
     )
 })
+
+// displayName 추가
+Model.displayName = 'Model'
 
 export default Model

@@ -16,7 +16,7 @@ import { Physics, RigidBody } from '@react-three/rapier';
 export default function Experience() {
     return (
         <>
-            {/* <Perf /> */}
+            <Perf />
             {/* <color attach="background" args={['black']} />
             <fog attach="fog" args={['black', 10, 300]} /> */}
 
@@ -67,7 +67,7 @@ export default function Experience() {
                         <planeGeometry args={[400, 400]} />
                         <MeshReflectorMaterial
                             blur={[300, 30]}
-                            resolution={1024}
+                            resolution={256}
                             mixBlur={1}
                             mixStrength={180}
                             roughness={1}
@@ -81,7 +81,7 @@ export default function Experience() {
                 </RigidBody>
 
                 {/* 테스트용 박스들 */}
-                {[...Array(5)].map((_, i) => (
+                {[...Array(8)].map((_, i) => (
                     <RigidBody key={i} colliders="cuboid" position={[
                         Math.random() * 10 - 5,
                         10 + i * 2,
@@ -108,7 +108,7 @@ export default function Experience() {
                     luminanceThreshold={0.5}
                     luminanceSmoothing={0.1}
                 />
-                <Noise opacity={0.08} />
+                <Noise opacity={0.07} />
             </EffectComposer>
         </>
     )

@@ -5,7 +5,7 @@ import { heightmapFragmentShader, waterVertexShader } from "./Shaders"
 import CustomShaderMaterialImpl from "three-custom-shader-material/vanilla"
 
 // Texture width for simulation
-const WIDTH = 256
+const WIDTH = 128
 // Water size in system units
 const BOUNDS = 512
 

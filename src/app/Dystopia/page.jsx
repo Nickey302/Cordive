@@ -6,7 +6,7 @@ import Header from '../Header.jsx';
 import Experience from '../../components/Dystopia/Experience.jsx';
 import { AdaptiveDpr, AdaptiveEvents, PerformanceMonitor } from '@react-three/drei';
 import Overlay from '../../components/Dystopia/Overlay.jsx'
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 //
 //
 //
@@ -16,8 +16,9 @@ export default function Dystopia()
   const [cameraY, setCameraY] = useState(4)
 
   return (
-    <div style={{ position: 'relative', height: '100vh', width: '100vw'}}>
-      <Header />
+    <Suspense fallback={null}> 
+      <div style={{ position: 'relative', height: '100vh', width: '100vw'}}>
+        <Header />
       <Overlay cameraY={cameraY} />
       <div className={styles.canvasContainer}>
         <Canvas
@@ -44,7 +45,8 @@ export default function Dystopia()
             <Experience onCameraYChange={setCameraY} />
           </PerformanceMonitor>
         </Canvas>
+        </div>
       </div>
-    </div>
+    </Suspense>
   );
 };

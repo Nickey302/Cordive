@@ -99,7 +99,7 @@ export default function Experience({ onCameraYChange }) {
 
     return (
         <>
-            <Perf position="bottom-left" />
+            {/* <Perf position="bottom-left" /> */}
 
             <color attach="background" args={['#45474c']} />
             <fog attach="fog" args={['#45474c', 10, 100]} />
@@ -113,7 +113,7 @@ export default function Experience({ onCameraYChange }) {
             <FirstPersonControls />
 
             <Environment
-                files={'/assets/HDRI/mud_road_puresky_2k.hdr'}
+                files={'/assets/HDRI/Dystopia.hdr'}
                 background
                 backgroundBlurriness={0.5}
                 backgroundIntensity={0.3}

@@ -25,10 +25,10 @@ export default function Heterotopia()
           shadows
           gl={{ antialias: true, powerPreference: "high-performance" }}
           camera={{
-            position: [ - 4, 1, 10 ],
+            position: [ 3, 30, 50 ],
             fov: 45,
-            near: 1,
-            far: 200
+            near: 10,
+            far: 500
           }}
         >
           <AdaptiveDpr pixelated />

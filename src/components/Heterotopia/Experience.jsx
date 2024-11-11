@@ -16,7 +16,7 @@ const Effects = dynamic(() => import('./Effects'), { ssr: false });
 export default function Experience() {
     return (
         <>
-            <Perf />
+            {/* <Perf /> */}
             {/* <color attach="background" args={['black']} />
             <fog attach="fog" args={['black', 10, 300]} /> */}
 
@@ -48,7 +48,7 @@ export default function Experience() {
                 <Text
                     receiveShadow
                     castShadow
-                    position={[0, 40, 0]}
+                    position={[0, 10, 0]}
                     fontSize={8}
                     color="#ffffff"
                     anchorX="center"
@@ -59,7 +59,7 @@ export default function Experience() {
                 </Text>
             </Float>
 
-            <Physics debug>
+            <Physics>
                 {/* 바닥 */}
                 <RigidBody type="fixed" colliders="trimesh">
                     <mesh receiveShadow position={[0, -1, 0]} rotation={[-Math.PI / 2, 0, 0]}>
@@ -82,13 +82,19 @@ export default function Experience() {
                 {/* 테스트용 박스들 */}
                 {[...Array(5)].map((_, i) => (
                     <RigidBody key={i} colliders="cuboid" position={[
-                        Math.random() * 10 - 5,  // x: -5 ~ 5
-                        10 + i * 2,              // y: 시작 높이
-                        Math.random() * 10 - 5   // z: -5 ~ 5
+                        Math.random() * 10 - 5,
+                        10 + i * 2,
+                        Math.random() * 10 - 5
                     ]}>
                         <mesh castShadow>
                             <boxGeometry args={[2, 2, 2]} />
-                            <meshStandardMaterial color={`hsl(${Math.random() * 360}, 100%, 75%)`} />
+                            <meshStandardMaterial color={
+                                i === 0 ? '#4E7FA0' :
+                                i === 1 ? '#48546D' :
+                                i === 2 ? '#3c7475' :
+                                i === 3 ? '#426363' :
+                                '#ffffff'
+                            } />
                         </mesh>
                     </RigidBody>
                 ))}

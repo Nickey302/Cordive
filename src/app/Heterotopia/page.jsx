@@ -12,7 +12,7 @@ import { AdaptiveEvents, PerformanceMonitor, AdaptiveDpr } from '@react-three/dr
 //
 export default function Heterotopia()
 {
-  const [analysisResult, setAnalysisResult] = useState('');
+  // const [analysisResult, setAnalysisResult] = useState('');
   const [dpr, setDpr] = useState(1)
   
   return (
@@ -40,11 +40,11 @@ export default function Heterotopia()
               onDecline={() => {
               setDpr(1)
             }}>
-            <Experience analysisResult={analysisResult} />
+            <Experience />
           </PerformanceMonitor>
         </Canvas>
       </div>
-      <InputForm onAnalyze={setAnalysisResult} />
+      {/* <InputForm onAnalyze={setAnalysisResult} /> */}
     </div>
   );
 };

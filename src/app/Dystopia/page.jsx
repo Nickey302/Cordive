@@ -16,13 +16,13 @@ export default function Dystopia()
   const [cameraY, setCameraY] = useState(4)
 
   return (
-    <div style={{ position: 'fixed', height: '100vh', width: '100vw'}}>
+    <div style={{ position: 'relative', height: '100vh', width: '100vw'}}>
       <Header />
       <Overlay cameraY={cameraY} />
       <div className={styles.canvasContainer}>
         <Canvas
           shadows
-          frameloop="demand"
+          frameloop="always"
           dpr={dpr}
           gl={{ antialias: false, powerPreference: "high-performance" }}
           camera={{

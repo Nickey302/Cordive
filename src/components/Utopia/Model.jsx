@@ -11,8 +11,9 @@ import { Model as Isolation } from './Model/Isolation.jsx'
 import { Model as Adjust } from './Model/Adjust.jsx'
 import { Float } from '@react-three/drei'
 import gsap from 'gsap'
-import * as THREE from 'three'
-
+//
+//
+//
 const Model = forwardRef(({ activeObject }, ref) => {
     useImperativeHandle(ref, () => ({
         getObjectPosition: (objectName) => {

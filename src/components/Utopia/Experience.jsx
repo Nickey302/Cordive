@@ -43,7 +43,7 @@ export default function Experience({ activeObject }) {
 
     return (
         <>  
-            <Perf position="top-left" />
+            {/* <Perf position="top-left" /> */}
 
             <OrbitControls 
                 ref={orbitControlsRef}

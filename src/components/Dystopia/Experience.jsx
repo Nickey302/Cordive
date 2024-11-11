@@ -1,7 +1,7 @@
 'use client'
 
-import { Float, Text, AccumulativeShadows, RandomizedLight, PointerLockControls, Environment, PositionalAudio } from '@react-three/drei'
-import { EffectComposer, Bloom, TiltShift2, Noise, Glitch, Pixelation } from '@react-three/postprocessing'
+import { Float, Text, PointerLockControls, Environment, PositionalAudio, Sparkles } from '@react-three/drei'
+import { EffectComposer, TiltShift2, Noise, Glitch, Pixelation } from '@react-three/postprocessing'
 import { Perf } from 'r3f-perf'
 import * as THREE from 'three'
 import { useThree, useFrame } from '@react-three/fiber'
@@ -11,6 +11,9 @@ import Bubbles from './Bubbles'
 import Cookie from './Cookie'
 import Ocean from './Ocean'
 import FirstPersonControls from './FirstPersonControls'
+import Vortex from './Whirl'
+import { useRouter } from 'next/navigation'
+import gsap from 'gsap'
 //
 //
 //
@@ -22,9 +25,11 @@ export default function Experience({ onCameraYChange }) {
     const cameraY = useRef(camera.position.y)
     const controlsRef = useRef()
     const lightRef = useRef()
-    const floatingOffset = useRef(0)
-    const floatingSpeed = 2.0
-    const floatingAmplitude = 2
+    const router = useRouter()
+    const isAnimating = useRef(false)
+    
+    const oscillationAmplitude = 0.5  // 진폭 (-1 ~ 1)
+    const oscillationFrequency = 0.5  // 주기 (1초)
 
     useEffect(() => {
         camera.add(audioListener)
@@ -52,12 +57,29 @@ export default function Experience({ onCameraYChange }) {
     }, [camera, audioListener])
 
     useFrame((state) => {
+        if (isAnimating.current) return
+
         cameraY.current -= scrollSpeed.current * 3
-        camera.position.y = Math.max(-38, cameraY.current)
+        const baseY = Math.max(-38, cameraY.current)
         
-        floatingOffset.current += floatingSpeed * state.clock.getDelta()
-        const floatingY = Math.sin(floatingOffset.current) * floatingAmplitude
-        camera.position.y += floatingY
+        const oscillation = Math.sin(state.clock.elapsedTime * Math.PI * 2 * oscillationFrequency) * oscillationAmplitude
+        
+        camera.position.y = baseY + oscillation
+        
+        if (baseY === -38 && !isAnimating.current) {
+            isAnimating.current = true
+            
+            gsap.to(camera.position, {
+                x: 0,
+                z: -0.5,
+                y: -123,
+                duration: 15,
+                ease: "power2.inOut",
+                onComplete: () => {
+                    router.push('/Heterotopia')
+                }
+            })
+        }
         
         onCameraYChange?.(camera.position.y)
         
@@ -133,6 +155,8 @@ export default function Experience({ onCameraYChange }) {
                 </mesh>
             </Float>
         
+            <Vortex />
+
             <Ocean />
 
             <directionalLight 
@@ -140,6 +164,16 @@ export default function Experience({ onCameraYChange }) {
                 intensity={3} 
                 position={[3, -30, -10]} 
                 color="#ffffff"
+            />
+
+            <Sparkles
+                position={[0, -10, 0]}
+                count={1000}
+                scale={100}
+                size={1.8}
+                speed={0.8}
+                opacity={0.2}
+                depthWrite={false}
             />
 
             {/* <Bubbles /> */}
@@ -170,7 +204,7 @@ function Postpro() {
         /> */}
         <Noise opacity={0.01} />
         <Glitch 
-          delay={[1.5, 8.5]}
+          delay={[1.5, 4.5]}
           duration={[0.3, 0.65]}
           strength={[0.05, 0.06]}
           active

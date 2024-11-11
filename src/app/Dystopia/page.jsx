@@ -22,14 +22,14 @@ export default function Dystopia()
       <div className={styles.canvasContainer}>
         <Canvas
           shadows
-          frameloop="always"
+          frameloop="demand"
           dpr={dpr}
-          gl={{ antialias: true, powerPreference: "high-performance" }}
+          gl={{ antialias: false, powerPreference: "high-performance" }}
           camera={{
             fov: 35,
-            near: 0.1,
+            near: 1,
             far: 300,
-            position: [ 6, 2, 12],
+            position: [ 6, 2, 12 ],
           }}
         >
           <AdaptiveDpr pixelated />

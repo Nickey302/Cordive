@@ -20,12 +20,11 @@ export default function Experience({ onCameraYChange }) {
     const audioRef = useRef()
     const scrollSpeed = useRef(0.005)
     const cameraY = useRef(camera.position.y)
-    const [isUnderwater, setIsUnderwater] = useState(false)
     const controlsRef = useRef()
     const lightRef = useRef()
     const floatingOffset = useRef(0)
     const floatingSpeed = 2.0
-    const floatingAmplitude = 0.15
+    const floatingAmplitude = 2
 
     useEffect(() => {
         camera.add(audioListener)
@@ -56,19 +55,11 @@ export default function Experience({ onCameraYChange }) {
         cameraY.current -= scrollSpeed.current * 3
         camera.position.y = Math.max(-38, cameraY.current)
         
-        if (isUnderwater) {
-            floatingOffset.current += floatingSpeed * state.clock.getDelta()
-            const floatingY = Math.sin(floatingOffset.current) * floatingAmplitude
-            camera.position.y += floatingY
-        }
+        floatingOffset.current += floatingSpeed * state.clock.getDelta()
+        const floatingY = Math.sin(floatingOffset.current) * floatingAmplitude
+        camera.position.y += floatingY
         
         onCameraYChange?.(camera.position.y)
-        
-        if (camera.position.y < 0 && !isUnderwater) {
-            setIsUnderwater(true)
-        } else if (camera.position.y >= 0 && isUnderwater) {
-            setIsUnderwater(false)
-        }
         
         scrollSpeed.current = THREE.MathUtils.lerp(
             scrollSpeed.current,
@@ -125,10 +116,6 @@ export default function Experience({ onCameraYChange }) {
             </Float>
 
             <Cookie distance={10} intensity={3} angle={0.6} penumbra={1} position={[2, 3, 0]} />
-
-            <AccumulativeShadows receiveShadow temporal frames={100} opacity={0.8} alphaTest={0.9} scale={20} position={[0, -0.5, 0]}>
-                <RandomizedLight radius={8} ambient={0.5} position={[5, 8, -10]} bias={0.001} />
-            </AccumulativeShadows>
             
             <City castShadow />
 
@@ -155,7 +142,7 @@ export default function Experience({ onCameraYChange }) {
                 color="#ffffff"
             />
 
-            <Bubbles />
+            {/* <Bubbles /> */}
         
             <Postpro />
             <PositionalAudio
@@ -176,11 +163,11 @@ function Postpro() {
     return (
       <EffectComposer disableNormalPass multisampling={0}>
         <TiltShift2 samples={12} blur={0.2} resolutionScale={256}/>
-        <Bloom 
+        {/* <Bloom 
           mipmapBlur 
           luminanceThreshold={0.8} 
           intensity={0.5} 
-        />
+        /> */}
         <Noise opacity={0.01} />
         <Glitch 
           delay={[1.5, 8.5]}
@@ -189,7 +176,7 @@ function Postpro() {
           active
           ratio={0.85}
         />
-        <Pixelation />
+        {/* <Pixelation /> */}
       </EffectComposer>
     );
 }

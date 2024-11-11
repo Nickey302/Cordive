@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, forwardRef, useImperativeHandle } from 'react'
 import { useThree } from '@react-three/fiber'
 import { Model as Landmark } from './Model/Landmark.jsx'
 import { Model as Love } from './Model/Love.jsx'
@@ -13,8 +13,16 @@ import { Float } from '@react-three/drei'
 import gsap from 'gsap'
 import * as THREE from 'three'
 
-export default function Model({ activeObject })
-{
+const Model = forwardRef(({ activeObject }, ref) => {
+    useImperativeHandle(ref, () => ({
+        getObjectPosition: (objectName) => {
+            if (refs[objectName] && refs[objectName].current) {
+                return refs[objectName].current.position
+            }
+            return null
+        }
+    }))
+
     const positionAdd = 5
     const scaleAdd = 3
     
@@ -34,33 +42,57 @@ export default function Model({ activeObject })
         if (activeObject && refs[activeObject].current) {
             const targetPosition = refs[activeObject].current.position
             
-            const distance = 100
+            // 각 오브젝트별 최적의 카메라 오프셋 설정
+            const cameraOffsets = {
+                Love: {
+                    distance: 40,
+                    heightOffset: 25,
+                    angle: Math.PI / 3
+                },
+                Aversion: {
+                    distance: 40,
+                    heightOffset: 25,
+                    angle: Math.PI / 2.5
+                },
+                Adjust: {
+                    distance: 45,
+                    heightOffset: 35,
+                    angle: Math.PI / 3
+                },
+                Resist: {
+                    distance: 45,
+                    heightOffset: 30,
+                    angle: -Math.PI / 3
+                },
+                Isolation: {
+                    distance: 50,
+                    heightOffset: 35,
+                    angle: Math.PI / 4
+                },
+                Liberation: {
+                    distance: 40,
+                    heightOffset: 30,
+                    angle: -Math.PI / 2.5
+                },
+                Landmark: {
+                    distance: 20,
+                    heightOffset: 5,
+                    angle: Math.PI / 4
+                }
+            }
             
-            const cameraX = targetPosition.x + distance * Math.cos(Math.PI / 4)
-            const cameraY = targetPosition.y + distance * 0.5
-            const cameraZ = targetPosition.z + distance * Math.sin(Math.PI / 4)
+            const offset = cameraOffsets[activeObject]
+            const cameraX = targetPosition.x + offset.distance * Math.cos(offset.angle)
+            const cameraY = targetPosition.y + offset.heightOffset
+            const cameraZ = targetPosition.z + offset.distance * Math.sin(offset.angle)
 
             gsap.to(camera.position, {
                 duration: 2,
                 x: cameraX,
                 y: cameraY,
                 z: cameraZ,
-                ease: "power2.inOut",
-                onUpdate: () => {
-                    camera.lookAt(
-                        targetPosition.x,
-                        targetPosition.y,
-                        targetPosition.z
-                    )
-                }
+                ease: "power2.inOut"
             })
-
-            const lookAtVector = new THREE.Vector3(
-                targetPosition.x,
-                targetPosition.y,
-                targetPosition.z
-            )
-            camera.lookAt(lookAtVector)
         }
     }, [activeObject, camera])
 
@@ -79,7 +111,7 @@ export default function Model({ activeObject })
             <Love 
                 ref={refs.Love} 
                 position={positions.Love}
-                scale={[30 * scaleAdd, 30 * scaleAdd, 30 * scaleAdd]}
+                scale={[35 * scaleAdd, 35 * scaleAdd, 35 * scaleAdd]}
             />
             <Aversion 
                 ref={refs.Aversion} 
@@ -109,7 +141,7 @@ export default function Model({ activeObject })
             <Float
                 speed={3}
                 rotationIntensity={1}
-                floatIntensity={1}
+                floatIntensity={0.5}
             >
                 <Landmark 
                     ref={refs.Landmark} 
@@ -119,4 +151,6 @@ export default function Model({ activeObject })
             </Float>
         </>
     )
-}
+})
+
+export default Model

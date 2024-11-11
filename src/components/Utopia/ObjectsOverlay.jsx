@@ -28,23 +28,24 @@ const ObjectsOverlay = ({ activeObject, setActiveObject }) => {
                     onClick={() => setActiveObject(obj)}
                     style={{
                         padding: '10px 20px',
-                        background: activeObject === obj ? '#dcb8d3' : 'rgba(255, 255, 255, 0.1)',
+                        background: activeObject === obj ? '#b8cfd8' : 'rgba(255, 255, 255, 0.0)',
+                        // background: 'transparent',
                         border: 'none',
                         color: 'white',
                         cursor: 'pointer',
-                        borderRadius: '5px',
-                        backdropFilter: 'blur(10px)',
+                        borderRadius: '1px',
+                        // backdropFilter: 'blur(10px)',
                         transition: 'all 0.3s ease',
-                        fontFamily: 'Arial, sans-serif',
+                        fontFamily: "Neocode",
                         fontSize: '14px',
                         letterSpacing: '1px',
                         textTransform: 'uppercase'
                     }}
                     onMouseEnter={(e) => {
-                        e.target.style.background = activeObject === obj ? '#dcb8d3' : 'rgba(255, 255, 255, 0.2)'
+                        e.target.style.background = activeObject === obj ? '#b8cfd8' : 'rgba(255, 255, 255, 0.1)'
                     }}
                     onMouseLeave={(e) => {
-                        e.target.style.background = activeObject === obj ? '#dcb8d3' : 'rgba(255, 255, 255, 0.1)'
+                        e.target.style.background = activeObject === obj ? '#b8cfd8' : 'rgba(255, 255, 255, 0.0)'
                     }}
                 >
                     {obj}

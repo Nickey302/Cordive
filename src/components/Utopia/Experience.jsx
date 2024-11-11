@@ -2,14 +2,38 @@
 
 import { Environment, OrbitControls } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 import Model from './Model'
 import dynamic from 'next/dynamic'
 import { Perf } from 'r3f-perf'
+import * as THREE from 'three'
+import gsap from 'gsap'
 const Effects = dynamic(() => import("../Heterotopia/Effects"), { ssr: false });
 
 export default function Experience({ activeObject }) {
     const orbitControlsRef = useRef()
+    const modelRef = useRef()
+
+    useEffect(() => {
+        if (activeObject && orbitControlsRef.current && modelRef.current) {
+            const targetPosition = modelRef.current.getObjectPosition(activeObject)
+            if (targetPosition) {
+                const newTarget = new THREE.Vector3(
+                    targetPosition.x,
+                    targetPosition.y,
+                    targetPosition.z
+                )
+                
+                gsap.to(orbitControlsRef.current.target, {
+                    duration: 2,
+                    x: newTarget.x,
+                    y: newTarget.y,
+                    z: newTarget.z,
+                    ease: "power2.inOut"
+                })
+            }
+        }
+    }, [activeObject])
 
     useFrame((state) => {
         if (orbitControlsRef.current) {
@@ -23,16 +47,11 @@ export default function Experience({ activeObject }) {
 
             <OrbitControls 
                 ref={orbitControlsRef}
-                makeDefault 
-                enableDamping 
-                dampingFactor={0.05}
+                makeDefault
+                enableDamping
+                dampingFactor={0.01}
                 minDistance={50}
                 maxDistance={500}
-                enablePan={true}
-                enableZoom={true}
-                target={[0, 0, 0]}
-                // minPolarAngle={Math.PI / 4}
-                // maxPolarAngle={Math.PI / 2}
             />
 
             <ambientLight intensity={ 1.5 } />
@@ -46,7 +65,7 @@ export default function Experience({ activeObject }) {
                 backgroundBlurriness={0.1}
             />
 
-            <Model activeObject={activeObject} />
+            <Model ref={modelRef} activeObject={activeObject} />
 
             <Effects />
         </>

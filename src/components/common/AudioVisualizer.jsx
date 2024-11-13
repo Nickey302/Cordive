@@ -1,42 +1,13 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
-import * as THREE from 'three'
-
-const VisualizerContainer = styled.div`
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  width: 200px;
-  height: 60px;
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 10px;
-  cursor: pointer;
-  z-index: 1000;
-  
-  canvas {
-    width: 100%;
-    height: 100%;
-    border-radius: 10px;
-  }
-`
-
-const MuteIcon = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
-  font-size: 24px;
-  opacity: ${props => props.$isMuted ? 1 : 0};
-  transition: opacity 0.3s;
-`
+import styles from './AudioVisualizer.module.css'
 
 export default function AudioVisualizer({ audio }) {
   const canvasRef = useRef()
   const analyserRef = useRef()
   const animationFrameRef = useRef()
+  const previousHeightsRef = useRef(new Array(15).fill(2))
   const [isMuted, setIsMuted] = useState(false)
 
   useEffect(() => {
@@ -46,11 +17,11 @@ export default function AudioVisualizer({ audio }) {
     analyserRef.current = audioContext.createAnalyser()
     analyserRef.current.fftSize = 256
     
-    // PositionalAudio의 gain에 분석기 연결
     audio.gain.connect(analyserRef.current)
 
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
+    const centerY = canvas.height / 2
 
     const animate = () => {
       const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount)
@@ -58,16 +29,33 @@ export default function AudioVisualizer({ audio }) {
       
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       
-      const barWidth = canvas.width / 32
-      let x = 0
+      const barWidth = 2
+      const gap = 2
+      const totalBars = 20
+      const startX = (canvas.width - (totalBars * (barWidth + gap) - gap)) / 2
+      let x = startX
       
-      for(let i = 0; i < 32; i++) {
-        const barHeight = (dataArray[i] / 255) * canvas.height
+      ctx.fillStyle = '#FFFFFF'
+      
+      for(let i = 0; i < totalBars; i++) {
+        let targetHeight
         
-        ctx.fillStyle = `hsl(${i * 360/32}, 100%, 50%)`
-        ctx.fillRect(x, canvas.height - barHeight, barWidth - 1, barHeight)
-        
-        x += barWidth
+        if (isMuted) {
+          targetHeight = 2
+        } else {
+          const baseHeight = 160 - (i * 5)
+          const dataIndex = Math.floor(i * dataArray.length / totalBars)
+          const audioLevel = (dataArray[dataIndex] / 255)
+          const time = Date.now() / 1000
+          const wave = Math.sin(i * 0.5 + time * 3) * 10
+          targetHeight = baseHeight * audioLevel + wave
+        }
+
+        previousHeightsRef.current[i] = previousHeightsRef.current[i] + (targetHeight - previousHeightsRef.current[i]) * 0.15
+
+        const barHeight = previousHeightsRef.current[i]
+        ctx.fillRect(x, centerY - barHeight/2, barWidth, barHeight)
+        x += barWidth + gap
       }
       
       animationFrameRef.current = requestAnimationFrame(animate)
@@ -80,23 +68,22 @@ export default function AudioVisualizer({ audio }) {
         cancelAnimationFrame(animationFrameRef.current)
       }
     }
-  }, [audio])
+  }, [audio, isMuted])
 
   const handleClick = () => {
     if (!audio) return
     
     if (isMuted) {
-      audio.setVolume(10) // 원래 볼륨으로 복구
+      audio.setVolume(10)
     } else {
-      audio.setVolume(0) // 음소거
+      audio.setVolume(0)
     }
     setIsMuted(!isMuted)
   }
 
   return (
-    <VisualizerContainer onClick={handleClick}>
+    <div className={styles.visualizerContainer} onClick={handleClick}>
       <canvas ref={canvasRef} width="200" height="60" />
-      <MuteIcon $isMuted={isMuted}>🔇</MuteIcon>
-    </VisualizerContainer>
+    </div>
   )
 }

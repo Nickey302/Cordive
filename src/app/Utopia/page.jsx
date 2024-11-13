@@ -4,17 +4,17 @@ import styles from './page.module.css'
 import { Canvas } from '@react-three/fiber';
 import { useState } from 'react';
 import Experience from '../../components/Utopia/Experience.jsx';
-import Header from '../Header.jsx';
 import ObjectsOverlay from '../../components/Utopia/ObjectsOverlay.jsx';
 import { AdaptiveDpr, AdaptiveEvents, PerformanceMonitor } from '@react-three/drei';
-
+//
+//
+//
 export default function Utopia() {
   const [dpr, setDpr] = useState(1)
   const [activeObject, setActiveObject] = useState(null)
 
   return (
     <div style={{ position: 'fixed', height: '100vh', width: '100vw' }}>
-      <Header />
       <ObjectsOverlay 
         activeObject={activeObject} 
         setActiveObject={setActiveObject} 

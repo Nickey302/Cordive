@@ -1,9 +1,13 @@
+'use client'
+
 import { useState } from 'react';
 import styles from './Header.module.css';
 import Link from 'next/link';
 import GlassmorphismOverlay from '../components/About/GlassmorphismOverlay';
 import Image from 'next/image';
-
+//
+//
+//
 export default function Header()
 {
   const [isAboutOpen, setIsAboutOpen] = useState(false);

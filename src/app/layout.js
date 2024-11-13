@@ -1,5 +1,6 @@
 import "../style/globals.css";
-import StyledComponentsRegistry from '../lib/registry.jsx'
+import GlobalAudioVisualizer from '@/components/common/GlobalAudioVisualizer'
+import Header from './Header'
 
 export const metadata = {
   title: "CorDive",
@@ -14,9 +15,9 @@ export default function RootLayout({ children }) {
         <link rel="preload" href="/assets/fonts/NeoCode.woff" as="font" type="font/woff" crossOrigin="anonymous" />
       </head>
       <body style={{ fontFamily: 'NeoCode, sans-serif' }}>
-        <StyledComponentsRegistry>
+        <Header />
+        <GlobalAudioVisualizer />
         {children}
-        </StyledComponentsRegistry> 
       </body>
     </html>
   );

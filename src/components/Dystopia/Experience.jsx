@@ -1,20 +1,21 @@
 'use client'
 
-import { Float, Text, PointerLockControls, Environment, PositionalAudio, Sparkles } from '@react-three/drei'
-import { EffectComposer, TiltShift2, Noise, Glitch, Pixelation } from '@react-three/postprocessing'
-import { Perf } from 'r3f-perf'
 import * as THREE from 'three'
 import { useThree, useFrame } from '@react-three/fiber'
+import { Float, Text, PointerLockControls, Environment, PositionalAudio, Sparkles } from '@react-three/drei'
+import { EffectComposer, TiltShift2, Noise, Glitch } from '@react-three/postprocessing'
+import { Perf } from 'r3f-perf'
+import gsap from 'gsap'
 import { useRef, useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import FirstPersonControls from './FirstPersonControls'
 import City from './City'
-import Bubbles from './Bubbles'
 import Cookie from './Cookie'
 import Ocean from './Ocean'
-import FirstPersonControls from './FirstPersonControls'
 import Vortex from './Whirl'
-import { useRouter } from 'next/navigation'
-import gsap from 'gsap'
-
+//
+//
+//
 export default function Experience({ onCameraYChange, onAudioInit }) {
     const { camera } = useThree()
     const [audioListener] = useState(() => new THREE.AudioListener())
@@ -94,12 +95,6 @@ export default function Experience({ onCameraYChange, onAudioInit }) {
             lightRef.current.lookAt(0, -30, 0)
         }
     })
-
-    useEffect(() => {
-        if (audioRef.current) {
-            onAudioInit?.(audioRef.current)
-        }
-    }, [audioRef.current])
 
     return (
         <>

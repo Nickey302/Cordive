@@ -2,25 +2,25 @@
 
 import styles from './page.module.css'
 import { Canvas } from '@react-three/fiber';
-import Header from '../Header.jsx';
 import Experience from '../../components/Dystopia/Experience.jsx';
 import { AdaptiveDpr, AdaptiveEvents, PerformanceMonitor } from '@react-three/drei';
 import Overlay from '../../components/Dystopia/Overlay.jsx'
 import { useState, Suspense } from 'react';
-import AudioVisualizer from '../../components/common/AudioVisualizer'
-
+//
+//
+//
 export default function Dystopia() {
   const [dpr, setDpr] = useState(1)
   const [cameraY, setCameraY] = useState(4)
-  const [audio, setAudio] = useState(null)
+
+  const handleAudioInit = (audio) => {
+    const event = new CustomEvent('audioInit', { detail: audio })
+    window.dispatchEvent(event)
+  }
 
   return (
     <Suspense fallback={null}> 
       <div style={{ position: 'relative', height: '100vh', width: '100vw'}}>
-        <Header />
-        <div style={{ position: 'fixed', top: '20px', right: '20px', zIndex: 1000 }}>
-          <AudioVisualizer audio={audio} />
-        </div>
         <Overlay cameraY={cameraY} />
         <div className={styles.canvasContainer}>
           <Canvas
@@ -44,7 +44,7 @@ export default function Dystopia() {
               onDecline={() => {
                 setDpr(1)
               }}>
-              <Experience onCameraYChange={setCameraY} onAudioInit={setAudio} />
+              <Experience onCameraYChange={setCameraY} />
             </PerformanceMonitor>
           </Canvas>
         </div>

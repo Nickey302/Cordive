@@ -14,10 +14,8 @@ import FirstPersonControls from './FirstPersonControls'
 import Vortex from './Whirl'
 import { useRouter } from 'next/navigation'
 import gsap from 'gsap'
-//
-//
-//
-export default function Experience({ onCameraYChange }) {
+
+export default function Experience({ onCameraYChange, onAudioInit }) {
     const { camera } = useThree()
     const [audioListener] = useState(() => new THREE.AudioListener())
     const audioRef = useRef()
@@ -96,6 +94,12 @@ export default function Experience({ onCameraYChange }) {
             lightRef.current.lookAt(0, -30, 0)
         }
     })
+
+    useEffect(() => {
+        if (audioRef.current) {
+            onAudioInit?.(audioRef.current)
+        }
+    }, [audioRef.current])
 
     return (
         <>
@@ -187,7 +191,6 @@ export default function Experience({ onCameraYChange }) {
                 autoplay
                 volume={10}
             />
-
         </>
     );
 }

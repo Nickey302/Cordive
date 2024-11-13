@@ -25,9 +25,11 @@
     "postprocessing": "^6.36.4",
     "react": "^18",
     "react-dom": "^18",
+    "styled-components": "^6.1.13",
     "three-custom-shader-material": "^5.3.5",
     "three-mesh-bvh": "^0.8.0",
     "three-stdlib": "^2.34.0",
+    "tone": "^15.0.4",
     "uuid": "^9.0.0",
     "vercel": "^37.14.0"
   },

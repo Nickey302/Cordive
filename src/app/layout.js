@@ -1,4 +1,5 @@
 import "../style/globals.css";
+import StyledComponentsRegistry from '../lib/registry.jsx'
 
 export const metadata = {
   title: "CorDive",
@@ -13,7 +14,9 @@ export default function RootLayout({ children }) {
         <link rel="preload" href="/assets/fonts/NeoCode.woff" as="font" type="font/woff" crossOrigin="anonymous" />
       </head>
       <body style={{ fontFamily: 'NeoCode, sans-serif' }}>
+        <StyledComponentsRegistry>
         {children}
+        </StyledComponentsRegistry> 
       </body>
     </html>
   );

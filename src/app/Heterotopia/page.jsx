@@ -27,8 +27,8 @@ export default function Heterotopia()
           camera={{
             position: [ 3, 30, 50 ],
             fov: 45,
-            near: 10,
-            far: 500
+            near: 1,
+            far: 550
           }}
         >
           <AdaptiveDpr pixelated />

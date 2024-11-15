@@ -44,7 +44,7 @@ export default function Dystopia() {
               onDecline={() => {
                 setDpr(1)
               }}>
-              <Experience onCameraYChange={setCameraY} />
+              <Experience onCameraYChange={(y) => setCameraY(y)} />
             </PerformanceMonitor>
           </Canvas>
         </div>

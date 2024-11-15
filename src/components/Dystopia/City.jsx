@@ -10,11 +10,11 @@ export default function City() {
         <>
             {/* <ambientLight intensity={3} /> */}
             <Float
-                floatIntensity={0.05}
-                floatingRange={[0.1, 0.15]}
+                floatIntensity={0.02}
+                floatingRange={[0.02, 0.05]}
                 speed={2}
             >
-                <Building2 position={[5, -1, -10]} scale={[0.1, 0.1, 0.1]} rotation={[0, Math.PI /3, 0]} />
+                <Building2 position={[5, -1.5, -10]} scale={[0.1, 0.1, 0.1]} rotation={[0, Math.PI /3, 0]} />
             </Float>
             <Float
                 floatIntensity={0.1}

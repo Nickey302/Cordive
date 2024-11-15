@@ -5,6 +5,7 @@
     width: 100%;
     height: 100%;
     pointer-events: none;
+    z-index: 999;
 }
 
 .depthMeter {
@@ -12,7 +13,11 @@
     top: 20px;
     right: 20px;
     color: white;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .message {
@@ -21,10 +26,105 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.hint {
-    font-size: 0.8em;
-    opacity: 0.8;
-    margin-top: 0.5em;
+.messageText {
+    font-size: 1.2em;
+    color: white;
+    margin-bottom: 15px;
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
+}
+
+.holdingProgress {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    animation: slideUp 0.5s ease;
+}
+
+.progressBarContainer {
+    width: 250px;
+    height: 8px;
+    position: relative;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progressBarBg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    animation: pulse 2s infinite;
+}
+
+.progressBar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    box-shadow: 0 0 10px rgba(79, 172, 254, 0.5);
+}
+
+.progressText {
+    font-size: 14px;
+    color: white;
+    opacity: 0.9;
+}
+
+.fadeIn {
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 0.3;
+    }
+}
+
+/* 글래스모피즘 효과를 위한 호버 상태 */
+.depthMeter:hover, .message:hover {
+    background: rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
 } 

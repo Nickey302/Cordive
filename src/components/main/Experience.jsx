@@ -105,6 +105,7 @@ export default function Experience({ onShowNamePrompt }) {
         panSpeed={1.4}
         minPolarAngle={Math.PI / 4}
         maxPolarAngle={Math.PI / 1.5}
+        maxDistance={6}
         onChange={(e) => {
           setCameraPosition([e.target.object.position.x, e.target.object.position.y, e.target.object.position.z]);
           setCameraRotation([e.target.object.rotation.x, e.target.object.rotation.y, e.target.object.rotation.z]);

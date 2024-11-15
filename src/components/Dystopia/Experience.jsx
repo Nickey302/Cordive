@@ -13,6 +13,9 @@ import City from './City'
 import Cookie from './Cookie'
 import Ocean from './Ocean'
 import Vortex from './Whirl'
+import { Model as Object1 } from './Object/Object1'
+import { Model as Object2 } from './Object/Object2'
+import { Model as Object5 } from './Object/Object5'
 //
 //
 //
@@ -20,12 +23,14 @@ export default function Experience({ onCameraYChange, onAudioInit }) {
     const { camera } = useThree()
     const [audioListener] = useState(() => new THREE.AudioListener())
     const audioRef = useRef()
-    const scrollSpeed = useRef(0.005)
+    const scrollSpeed = useRef(0.001)
     const cameraY = useRef(camera.position.y)
     const controlsRef = useRef()
     const lightRef = useRef()
     const router = useRouter()
     const isAnimating = useRef(false)
+    const [isHolding, setIsHolding] = useState(false)
+    const returnAnimationRef = useRef(null)
     
     const oscillationAmplitude = 0.5  // 진폭 (-1 ~ 1)
     const oscillationFrequency = 0.5  // 주기 (1초)
@@ -55,24 +60,58 @@ export default function Experience({ onCameraYChange, onAudioInit }) {
         }
     }, [camera, audioListener])
 
-    useFrame((state) => {
-        if (isAnimating.current) return
+    useEffect(() => {
+        const handleMouseDown = () => setIsHolding(true)
+        const handleMouseUp = () => setIsHolding(false)
+        
+        window.addEventListener('mousedown', handleMouseDown)
+        window.addEventListener('mouseup', handleMouseUp)
+        
+        return () => {
+            window.removeEventListener('mousedown', handleMouseDown)
+            window.removeEventListener('mouseup', handleMouseUp)
+        }
+    }, [])
 
-        cameraY.current -= scrollSpeed.current * 3
-        const baseY = Math.max(-38, cameraY.current)
-        
-        const oscillation = Math.sin(state.clock.elapsedTime * Math.PI * 2 * oscillationFrequency) * oscillationAmplitude
-        
-        camera.position.y = baseY + oscillation
-        
-        if (baseY === -38 && !isAnimating.current) {
-            isAnimating.current = true
+    useFrame((state) => {
+        if (isAnimating.current && !isHolding) {
+            // 홀딩이 해제되었을 때만 애니메이션 중단
+            const currentTween = gsap.getTweensOf(camera.position)[0]
+            if (currentTween) {
+                currentTween.kill()
+                
+                // 위로 돌아가는 애니메이션
+                returnAnimationRef.current = gsap.to(camera.position, {
+                    y: -38,
+                    duration: 2,
+                    ease: "power2.out",
+                    onComplete: () => {
+                        isAnimating.current = false
+                        returnAnimationRef.current = null
+                    }
+                })
+            }
+            return
+        }
+
+        if (camera.position.y > -38) {
+            cameraY.current -= scrollSpeed.current
+            const baseY = Math.max(-38, cameraY.current)
+            const oscillation = Math.sin(state.clock.elapsedTime * Math.PI * 2 * oscillationFrequency) * oscillationAmplitude
+            camera.position.y = baseY + oscillation
+        } else if (isHolding && !isAnimating.current) {
+            // 마우스 홀딩 시에만 아래로 내려가는 애니메이션 시작
+            if (returnAnimationRef.current) {
+                returnAnimationRef.current.kill()
+                returnAnimationRef.current = null
+            }
             
+            isAnimating.current = true
             gsap.to(camera.position, {
-                x: 0,
+                x: 0.1,
                 z: -0.5,
-                y: -123,
-                duration: 15,
+                y: -120,
+                duration: 10,
                 ease: "power2.inOut",
                 onComplete: () => {
                     router.push('/Heterotopia')
@@ -134,6 +173,15 @@ export default function Experience({ onCameraYChange, onAudioInit }) {
                 >
                     DYSTOPIA
                 </Text>
+                <Text
+                    position={[0, -38, 0]}
+                    font='./assets/fonts/NeoCode.woff'
+                    fontSize={0.3}
+                    color="#eeeeff"
+                    anchorX="center"
+                >
+                    Hold to Dive
+                </Text>
             </Float>
 
             <Cookie distance={10} intensity={3} angle={0.6} penumbra={1} position={[2, 3, 0]} />
@@ -157,6 +205,15 @@ export default function Experience({ onCameraYChange, onAudioInit }) {
             <Vortex />
 
             <Ocean />
+
+            <Float>
+                <Object1 position={[-3, -5, -30]} />
+                <Object2 position={[2, -3, -20]} />
+                <Object5 position={[-4, -5, 0]} />
+                <Object5 position={[3, -10, 0]} scale={0.5} rotation={[0, Math.PI / 6, 0]} />
+                <Object5 position={[-1, -7, -4]} scale={0.5} rotation={[0, - Math.PI / 6, 0]} />
+            </Float>
+
 
             <directionalLight 
                 ref={lightRef}

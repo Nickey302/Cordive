@@ -1,15 +1,16 @@
 'use client';
 
 import { useState } from 'react';
+import { supabase } from '../../utils/supabase';
 import MultipleChoice from './MultipleChoice';
 import OpenEndedQuestions from './OpenEndedQuestions';
 import styles from './SurveyOverlay.module.css';
 
-export default function SurveyOverlay({ onComplete }) {
-    const [step, setStep] = useState(0);
+export default function SurveyOverlay({ onComplete, onSurveyComplete }) {
+    const [step, setStep] = useState(1);
     const [answers, setAnswers] = useState({
         geometry: null,
-        matcap: null,
+        material: null,
         openEnded: []
     });
 
@@ -23,8 +24,10 @@ export default function SurveyOverlay({ onComplete }) {
 
     const handleOpenEndedComplete = async (responses) => {
         try {
-            console.log('서버로 전송되는 데이터:', responses);
-            
+            if (!answers.geometry || !answers.material) {
+                throw new Error('필수 정보가 누락되었습니다.');
+            }
+
             const result = await fetch('http://localhost:8080/api/chat', {
                 method: 'POST',
                 headers: {
@@ -34,61 +37,63 @@ export default function SurveyOverlay({ onComplete }) {
             });
             
             const data = await result.json();
-            console.log('서버로부터 받은 응답:', data);
-            
             const { position, keyword } = data.data;
-            console.log('추출된 위치 데이터:', position);
-            console.log('추출된 키워드:', keyword);
             
-            const finalData = {
-                ...answers,
+            const objectData = {
+                geometry: answers.geometry,
+                material: answers.material,
                 position: [position.x * 300, position.y * 300, position.z * 300],
                 label: keyword,
-                color: `rgb(${position.x * 255}, ${position.y * 255}, ${position.z * 255})`
+                color: `rgb(${position.x * 255}, ${position.y * 255}, ${position.z * 255})`,
+                responses: responses.text,
+                created_at: new Date().toISOString()
             };
-            console.log('최종 오브젝트 데이터:', finalData);
-            
-            onComplete(finalData);
+
+            const { data: savedData, error } = await supabase
+                .from('custom_objects')
+                .insert([objectData])
+                .select()
+                .single();
+
+            if (error) throw error;
+
+            onComplete(objectData);
+            onSurveyComplete();
+
         } catch (error) {
-            console.error('에러 상세 정보:', error);
-            // 에러 발생 시 임의의 기본값 설정
-            const fallbackVector = [Math.random(), Math.random(), Math.random()];
-            
-            const fallbackData = {
-                ...answers,
-                position: fallbackVector.map(v => v * 50),
-                label: "알 수 없음",
-                color: `rgb(${fallbackVector[0] * 255}, ${fallbackVector[1] * 255}, ${fallbackVector[2] * 255})`
-            };
-            console.log('에러로 인한 폴백 데이터:', fallbackData);
-            
-            onComplete(fallbackData);
+            console.error('Error:', error);
+            onSurveyComplete();
         }
     };
 
     return (
         <div className={styles.overlay}>
-            {step === 0 && (
+            {step === 1 && (
                 <MultipleChoice
                     type="geometry"
-                    question="Select Shape"
+                    question="당신의 이야기를 담을 형태를 선택해주세요"
                     options={[
                         "Cube", "Sphere", "Cone", "Cylinder", "Torus", "Tetrahedron"
                     ]}
                     onSelect={(answer) => handleMultipleChoiceComplete('geometry', answer)}
                 />
             )}
-            {step === 1 && (
+            {step === 2 && (
                 <MultipleChoice
-                    type="matcap"
-                    question="Select Texture"
+                    type="material"
+                    question="당신의 이야기에 어울리는 재질을 선택해주세요"
                     options={[
-                        "Metal", "Glass", "Rubber", "Wood", "Canvas", "Plastic"
+                        "Holographic",
+                        "Crystal",
+                        "Neon",
+                        "Mirror",
+                        "Glitch",
+                        "Plasma"
                     ]}
-                    onSelect={(answer) => handleMultipleChoiceComplete('matcap', answer)}
+                    onSelect={(answer) => handleMultipleChoiceComplete('material', answer)}
                 />
             )}
-            {step === 2 && (
+            {step === 3 && (
                 <OpenEndedQuestions
                     questions={[
                         "살아가면서 소용돌이에 빠진 것만 같다고 느꼈던 때가 있다면 그 이야기를 자유롭게 해주세요",

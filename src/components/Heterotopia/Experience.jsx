@@ -10,16 +10,24 @@ import { Physics, RigidBody } from '@react-three/rapier';
 import SurveyOverlay from '../Survey/SurveyOverlay.jsx';
 import { Html } from '@react-three/drei';
 import CustomObject from '../CustomObject';
+import { useRouter } from 'next/navigation';
 //
 //
 //
 export default function Experience() {
+    const router = useRouter();
     const [showSurvey, setShowSurvey] = useState(true);
     const [customObject, setCustomObject] = useState(null);
 
     const handleSurveyComplete = (results) => {
         setCustomObject(results);
+    };
+
+    const handleSurveyClose = () => {
         setShowSurvey(false);
+        setTimeout(() => {
+            router.push('/Utopia');
+        }, 1000);
     };
 
     // 도형 타입에 따른 geometry를 반환하는 컴포넌트
@@ -156,7 +164,10 @@ export default function Experience() {
             
             {showSurvey && (
                 <Html center>
-                    <SurveyOverlay onComplete={handleSurveyComplete} />
+                    <SurveyOverlay 
+                        onComplete={handleSurveyComplete} 
+                        onSurveyComplete={handleSurveyClose}
+                    />
                 </Html>
             )}
         </>

@@ -44,13 +44,20 @@ export default function Overlay({ cameraY }) {
                 {cameraY <= -38 && (
                     <div className={styles.holdingProgress}>
                         <div className={styles.progressBarContainer}>
-                            <div className={styles.progressBarBg} />
-                            <div 
-                                className={styles.progressBar} 
-                                style={{ width: `${holdingProgress}%` }}
-                            />
+                            <svg className={styles.progressRing} viewBox="0 0 100 100">
+                                <circle className={styles.progressRingBg} cx="50" cy="50" r="45" />
+                                <circle 
+                                    className={styles.progressRingPath} 
+                                    cx="50" 
+                                    cy="50" 
+                                    r="45"
+                                    style={{
+                                        strokeDashoffset: `${(1 - holdingProgress / 100) * 283}px`
+                                    }}
+                                />
+                            </svg>
+                            <p className={styles.progressText}>{holdingProgress + 4}%</p>
                         </div>
-                        <p className={styles.progressText}>{holdingProgress}%</p>
                     </div>
                 )}
             </div>

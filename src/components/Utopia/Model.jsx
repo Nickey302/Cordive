@@ -76,7 +76,7 @@ const Model = forwardRef(({ activeObject }, ref) => {
                     angle: -Math.PI / 2.5
                 },
                 Landmark: {
-                    distance: 20,
+                    distance: 30,
                     heightOffset: 5,
                     angle: Math.PI / 4
                 }

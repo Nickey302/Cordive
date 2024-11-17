@@ -11,56 +11,66 @@ import SurveyOverlay from '../Survey/SurveyOverlay.jsx';
 import { Html } from '@react-three/drei';
 import CustomObject from '../CustomObject';
 import { useRouter } from 'next/navigation';
+import { Suspense } from 'react';
+import { Model as ObstractObject } from './ObstractObject';
+import SelectionScene from '../Survey/SelectionScene';
+import MaterialPreview from '../Survey/MaterialPreview';
+import { MATERIALS } from '../Survey/constants';
+import LoadingOverlay from '../Survey/LoadingOverlay';
 //
 //
 //
 export default function Experience() {
     const router = useRouter();
+    const surveyOverlayRef = useRef(null);
     const [showSurvey, setShowSurvey] = useState(true);
     const [customObject, setCustomObject] = useState(null);
+    const [surveyStep, setSurveyStep] = useState(1);
+    const [selectedGeometry, setSelectedGeometry] = useState(null);
+    const [selectedMaterial, setSelectedMaterial] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleSurveyComplete = (results) => {
         setCustomObject(results);
+        setIsLoading(true);
     };
 
     const handleSurveyClose = () => {
-        setShowSurvey(false);
         setTimeout(() => {
-            router.push('/Utopia');
-        }, 1000);
+            setShowSurvey(false);
+            setTimeout(() => {
+                router.push('/Utopia');
+            }, 1000);
+        }, 2000);
     };
 
-    // 도형 타입에 따른 geometry를 반환하는 컴포넌트
-    const GeometrySelector = ({ type }) => {
-        switch(type.toLowerCase()) {
-            case '정육면체':
-                return <boxGeometry args={[2, 2, 2]} />;
-            case '구':
-                return <sphereGeometry args={[1, 32, 32]} />;
-            case '원뿔':
-                return <coneGeometry args={[1, 2, 32]} />;
-            case '원기둥':
-                return <cylinderGeometry args={[1, 1, 2, 32]} />;
-            case '토러스':
-                return <torusGeometry args={[1, 0.4, 16, 32]} />;
-            case '정사면체':
-                return <tetrahedronGeometry args={[1]} />;
-            default:
-                return <boxGeometry args={[1, 1, 1]} />;
-        }
+    const handleGeometrySelect = (geometry) => {
+        setSelectedGeometry(geometry);
+        setTimeout(() => setSurveyStep(2), 1000);
+    };
+
+    const handleMaterialSelect = (material) => {
+        setSelectedMaterial(material);
+    };
+
+    const handleMaterialPreviewSelect = (material) => {
+        setSelectedMaterial(material);
+        setTimeout(() => {
+            setSurveyStep(3);
+        }, 1000);
     };
 
     return (
         <>
             {/* <Perf /> */}
-            {/* <color attach="background" args={['black']} />
-            <fog attach="fog" args={['black', 10, 300]} /> */}
+            <color attach="background" args={['#A6AEBF']} />
+            <fog attach="fog" args={['#A6AEBF', 100, 400]} />
 
             <hemisphereLight intensity={0.15} groundColor="black" />
             <spotLight decay={0} position={[10, 20, 50]} angle={0.12} penumbra={1} intensity={1} castShadow shadow-mapSize={1024} />
 
-            {/* <ambientLight intensity={1} />
-            <directionalLight position={[10, 10, 10]} intensity={1} color="#3c7475" /> */}
+            <ambientLight intensity={3} />
+            <directionalLight position={[10, 10, 10]} intensity={1} color="#ffffff" />
 
             <OrbitControls
                 makeDefault
@@ -68,16 +78,8 @@ export default function Experience() {
                 dampingFactor={0.01}
                 minPolarAngle={Math.PI / 3}
                 maxPolarAngle={Math.PI / 2 - 0.1}
-                maxDistance={275}
+                maxDistance={230}
                 minDistance={30}
-            />
-
-
-            <Environment
-                files={"/assets/HDRI/Dystopia.hdr"}
-                background
-                environmentIntensity={0.2}
-                backgroundBlurriness={0.1}
             />
 
             <Water />
@@ -86,7 +88,7 @@ export default function Experience() {
                 <Text
                     receiveShadow
                     castShadow
-                    position={[0, 10, 0]}
+                    position={[0, 50, 10]}
                     fontSize={8}
                     color="#ffffff"
                     anchorX="center"
@@ -98,56 +100,78 @@ export default function Experience() {
                 </Text>
             </Float>
 
-            <Physics>
-                {/* 바닥 */}
-                <RigidBody type="fixed" colliders="trimesh">
-                    <mesh receiveShadow position={[0, -1, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                        <planeGeometry args={[400, 400]} />
-                        <MeshReflectorMaterial
-                            attach="material"
-                            clipBias={0.003}
-                            blur={[300, 30]}
-                            resolution={256}
-                            mixBlur={1}
-                            mixStrength={180}
-                            roughness={1}
-                            depthScale={1.2}
-                            minDepthThreshold={0.4}
-                            maxDepthThreshold={1.4}
-                            color="#202020"
-                            mirror={0.75}
-                            metalness={0.8}
-                            reflectorOffset={0.2}
-                        />
-                    </mesh>
-                </RigidBody>
+            <ObstractObject position={[0 , 50, 0]} scale={15} />
 
-                {/* 테스트용 박스들 */}
-                {[...Array(8)].map((_, i) => (
-                    <RigidBody key={i} colliders="cuboid" position={[
-                        Math.random() * 10 - 5,
-                        10 + i * 2,
-                        Math.random() * 10 - 5
-                    ]}>
-                        <mesh castShadow>
-                            <boxGeometry args={[2, 2, 2]} />
-                            <meshStandardMaterial color={
-                                i === 0 ? '#4E7FA0' :
-                                i === 1 ? '#48546D' :
-                                i === 2 ? '#3c7475' :
-                                i === 3 ? '#426363' :
-                                '#ffffff'
-                            } />
-                        </mesh>
-                    </RigidBody>
-                ))}
-            </Physics>
-        
+            {showSurvey && (
+                <>
+                    {surveyStep <= 2 && (
+                        <Text
+                            position={[0, 40, 10]}
+                            fontSize={3}
+                            color="white"
+                            anchorX="center"
+                            anchorY="middle"
+                            // font="/assets/fonts/NeoCode.woff"
+                            font="/assets/fonts/Montserrat-VariableFont_wght.ttf"
+                        >
+                            {surveyStep === 1 
+                                ? "당신의 이야기를 담을 형태를 선택해주세요"
+                                : "당신의 이야기에 어울리는 재질을 선택해주세요"
+                            }
+                        </Text>
+                    )}
+                </>
+            )}
+
+            <Suspense fallback={null}>
+                <SelectionScene 
+                    step={surveyStep}
+                    onGeometrySelect={handleGeometrySelect}
+                    onMaterialSelect={handleMaterialSelect}
+                />
+            </Suspense>
+
+            {showSurvey && surveyStep === 3 && (
+                <Html
+                    position={[0, 50, 0]}
+                    center
+                    style={{
+                        backgroundColor: 'rgba(0, 0, 0, 0.0)',
+                        padding: '20px',
+                        color: 'white',
+                        fontSize: '0.7rem',
+                        fontFamily: 'NeoCode',
+                        textAlign: 'center',
+                    }}
+                >
+                    <SurveyOverlay 
+                        ref={surveyOverlayRef}
+                        onComplete={handleSurveyComplete} 
+                        onSurveyComplete={handleSurveyClose}
+                        initialData={{
+                            geometry: selectedGeometry,
+                            material: selectedMaterial
+                        }}
+                        initialStep="questions"
+                    />
+                </Html>
+            )}
+
+            {showSurvey && surveyStep === 2 && (
+                <Html position={[0, 100, 0]} center>
+                    <MaterialPreview
+                        materials={MATERIALS}
+                        onSelect={handleMaterialPreviewSelect}
+                        selectedMaterial={selectedMaterial}
+                    />
+                </Html>
+            )}
+
             <EffectComposer disableNormalPass multisampling={0}>
                 <Bloom 
                     mipmapBlur
                     intensity={0.8}
-                    luminanceThreshold={0.5}
+                    luminanceThreshold={0.3}
                     luminanceSmoothing={0.1}
                 />
                 <Noise opacity={0.07} />
@@ -161,13 +185,10 @@ export default function Experience() {
                     onClick={() => alert(customObject.label)}
                 />
             )}
-            
-            {showSurvey && (
-                <Html center>
-                    <SurveyOverlay 
-                        onComplete={handleSurveyComplete} 
-                        onSurveyComplete={handleSurveyClose}
-                    />
+
+            {isLoading && (
+                <Html fullscreen>
+                    <LoadingOverlay />
                 </Html>
             )}
         </>

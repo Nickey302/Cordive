@@ -1,0 +1,23 @@
+.material-preview-container {
+    background: rgba(255, 255, 255, 0.0);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 20px;
+    color: #ffffff;
+    text-align: center;
+    min-width: 200px;
+}
+
+.material-preview-container button {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    padding: 10px 20px;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.material-preview-container button:hover {
+    background: rgba(255, 255, 255, 0.2);
+} 

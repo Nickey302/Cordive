@@ -21,7 +21,7 @@ export default function Heterotopia()
           shadows
           gl={{ antialias: true, powerPreference: "high-performance" }}
           camera={{
-            position: [ 3, 30, 50 ],
+            position: [ 3, 50, 200 ],
             fov: 45,
             near: 1,
             far: 550

@@ -2,25 +2,19 @@
 
 import { useState } from 'react';
 import { supabase } from '../../utils/supabase';
-import MultipleChoice from './MultipleChoice';
 import OpenEndedQuestions from './OpenEndedQuestions';
+import LoadingOverlay from './LoadingOverlay';
 import styles from './SurveyOverlay.module.css';
-
-export default function SurveyOverlay({ onComplete, onSurveyComplete }) {
-    const [step, setStep] = useState(1);
+//
+//
+//
+export default function SurveyOverlay({ onComplete, onSurveyComplete, initialData, initialStep = 'material' }) {
+    const [step, setStep] = useState(initialStep);
     const [answers, setAnswers] = useState({
-        geometry: null,
-        material: null,
+        geometry: initialData.geometry,
+        material: initialData.material,
         openEnded: []
     });
-
-    const handleMultipleChoiceComplete = (type, answer) => {
-        setAnswers(prev => ({
-            ...prev,
-            [type]: answer
-        }));
-        setStep(prev => prev + 1);
-    };
 
     const handleOpenEndedComplete = async (responses) => {
         try {
@@ -28,7 +22,9 @@ export default function SurveyOverlay({ onComplete, onSurveyComplete }) {
                 throw new Error('필수 정보가 누락되었습니다.');
             }
 
-            const result = await fetch('http://localhost:8080/api/chat', {
+            setStep('loading');
+
+            const result = await fetch(process.env.NEXT_PUBLIC_NLP_API_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -58,7 +54,10 @@ export default function SurveyOverlay({ onComplete, onSurveyComplete }) {
             if (error) throw error;
 
             onComplete(objectData);
-            onSurveyComplete();
+            
+            setTimeout(() => {
+                onSurveyComplete();
+            }, 2000);
 
         } catch (error) {
             console.error('Error:', error);
@@ -66,34 +65,13 @@ export default function SurveyOverlay({ onComplete, onSurveyComplete }) {
         }
     };
 
-    return (
-        <div className={styles.overlay}>
-            {step === 1 && (
-                <MultipleChoice
-                    type="geometry"
-                    question="당신의 이야기를 담을 형태를 선택해주세요"
-                    options={[
-                        "Cube", "Sphere", "Cone", "Cylinder", "Torus", "Tetrahedron"
-                    ]}
-                    onSelect={(answer) => handleMultipleChoiceComplete('geometry', answer)}
-                />
-            )}
-            {step === 2 && (
-                <MultipleChoice
-                    type="material"
-                    question="당신의 이야기에 어울리는 재질을 선택해주세요"
-                    options={[
-                        "Holographic",
-                        "Crystal",
-                        "Neon",
-                        "Mirror",
-                        "Glitch",
-                        "Plasma"
-                    ]}
-                    onSelect={(answer) => handleMultipleChoiceComplete('material', answer)}
-                />
-            )}
-            {step === 3 && (
+    const renderContent = () => {
+        if (step === 'loading') {
+            return <LoadingOverlay />;
+        }
+        
+        if (step === 'questions') {
+            return (
                 <OpenEndedQuestions
                     questions={[
                         "살아가면서 소용돌이에 빠진 것만 같다고 느꼈던 때가 있다면 그 이야기를 자유롭게 해주세요",
@@ -102,7 +80,13 @@ export default function SurveyOverlay({ onComplete, onSurveyComplete }) {
                     ]}
                     onComplete={handleOpenEndedComplete}
                 />
-            )}
+            );
+        }
+    };
+
+    return (
+        <div className={styles.overlay}>
+            {renderContent()}
         </div>
     );
 } 

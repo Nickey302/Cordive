@@ -15,6 +15,24 @@ import gsap from 'gsap'
 //
 //
 const Model = forwardRef(({ activeObject }, ref) => {
+    const loveRef = useRef(null)
+    const aversionRef = useRef(null)
+    const adjustRef = useRef(null)
+    const resistRef = useRef(null)
+    const isolationRef = useRef(null)
+    const liberationRef = useRef(null)
+    const landmarkRef = useRef(null)
+
+    const refs = {
+        Love: loveRef,
+        Aversion: aversionRef,
+        Adjust: adjustRef,
+        Resist: resistRef,
+        Isolation: isolationRef,
+        Liberation: liberationRef,
+        Landmark: landmarkRef
+    }
+
     useImperativeHandle(ref, () => ({
         getObjectPosition: (objectName) => {
             if (refs[objectName] && refs[objectName].current) {
@@ -27,16 +45,6 @@ const Model = forwardRef(({ activeObject }, ref) => {
     const positionAdd = 5
     const scaleAdd = 3
     
-    const refs = {
-        Love: useRef(null),
-        Aversion: useRef(null),
-        Adjust: useRef(null),
-        Resist: useRef(null),
-        Isolation: useRef(null),
-        Liberation: useRef(null),
-        Landmark: useRef(null)
-    }
-
     const { camera } = useThree()
 
     useEffect(() => {
@@ -76,7 +84,7 @@ const Model = forwardRef(({ activeObject }, ref) => {
                     angle: -Math.PI / 2.5
                 },
                 Landmark: {
-                    distance: 30,
+                    distance: 40,
                     heightOffset: 5,
                     angle: Math.PI / 4
                 }

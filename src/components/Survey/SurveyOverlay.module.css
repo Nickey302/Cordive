@@ -1,9 +1,58 @@
 .overlay {
-    background: rgba(0, 0, 0, 0.8);
-    padding: 2rem;
-    border-radius: 1rem;
+    background: rgba(0, 0, 0, 0.0);
+    padding: 20px;
     color: white;
-    min-width: 400px;
+    width: 400px;
+}
+
+.previewContainer {
+    margin-bottom: 20px;
+}
+
+.materialsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.materialItem {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.materialItem:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.materialItem.selected {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.colorPreview {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.confirmButton {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.confirmButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .questionContainer {
@@ -20,32 +69,51 @@
 
 .optionButton {
     padding: 1rem;
-    border: 1px solid white;
     background: transparent;
     color: white;
     cursor: pointer;
     transition: all 0.3s;
 }
 
-.optionButton:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
 .textArea {
     width: 100%;
     min-height: 100px;
     padding: 0.5rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid white;
-    color: white;
-    resize: vertical;
+    background: transparent;
+    backdrop-filter: blur(10px);
+    color: black;
+    font-size: 1.2rem;
+    outline: none;
+    border: 0.1px solid #f2f2f3;
+    resize: none;
+    font-family: 'NeoCode';
 }
 
 .nextButton {
     padding: 0.5rem 1rem;
-    background: white;
-    color: black;
+    color: ivory;
+    background: #426363;
     border: none;
     cursor: pointer;
     align-self: flex-end;
+    font-family: 'NeoCode';
+}
+
+.chooseButton {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    background: #3c7475;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.chooseButton:hover {
+    transform: translate(-50%, -50%) scale(1.05);
 } 

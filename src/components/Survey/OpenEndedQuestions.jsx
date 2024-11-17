@@ -30,13 +30,12 @@ export default function OpenEndedQuestions({ questions, onComplete }) {
                 value={currentAnswer}
                 onChange={(e) => setCurrentAnswer(e.target.value)}
                 className={styles.textArea}
-                placeholder="여기에 답변을 입력하세요..."
             />
             <button 
                 onClick={handleNext}
                 className={styles.nextButton}
             >
-                {currentQuestion === questions.length - 1 ? '완료' : '다음'}
+                {currentQuestion === questions.length - 1 ? 'Complete' : 'Next'}
             </button>
         </div>
     );

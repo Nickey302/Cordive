@@ -18,85 +18,6 @@ export default function Experience({ onShowNamePrompt }) {
   const [audio, setAudio] = useState(null);
   const [audioInitialized, setAudioInitialized] = useState(false);
 
-  useEffect(() => {
-    const initSound = async () => {
-      if (!audioInitialized) {
-        try {
-          await soundManager.init();
-          soundManager.setScene('MAIN');
-          
-          await Promise.all([
-            soundManager.loadSound('BGM', SCENE_SOUNDS.MAIN.BGM.url, SCENE_SOUNDS.MAIN.BGM.options),
-            soundManager.loadSound('HOLD', SCENE_SOUNDS.MAIN.HOLD.url, SCENE_SOUNDS.MAIN.HOLD.options)
-          ]);
-
-          const startAudio = async () => {
-            try {
-              if (!audioInitialized) {
-                await Tone.start();
-                await soundManager.playSound('BGM', { 
-                  fadeIn: 2,
-                  loop: true,
-                  volume: SCENE_SOUNDS.MAIN.BGM.options.volume 
-                });
-                
-                setAudioInitialized(true);
-                setAudio({
-                  context: Tone.context,
-                  gain: soundManager.mainVolume,
-                  setVolume: (val) => {
-                    soundManager.mainVolume.volume.value = val;
-                  }
-                });
-
-                window.removeEventListener('click', startAudio);
-                window.removeEventListener('touchstart', startAudio);
-                document.removeEventListener('keydown', startAudio);
-              }
-            } catch (error) {
-              console.error('오디오 시작 실패:', error);
-            }
-          };
-
-          window.addEventListener('click', startAudio);
-          window.addEventListener('touchstart', startAudio);
-          document.addEventListener('keydown', startAudio);
-
-          startAudio();
-          
-        } catch (error) {
-          console.error('Error initializing sound:', error);
-        }
-      }
-    };
-    
-    initSound();
-    camera.position.z = 0;
-    
-    gsap.timeline()
-      .to(camera.position, {
-        z: 6.5,
-        duration: 2,
-        ease: 'power2.inOut'
-      })
-      .to(camera.position, {
-        z: 5,
-        duration: 1,
-        ease: 'power2.inOut'
-      });
-
-    return () => {
-      soundManager.stopAllSounds();
-      if (!audioInitialized) {
-        const startAudio = () => {};
-        window.removeEventListener('click', startAudio);
-        window.removeEventListener('touchstart', startAudio);
-        document.removeEventListener('keydown', startAudio);
-      }
-    };
-  }, [camera.position, audioInitialized]);
-
-  // useControls 대신 고정된 값 사용
   const focus = 5.1;
   const speed = 1.1;
   const curl = 0.25;
@@ -125,6 +46,68 @@ export default function Experience({ onShowNamePrompt }) {
     state.camera.position.set(...springProps.position.get());
     state.camera.rotation.set(...springProps.rotation.get());
   });
+
+  useEffect(() => {
+    let mounted = true;
+
+    const initSound = async () => {
+      try {
+        if (!audioInitialized) {
+          console.log('Starting audio initialization...');
+          
+          await soundManager.init();
+          soundManager.setScene('MAIN');
+          
+          console.log('Loading sounds...');
+          await Promise.all([
+            soundManager.loadSound('BGM', SCENE_SOUNDS.MAIN.BGM.url, SCENE_SOUNDS.MAIN.BGM.options),
+            soundManager.loadSound('HOLD', SCENE_SOUNDS.MAIN.HOLD.url, SCENE_SOUNDS.MAIN.HOLD.options)
+          ]);
+
+          if (mounted) {
+            console.log('Playing BGM...');
+            
+            await soundManager.playSound('BGM', { 
+              fadeIn: 2,
+              volume: SCENE_SOUNDS.MAIN.BGM.options.volume,
+              loop: true
+            });
+            
+            setAudio({
+              context: Tone.context,
+              gain: soundManager.mainVolume,
+              setVolume: (val) => {
+                soundManager.mainVolume.volume.value = val;
+              }
+            });
+            setAudioInitialized(true);
+          }
+        }
+      } catch (error) {
+        console.error('Error in initSound:', error);
+      }
+    };
+
+    initSound();
+    camera.position.z = 0;
+    
+    gsap.timeline()
+      .to(camera.position, {
+        z: 6.5,
+        duration: 2,
+        ease: 'power2.inOut'
+      })
+      .to(camera.position, {
+        z: 5,
+        duration: 1,
+        ease: 'power2.inOut'
+      });
+
+    return () => {
+      mounted = false;
+      soundManager.stopAllSounds();
+    };
+  }, []);
 
   useEffect(() => {
     if (isHolding) {
@@ -160,12 +143,35 @@ export default function Experience({ onShowNamePrompt }) {
     };
   }, [isHolding, onShowNamePrompt]);
 
-  const handleHoldStart = () => {
+  const handleHoldStart = async () => {
     setIsHolding(true);
-    soundManager.playSound('HOLD');
-    const bgmSound = soundManager.players.get('BGM');
-    if (bgmSound) {
-      bgmSound.player.volume.rampTo(-30, 0.5);
+    try {
+      await soundManager.playSound('HOLD', {
+        volume: SCENE_SOUNDS.MAIN.HOLD.options.volume
+      });
+      
+      // BGM 볼륨 낮추기
+      const bgmSound = soundManager.players.get('BGM');
+      if (bgmSound) {
+        bgmSound.player.volume.rampTo(-40, 0.5);
+      }
+    } catch (error) {
+      console.error('Hold sound play error:', error);
+    }
+  };
+
+  const handleHoldEnd = async () => {
+    setIsHolding(false);
+    try {
+      soundManager.stopSound('HOLD');
+      
+      // BGM 볼륨 원래대로
+      const bgmSound = soundManager.players.get('BGM');
+      if (bgmSound) {
+        bgmSound.player.volume.rampTo(SCENE_SOUNDS.MAIN.BGM.options.volume, 0.5);
+      }
+    } catch (error) {
+      console.error('Hold sound stop error:', error);
     }
   };
 
@@ -220,12 +226,8 @@ export default function Experience({ onShowNamePrompt }) {
         maxWidth={5}
         bevel={1}
         onPointerDown={handleHoldStart}
-        onPointerUp={() => {
-          setIsHolding(false);
-        }}
-        onPointerOut={() => {
-          setIsHolding(false);
-        }}
+        onPointerUp={handleHoldEnd}
+        onPointerOut={handleHoldEnd}
       >
         HOLD TO DIVE
       </Text>

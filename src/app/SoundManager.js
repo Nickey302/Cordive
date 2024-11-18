@@ -55,14 +55,27 @@ class SoundManager {
     }
 
     setScene(sceneName) {
-        if (this.currentScene) {
-            this.players.forEach((data, name) => {
-                if (data.scene === this.currentScene) {
-                    this.stopSound(name);
+        console.log(`Changing scene from ${this.currentScene} to ${sceneName}`);
+        
+        // 이전 씬의 모든 사운드를 강제로 중지
+        this.players.forEach((data, name) => {
+            try {
+                // 재생 중인 모든 사운드를 즉시 중지
+                if (data.player) {
+                    data.player.stop();
+                    data.player.volume.value = -Infinity;
+                    console.log(`Stopped sound: ${name} from scene: ${data.scene}`);
                 }
-            });
-        }
+            } catch (error) {
+                console.error(`Error stopping sound ${name}:`, error);
+            }
+        });
+
+        // 모든 플레이어 초기화
+        this.players.clear();
+        
         this.currentScene = sceneName;
+        console.log(`Scene changed to: ${sceneName}`);
     }
 
     async playSound(name, options = {}) {
@@ -73,26 +86,31 @@ class SoundManager {
         }
 
         try {
-            // 사운드 재생 전에 컨텍스트 상태 확인 및 재시작
             if (Tone.context.state !== 'running') {
                 await Tone.context.resume();
             }
 
             const { volume = 0, loop = false, fadeIn = 0 } = options;
-            sound.player.loop = loop;
             
-            // 이미 재생 중인 경우 볼륨만 조절
+            // 기존 재생 중지
             if (sound.player.playing) {
-                sound.player.volume.rampTo(volume, 0.1);
-                return;
+                sound.player.stop();
             }
 
-            // 재생 중이 아닌 경우에만 새로 시작
-            sound.player.volume.value = fadeIn > 0 ? -100 : volume;
+            // 볼륨 설정 (dB 단위)
+            const volumeInDB = Math.max(-100, Math.min(0, volume)); // 볼륨 범위 제한
+            sound.player.volume.value = volumeInDB;
+            
+            // 루프 설정
+            sound.player.loop = loop;
+
+            // 새로운 재생 시작
             await sound.player.start();
-            if (fadeIn > 0) {
-                sound.player.volume.rampTo(volume, fadeIn);
-            }
+
+            // 디버깅
+            console.log(`Playing ${name} with volume:`, volumeInDB);
+            console.log(`Actual volume:`, sound.player.volume.value);
+
         } catch (error) {
             console.error(`Error playing sound ${name}:`, error);
         }
@@ -125,24 +143,26 @@ class SoundManager {
         }
     }
 
-    stopAllSounds(fadeOut = 0) {
+    stopAllSounds() {
+        console.log('Stopping all sounds...');
         this.players.forEach((data, name) => {
-            this.stopSound(name, fadeOut);
+            try {
+                if (data.player) {
+                    data.player.stop();
+                    data.player.volume.value = -Infinity;
+                    console.log(`Stopped sound: ${name}`);
+                }
+            } catch (error) {
+                console.error(`Error stopping sound ${name}:`, error);
+            }
         });
+        // 모든 플레이어 초기화
+        this.players.clear();
     }
 
     dispose() {
+        console.log('Disposing sound manager...');
         this.stopAllSounds();
-        this.players.forEach((data) => {
-            try {
-                if (data.player) {
-                    data.player.dispose();
-                }
-            } catch (error) {
-                console.error('Error disposing sound:', error);
-            }
-        });
-        this.players.clear();
         if (this.mainVolume) {
             this.mainVolume.dispose();
         }

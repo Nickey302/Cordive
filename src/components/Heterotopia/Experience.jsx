@@ -100,7 +100,9 @@ export default function Experience() {
     const handleGeometrySelect = async (geometry) => {
         try {
             if (audioInitialized) {
-                await soundManager.playSound('CLICK');
+                await soundManager.playSound('CLICK', {
+                    volume: -20
+                });
             }
             setSelectedGeometry(geometry);
             setTimeout(() => setSurveyStep(2), 1000);
@@ -112,7 +114,13 @@ export default function Experience() {
     const handleMaterialSelect = async (material) => {
         try {
             if (audioInitialized) {
-                await soundManager.playSound('CLICK');
+                const clickSound = soundManager.players.get('CLICK');
+                if (clickSound) {
+                    clickSound.player.volume.value = -20;
+                }
+                await soundManager.playSound('CLICK', {
+                    volume: -20
+                });
             }
             setSelectedMaterial(material);
         } catch (error) {
@@ -123,7 +131,13 @@ export default function Experience() {
     const handleMaterialPreviewSelect = async (material) => {
         try {
             if (audioInitialized) {
-                await soundManager.playSound('CLICK');
+                const clickSound = soundManager.players.get('CLICK');
+                if (clickSound) {
+                    clickSound.player.volume.value = -20;
+                }
+                await soundManager.playSound('CLICK', {
+                    volume: -20
+                });
             }
             setSelectedMaterial(material);
             setTimeout(() => {
@@ -137,7 +151,17 @@ export default function Experience() {
     const handleSurveyComplete = async (results) => {
         try {
             if (audioInitialized) {
-                await soundManager.playSound('PONG');
+                const pongSound = soundManager.players.get('PONG');
+                if (pongSound) {
+                    if (pongSound.player.playing) {
+                        pongSound.player.stop();
+                    }
+                    pongSound.player.volume.value = -80;
+                }
+                
+                await soundManager.playSound('PONG', {
+                    volume: -80
+                });
             }
             
             // 필수 데이터 검증

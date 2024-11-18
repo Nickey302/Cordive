@@ -173,15 +173,6 @@ export default function Experience({ onCameraYChange, onAudioInit }) {
                 >
                     DYSTOPIA
                 </Text>
-                <Text
-                    position={[0, -38, 0]}
-                    font='./assets/fonts/NeoCode.woff'
-                    fontSize={0.3}
-                    color="#eeeeff"
-                    anchorX="center"
-                >
-                    Hold to Dive
-                </Text>
             </Float>
 
             <Cookie distance={10} intensity={3} angle={0.6} penumbra={1} position={[2, 3, 0]} />

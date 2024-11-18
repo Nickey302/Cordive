@@ -12,8 +12,11 @@
     position: absolute;
     top: 20px;
     right: 20px;
-    color: white;
+    color: ivory;
     padding: 15px;
+    font-size: 0.8rem;
+    opacity: 0.7;
+    font-family: "/assets/fonts/Pretendard-Thin.woff";
 }
 
 .message {
@@ -27,7 +30,7 @@
 
 .messageText {
     font-size: 1.2em;
-    color: white;
+    color: ivory;
     margin-bottom: 15px;
     opacity: 0.9;
     transition: opacity 0.3s ease;
@@ -60,13 +63,13 @@
 
 .progressRingPath {
     fill: none;
-    stroke: #252a35;
+    stroke: #ffffff;
+    opacity: 0.8;
     stroke-width: 4;
     stroke-linecap: round;
     stroke-dasharray: 283px;
     stroke-dashoffset: 283px;
     transition: stroke-dashoffset 0.3s ease;
-    filter: drop-shadow(0 0 4px #0e0f10);
 }
 
 .progressText {
@@ -76,7 +79,7 @@
     transform: translate(-50%, -50%);
     margin: 0;
     font-size: 16px;
-    color: white;
+    color: ivory;
     opacity: 0.9;
 }
 

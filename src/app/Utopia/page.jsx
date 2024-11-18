@@ -32,7 +32,7 @@ export default function Utopia() {
   }, []);
 
   return (
-    <div style={{ position: 'fixed', height: '100vh', width: '100vw' }}>
+    <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
       <ObjectsOverlay 
         activeObject={activeObject} 
         setActiveObject={setActiveObject} 

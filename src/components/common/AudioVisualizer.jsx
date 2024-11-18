@@ -15,7 +15,7 @@ export default function AudioVisualizer({ audio }) {
 
     const audioContext = audio.context
     analyserRef.current = audioContext.createAnalyser()
-    analyserRef.current.fftSize = 256
+    analyserRef.current.fftSize = 2048
     
     audio.gain.connect(analyserRef.current)
 
@@ -41,14 +41,14 @@ export default function AudioVisualizer({ audio }) {
         let targetHeight
         
         if (isMuted) {
-          targetHeight = 2
+          targetHeight = 5
         } else {
           const baseHeight = 160 - (i * 5)
           const dataIndex = Math.floor(i * dataArray.length / totalBars)
           const audioLevel = (dataArray[dataIndex] / 255)
           const time = Date.now() / 1000
           const wave = Math.sin(i * 0.5 + time * 3) * 10
-          targetHeight = baseHeight * audioLevel + wave
+          targetHeight = baseHeight * audioLevel * 0.2 + wave
         }
 
         previousHeightsRef.current[i] = previousHeightsRef.current[i] + (targetHeight - previousHeightsRef.current[i]) * 0.15

@@ -181,7 +181,7 @@ export default function Experience() {
     return (
         <>
             <color attach="background" args={['#A6AEBF']} />
-            <fog attach="fog" args={['#A6AEBF', 100, 400]} />
+            <fog attach="fog" args={['#A6AEBF', 100, 500]} />
 
             <hemisphereLight intensity={0.15} groundColor="black" />
             <spotLight 

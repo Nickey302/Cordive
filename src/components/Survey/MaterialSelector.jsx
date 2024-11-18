@@ -82,11 +82,11 @@ const MATERIALS = [
     }
 ];
 
-export default function MaterialSelector({ onSelect }) {
+export default function MaterialSelector({ onSelect, isActive }) {
     const synth = useRef(null);
     const rigidBodyRefs = useRef({});
     const lastCollisionTime = useRef(null);
-    const [hasInitialized, setHasInitialized] = useState(false);
+    const [isActivated, setIsActivated] = useState(false);
 
     useEffect(() => {
         synth.current = new Tone.Synth().toDestination();
@@ -96,23 +96,36 @@ export default function MaterialSelector({ onSelect }) {
     }, []);
 
     useEffect(() => {
-        if (!hasInitialized) {
-            // 초기 위치 설정
-            MATERIALS.forEach((material, index) => {
+        if (isActive) {
+            setIsActivated(true);
+        }
+    }, [isActive]);
+
+    useEffect(() => {
+        if (!isActivated) {
+            MATERIALS.forEach((material) => {
                 if (rigidBodyRefs.current[material.name]) {
                     rigidBodyRefs.current[material.name].setTranslation({
                         x: material.position[0],
-                        y: material.position[1] + 50, // 높은 위치에서 시작
+                        y: material.position[1] + 200,
                         z: material.position[2]
                     });
                 }
             });
-            setHasInitialized(true);
+        } else {
+            MATERIALS.forEach((material) => {
+                if (rigidBodyRefs.current[material.name]) {
+                    rigidBodyRefs.current[material.name].setTranslation({
+                        x: material.position[0],
+                        y: material.position[1] + 50,
+                        z: material.position[2]
+                    });
+                }
+            });
         }
-    }, [hasInitialized]);
+    }, [isActivated]);
 
     const handleCollision = () => {
-        // 충돌음 재생 (볼륨 낮추고 쿨타임 추가)
         if (!lastCollisionTime.current || Date.now() - lastCollisionTime.current > 100) {
             synth.current.triggerAttackRelease("C3", "32n", undefined, 0.1);
             lastCollisionTime.current = Date.now();
@@ -120,10 +133,8 @@ export default function MaterialSelector({ onSelect }) {
     };
 
     const handleMaterialClick = (material) => {
-        // 클릭한 재질의 소리 재생
         synth.current.triggerAttackRelease(material.note, "8n", undefined, 0.3);
 
-        // 더 강한 힘으로 수정
         if (rigidBodyRefs.current[material.name]) {
             const force = {
                 x: (Math.random() - 0.5) * 50,
@@ -145,7 +156,6 @@ export default function MaterialSelector({ onSelect }) {
 
     return (
         <group>
-            {/* 바닥 충돌체 */}
             <RigidBody type="fixed" position={[0, -1.001, 0]}>
                 <mesh rotation-x={-Math.PI / 2} visible={false}>
                     <planeGeometry args={[1000, 1000]} />
@@ -163,7 +173,7 @@ export default function MaterialSelector({ onSelect }) {
                     onCollisionEnter={handleCollision}
                 >
                     <mesh
-                        onClick={() => handleMaterialClick(material)}
+                        onClick={() => isActivated && handleMaterialClick(material)}
                         scale={12}
                     >
                         <cylinderGeometry args={[0.5, 0.5, 4, 64]} />

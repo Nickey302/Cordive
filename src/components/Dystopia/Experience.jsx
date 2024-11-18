@@ -95,7 +95,7 @@ export default function Experience({ onCameraYChange, onAudioInit }) {
         }
 
         if (camera.position.y > -38) {
-            cameraY.current -= scrollSpeed.current * 3
+            cameraY.current -= scrollSpeed.current * 2.25
             const baseY = Math.max(-38, cameraY.current)
             const oscillation = Math.sin(state.clock.elapsedTime * Math.PI * 2 * oscillationFrequency) * oscillationAmplitude
             camera.position.y = baseY + oscillation
@@ -110,7 +110,7 @@ export default function Experience({ onCameraYChange, onAudioInit }) {
             gsap.to(camera.position, {
                 x: 0.1,
                 z: -0.5,
-                y: -120,
+                y: -119,
                 duration: 10,
                 ease: "power2.inOut",
                 onComplete: () => {

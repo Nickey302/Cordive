@@ -43,7 +43,9 @@ export default function SurveyOverlay({ onComplete, onSurveyComplete, initialDat
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json',
                 },
+                mode: 'cors',
                 body: JSON.stringify(results)
             });
             

@@ -1,9 +1,7 @@
 'use client'
 
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Line } from "@react-three/drei";
-import * as THREE from 'three';
 import gsap from 'gsap';
 import { RigidBody, CuboidCollider, Physics } from '@react-three/rapier';
 //
@@ -17,8 +15,6 @@ const GEOMETRIES = [
     { name: 'Torus', position: [Math.cos(4*Math.PI/3) * 40, 30, Math.sin(4*Math.PI/3) * 40] },
     { name: 'Tetrahedron', position: [Math.cos(5*Math.PI/3) * 40, 30, Math.sin(5*Math.PI/3) * 40] }
 ];
-
-const STRING_HEIGHT = 100; // 실의 높이
 
 const GeometryComponent = ({ type }) => {
     switch (type) {
@@ -41,8 +37,8 @@ const GeometryComponent = ({ type }) => {
 
 export default function GeometrySelector({ onSelect }) {
     const meshRefs = useRef({});
-    const lineRefs = useRef({});
     const isClicked = useRef({});
+    const rigidBodyRefs = useRef({});
 
     useFrame((state) => {
         const time = state.clock.getElapsedTime();
@@ -52,15 +48,6 @@ export default function GeometrySelector({ onSelect }) {
                 const offset = index * (Math.PI / 3);
                 const y = position[1] + Math.sin(time / 2 + offset) * 1.5;
                 meshRefs.current[name].position.y = y;
-                
-                // 선의 위치도 함께 업데이트
-                if (lineRefs.current[name]) {
-                    const points = [
-                        new THREE.Vector3(position[0], y, position[2]),
-                        new THREE.Vector3(position[0], y + STRING_HEIGHT, position[2])
-                    ];
-                    lineRefs.current[name].geometry.setFromPoints(points);
-                }
             }
         });
     });
@@ -68,51 +55,34 @@ export default function GeometrySelector({ onSelect }) {
     const handleClick = (geometry) => {
         if (!isClicked.current[geometry]) {
             Object.keys(meshRefs.current).forEach((key) => {
-                const mesh = meshRefs.current[key];
-                const line = lineRefs.current[key];
+                isClicked.current[key] = true;
                 
-                if (key !== geometry) {
-                    isClicked.current[key] = true;
-                    
-                    // 선택되지 않은 오브젝트들을 물에 가라앉히기
-                    gsap.to(mesh.position, {
-                        y: -100,
-                        duration: 3,
-                        ease: "power2.in",
-                        onUpdate: () => {
-                            if (line) {
-                                const points = [
-                                    new THREE.Vector3(mesh.position.x, mesh.position.y, mesh.position.z),
-                                    new THREE.Vector3(mesh.position.x, mesh.position.y + STRING_HEIGHT, mesh.position.z)
-                                ];
-                                line.geometry.setFromPoints(points);
-                            }
-                        }
-                    });
-                } else {
-                    // 선택된 오브젝트를 중앙으로 이동
-                    gsap.to(mesh.position, {
-                        x: 0,
-                        y: 0,
-                        z: 50,
+                const rigidBody = rigidBodyRefs.current[key];
+                if (rigidBody) {
+                    gsap.to({}, {
                         duration: 2,
-                        ease: "power2.inOut",
-                        onUpdate: () => {
-                            if (line) {
-                                const points = [
-                                    new THREE.Vector3(mesh.position.x, mesh.position.y, mesh.position.z),
-                                    new THREE.Vector3(mesh.position.x, mesh.position.y + STRING_HEIGHT, mesh.position.z)
-                                ];
-                                line.geometry.setFromPoints(points);
-                            }
+                        ease: "power2.in",
+                        onUpdate: function() {
+                            const progress = this.progress();
+                            const startY = rigidBody.translation().y;
+                            const targetY = 40;
+                            const currentY = startY + (targetY - startY) * progress;
+                            
+                            rigidBody.setTranslation({ 
+                                x: rigidBody.translation().x, 
+                                y: currentY, 
+                                z: rigidBody.translation().z 
+                            });
+                            rigidBody.setLinvel({ x: 0, y: 0, z: 0 });
+                            rigidBody.setAngvel({ x: 0, y: 0, z: 0 });
                         }
                     });
                 }
             });
-            
+
             setTimeout(() => {
                 onSelect(geometry);
-            }, 1000);
+            }, 2000);
         }
     };
 
@@ -128,18 +98,8 @@ export default function GeometrySelector({ onSelect }) {
             <group>
                 {GEOMETRIES.map(({ name, position }) => (
                     <group key={name}>
-                        <Line
-                            ref={(el) => lineRefs.current[name] = el}
-                            points={[
-                                [position[0], position[1], position[2]],
-                                [position[0], position[1] + STRING_HEIGHT, position[2]]
-                            ]}
-                            color="#ffffff"
-                            lineWidth={0.5}
-                            opacity={0.5}
-                            transparent
-                        />
                         <RigidBody
+                            ref={(el) => rigidBodyRefs.current[name] = el}
                             type="dynamic"
                             colliders="hull"
                             restitution={0.3}
@@ -153,7 +113,11 @@ export default function GeometrySelector({ onSelect }) {
                                 castShadow
                             >
                                 <GeometryComponent type={name} />
-                                <meshStandardMaterial color="#bbbbbb" />
+                                <meshStandardMaterial 
+                                    color="#bbbbbb" 
+                                    metalness={0.2}
+                                    roughness={0.8}
+                                />
                             </mesh>
                         </RigidBody>
                     </group>

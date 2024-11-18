@@ -60,8 +60,11 @@ export default function SelectionScene({ step, onGeometrySelect, onMaterialSelec
                 </mesh>
             </RigidBody>
 
-            {step === 1 && <GeometrySelector onSelect={handleGeometrySelect} />}
-            {step === 2 && <MaterialSelector onSelect={onMaterialSelect} />}
+            <GeometrySelector onSelect={handleGeometrySelect} />
+            <MaterialSelector 
+                onSelect={onMaterialSelect} 
+                isActive={step === 2}  // MaterialSelector에 활성화 상태 전달
+            />
         </Physics>
     );
 } 

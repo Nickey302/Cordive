@@ -170,9 +170,6 @@ export default function Experience() {
                 return;
             }
 
-            // userData 로그 추가
-            console.log('Current userData:', userData);
-
             const surveyData = {
                 geometry: selectedGeometry,
                 material: selectedMaterial,
@@ -183,10 +180,7 @@ export default function Experience() {
                 responses: results.text
             };
             
-            console.log('Created surveyData:', surveyData);
-            
             setCustomObject(surveyData);
-            setIsLoading(true);
         } catch (error) {
             console.error('Error in handleSurveyComplete:', error);
         }
@@ -205,7 +199,7 @@ export default function Experience() {
     return (
         <>
             <color attach="background" args={['#A6AEBF']} />
-            <fog attach="fog" args={['#A6AEBF', 100, 500]} />
+            <fog attach="fog" args={['#A6AEBF', 150, 600]} />
 
             <hemisphereLight intensity={0.15} groundColor="black" />
             <spotLight 
@@ -374,12 +368,6 @@ export default function Experience() {
                         alert(customObject.label);
                     }}
                 />
-            )}
-
-            {isLoading && (
-                <Html fullscreen>
-                    <LoadingOverlay />
-                </Html>
             )}
         </>
     )

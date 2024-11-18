@@ -3,7 +3,7 @@ export const SCENE_SOUNDS = {
         BGM: {
             url: '/assets/audio/main/main.wav',
             options: {
-                volume: -10,
+                volume: -20,
                 loop: true,
                 type: 'bgm',
                 scene: 'MAIN'
@@ -40,17 +40,17 @@ export const SCENE_SOUNDS = {
             }
         },
         CLICK: {
-            url: '/assets/audio/main/Hetero_click.wav',  // 경로 수정
+            url: '/assets/audio/main/Hetero_click.wav',
             options: {
-                volume: -10,
+                volume: -80,
                 type: 'sfx',
                 scene: 'HETEROTOPIA'
             }
         },
         PONG: {
-            url: '/assets/audio/main/pong.wav',  // 경로 수정
+            url: '/assets/audio/main/pong.wav',
             options: {
-                volume: -10,
+                volume: -80,
                 type: 'sfx',
                 scene: 'HETEROTOPIA'
             }

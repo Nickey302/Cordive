@@ -5,9 +5,8 @@ import { supabase } from '../../utils/supabase';
 import OpenEndedQuestions from './OpenEndedQuestions';
 import LoadingOverlay from './LoadingOverlay';
 import styles from './SurveyOverlay.module.css';
-//
-//
-//
+import { soundManager } from '@/app/SoundManager';
+
 export default function SurveyOverlay({ onComplete, onSurveyComplete, initialData, initialStep = 'material' }) {
     const [step, setStep] = useState(initialStep);
     const [answers, setAnswers] = useState({
@@ -15,6 +14,22 @@ export default function SurveyOverlay({ onComplete, onSurveyComplete, initialDat
         material: initialData.material,
         openEnded: []
     });
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+
+    const handleNext = async () => {
+        try {
+            // PONG 사운드 재생
+            await soundManager.playSound('PONG');
+            
+            if (currentQuestionIndex < questions.length - 1) {
+                setCurrentQuestionIndex(prev => prev + 1);
+            } else {
+                setStep('prompt');
+            }
+        } catch (error) {
+            console.error('Error playing sound:', error);
+        }
+    };
 
     const handleOpenEndedComplete = async (responses) => {
         try {
@@ -79,6 +94,7 @@ export default function SurveyOverlay({ onComplete, onSurveyComplete, initialDat
                         "그때의 당신에게 또는 그때의 당신과 비슷한 상황을 겪는 사람에게 해주고 싶은 말이 있다면 무엇인가요"
                     ]}
                     onComplete={handleOpenEndedComplete}
+                    onNext={handleNext}  // Next 버튼 클릭 핸들러 추가
                 />
             );
         }
@@ -89,4 +105,4 @@ export default function SurveyOverlay({ onComplete, onSurveyComplete, initialDat
             {renderContent()}
         </div>
     );
-} 
+}

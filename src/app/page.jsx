@@ -8,51 +8,34 @@ import NamePrompt from '@/components/main/NamePrompt';
 import { AdaptiveEvents, PerformanceMonitor } from '@react-three/drei';
 import { useRouter } from 'next/navigation';
 import gsap from 'gsap';
+import { soundManager } from './SoundManager';
 
 export default function Home() {
+  const [dpr, setDpr] = useState(1);
+  const [showNamePrompt, setShowNamePrompt] = useState(false);
+  const canvasContainerRef = useRef(null);
+  const router = useRouter();
+
   useEffect(() => {
     // 오디오 컨텍스트 초기화
     if (!window.globalAudioContext) {
       const audioContext = new (window.AudioContext || window.webkitAudioContext)()
       window.globalAudioContext = audioContext
     }
-
-    // 오디오 초기화 및 이벤트 발생
-    const gainNode = window.globalAudioContext.createGain()
-    gainNode.connect(window.globalAudioContext.destination)
-    gainNode.gain.value = 1
-
-    const audioState = {
-      context: window.globalAudioContext,
-      gain: gainNode,
-      setVolume: (value) => {
-        gainNode.gain.value = value / 10
-      }
-    }
-
-    // audioInit 이벤트 발생
-    const event = new CustomEvent('audioInit', {
-      detail: audioState
-    })
-    window.dispatchEvent(event)
-  }, [])
-
-  const [dpr, setDpr] = useState(1);
-  const [showNamePrompt, setShowNamePrompt] = useState(false);
-  const canvasContainerRef = useRef(null);
-  const router = useRouter();
+  }, []);
 
   const handleNameComplete = (name) => {
+    // 씬 전환 시 사운드 정리
+    soundManager.stopAllSounds();
+    
     gsap.to(canvasContainerRef.current, {
       opacity: 0,
       duration: 0.5,
-      ease: 'power2.inOut'
+      ease: 'power2.inOut',
+      onComplete: () => {
+        router.push('/Dystopia');
+      }
     });
-
-    console.log('Entered name:', name);
-    setTimeout(() => {
-      router.push('/Dystopia');
-    }, 1000);
   };
 
   return (

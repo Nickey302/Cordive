@@ -7,26 +7,23 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(8px);
-  z-index: 9999;
+  z-index: 10000;
   pointer-events: all;
-  font-family: var(--font-neo-code);
+  font-family: "/assets/fonts/NeoCode.woff";
 }
 
 .promptBox {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.0);
+  border-radius: 1px;
   padding: 40px;
   text-align: center;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(4px);
   animation: float 6s ease-in-out infinite;
 }
 
 .title {
-  color: white;
+  color: ivory;
   font-size: 2rem;
   margin-bottom: 1.5rem;
   font-weight: 300;
@@ -42,18 +39,19 @@
   background: transparent;
   border: none;
   border-bottom: 2px solid rgba(255, 255, 255, 0.3);
-  color: white;
+  color: ivory;
   font-size: 1.5rem;
   padding: 10px 20px;
   width: 300px;
   text-align: center;
   transition: all 0.3s ease;
-  font-family: url("/assets/fonts/NeoCode.woff");
+  font: "/assets/fonts/NeoCode.woff";
   outline: none;
+  -webkit-spellcheck: false;
 }
 
 .input:focus {
-  border-bottom-color: white;
+  border-bottom-color: ivory;
 }
 
 .hint {
@@ -73,11 +71,6 @@
   100% {
     transform: translateY(0px);
   }
-}
-
-/* 입력 필드 포커스 시 글로우 효과 */
-.input:focus {
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
 }
 
 /* 호버 효과 */

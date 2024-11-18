@@ -119,9 +119,11 @@ const ObjectsOverlay = ({ activeObject, setActiveObject, customObjects }) => {
                         }}
                     >
                         <span>ARCHIVE</span>
-                        <span style={{ 
+                        <span style={{
                             transform: isArchiveOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                            transition: 'transform 0.3s ease'
+                            transition: 'transform 0.3s ease',
+                            marginRight: 'auto',
+                            marginLeft: '40px'
                         }}>
                             ▼
                         </span>

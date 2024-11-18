@@ -95,7 +95,7 @@ export default function Experience({ onCameraYChange, onAudioInit }) {
         }
 
         if (camera.position.y > -38) {
-            cameraY.current -= scrollSpeed.current
+            cameraY.current -= scrollSpeed.current * 3
             const baseY = Math.max(-38, cameraY.current)
             const oscillation = Math.sin(state.clock.elapsedTime * Math.PI * 2 * oscillationFrequency) * oscillationAmplitude
             camera.position.y = baseY + oscillation

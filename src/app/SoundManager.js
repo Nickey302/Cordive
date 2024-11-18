@@ -1,16 +1,21 @@
-'use client';
+'use client'
+
 import * as Tone from 'tone';
 
 class SoundManager {
     constructor() {
-        this.players = new Map();
-        this.mainVolume = new Tone.Volume(0).toDestination();
-        this.currentScene = null;
+        if (typeof window !== 'undefined') {
+            this.players = new Map();
+            this.mainVolume = new Tone.Volume(0).toDestination();
+            this.currentScene = null;
+        }
     }
 
     async init() {
-        await Tone.start();
-        await Tone.loaded();
+        if (typeof window !== 'undefined') {
+            await Tone.start();
+            await Tone.loaded();
+        }
     }
 
     async loadSound(name, url, options = {}) {
@@ -123,4 +128,4 @@ class SoundManager {
     }
 }
 
-export const soundManager = new SoundManager();
+export const soundManager = typeof window !== 'undefined' ? new SoundManager() : null;

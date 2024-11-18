@@ -31,7 +31,7 @@ export default function SurveyOverlay({ onComplete, onSurveyComplete, initialDat
         }
     };
 
-    const handleOpenEndedComplete = async (responses) => {
+    const handleSurveyComplete = async (results) => {
         try {
             if (!answers.geometry || !answers.material) {
                 throw new Error('필수 정보가 누락되었습니다.');
@@ -44,7 +44,7 @@ export default function SurveyOverlay({ onComplete, onSurveyComplete, initialDat
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(responses)
+                body: JSON.stringify(results)
             });
             
             const data = await result.json();
@@ -56,7 +56,8 @@ export default function SurveyOverlay({ onComplete, onSurveyComplete, initialDat
                 position: [position.x * 300, position.y * 300, position.z * 300],
                 label: keyword,
                 color: `rgb(${position.x * 255}, ${position.y * 255}, ${position.z * 255})`,
-                responses: responses.text,
+                responses: results.text,
+                username: initialData?.username || 'Anonymous',
                 created_at: new Date().toISOString()
             };
 
@@ -68,7 +69,7 @@ export default function SurveyOverlay({ onComplete, onSurveyComplete, initialDat
 
             if (error) throw error;
 
-            onComplete(objectData);
+            onComplete(savedData);
             
             setTimeout(() => {
                 onSurveyComplete();
@@ -93,7 +94,7 @@ export default function SurveyOverlay({ onComplete, onSurveyComplete, initialDat
                         "그때의 소용돌이를 벗어나고자 당신이 쳤던 발버둥이 있다면 무엇인가요",
                         "그때의 당신에게 또는 그때의 당신과 비슷한 상황을 겪는 사람에게 해주고 싶은 말이 있다면 무엇인가요"
                     ]}
-                    onComplete={handleOpenEndedComplete}
+                    onComplete={handleSurveyComplete}
                     onNext={handleNext}  // Next 버튼 클릭 핸들러 추가
                 />
             );

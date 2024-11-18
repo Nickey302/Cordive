@@ -32,6 +32,7 @@ export default function Experience() {
     const [isLoading, setIsLoading] = useState(false);
     const [audio, setAudio] = useState(null);
     const [audioInitialized, setAudioInitialized] = useState(false);
+    const [userData, setUserData] = useState(null);
 
     useEffect(() => {
         let mounted = true;
@@ -89,6 +90,13 @@ export default function Experience() {
         };
     }, []); // audioInitialized 의존성 제거
     
+    useEffect(() => {
+        const storedUserData = sessionStorage.getItem('userData');
+        if (storedUserData) {
+            setUserData(JSON.parse(storedUserData));
+        }
+    }, []);
+    
     const handleGeometrySelect = async (geometry) => {
         try {
             if (audioInitialized) {
@@ -131,7 +139,29 @@ export default function Experience() {
             if (audioInitialized) {
                 await soundManager.playSound('PONG');
             }
-            setCustomObject(results);
+            
+            // 필수 데이터 검증
+            if (!selectedGeometry || !selectedMaterial || !userData) {
+                console.error('필수 데이터 누락:', { selectedGeometry, selectedMaterial, userData });
+                return;
+            }
+
+            // userData 로그 추가
+            console.log('Current userData:', userData);
+
+            const surveyData = {
+                geometry: selectedGeometry,
+                material: selectedMaterial,
+                position: [0, 50, 0],
+                color: '#ffffff',
+                label: results.label || '무제',
+                username: userData.username,
+                responses: results.text
+            };
+            
+            console.log('Created surveyData:', surveyData);
+            
+            setCustomObject(surveyData);
             setIsLoading(true);
         } catch (error) {
             console.error('Error in handleSurveyComplete:', error);
@@ -273,7 +303,9 @@ export default function Experience() {
                         onSurveyComplete={handleSurveyClose}
                         initialData={{
                             geometry: selectedGeometry,
-                            material: selectedMaterial
+                            material: selectedMaterial,
+                            username: userData?.username,
+                            userId: userData?.userId
                         }}
                         initialStep="questions"
                     />
@@ -281,7 +313,7 @@ export default function Experience() {
             )}
 
             {showSurvey && surveyStep === 2 && (
-                <Html position={[0, 100, 0]} center>
+                <Html position={[0, 50, 0]} center>
                     <MaterialPreview
                         materials={MATERIALS}
                         onSelect={handleMaterialPreviewSelect}
@@ -305,6 +337,12 @@ export default function Experience() {
                     geometry={customObject.geometry}
                     position={customObject.position}
                     color={customObject.color}
+                    material={customObject.material}
+                    label={customObject.label}
+                    username={customObject.username}
+                    userData={{
+                        prompt: customObject.responses
+                    }}
                     onClick={() => {
                         if (audioInitialized) {
                             soundManager.playSound('CLICK');

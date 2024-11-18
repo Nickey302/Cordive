@@ -204,7 +204,7 @@ export default function Experience({ activeObject }) {
         const minCameraDistance = 10;  // OrbitControls의 minDistance와 동일
         const maxCameraDistance = 500; // OrbitControls의 maxDistance와 동일
         
-        // 카메라 거리에 따른 볼륨 스케일 계산 (가까울��록 1, 멀수록 0.3)
+        // 카메라 거리에 따른 볼륨 스케일 계산 (가까울록 1, 멀수록 0.3)
         const volumeScale = THREE.MathUtils.lerp(
             1,
             0.3,
@@ -323,9 +323,9 @@ export default function Experience({ activeObject }) {
                     color={obj.color}
                     material={obj.material}
                     label={obj.label}
+                    username={obj.username}
                     userData={{
-                        username: obj.username,
-                        prompt: obj.prompt
+                        prompt: obj.responses
                     }}
                 />
             ))}

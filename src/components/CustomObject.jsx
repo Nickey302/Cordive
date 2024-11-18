@@ -1,6 +1,7 @@
 import { useRef, useMemo, forwardRef, useState } from 'react';
 import * as THREE from 'three';
-import { Text } from '@react-three/drei';
+import { Text, Html } from '@react-three/drei';
+import styles from './CustomObject.module.css';
 
 // geometry와 material을 상수로 분리
 const GEOMETRIES = {
@@ -12,9 +13,33 @@ const GEOMETRIES = {
     Tetrahedron: new THREE.TetrahedronGeometry(0.7)
 };
 
-const CustomObject = forwardRef(({ geometry, position, color, material, label, userData }, ref) => {
+const CustomObject = forwardRef(({ geometry, position, color, material, label, userData, username }, ref) => {
     const meshRef = useRef();
     const [showDetails, setShowDetails] = useState(false);
+
+    // 응답 텍스트 처리 함수
+    const formatResponses = useMemo(() => {
+        if (!userData?.prompt) return '';
+        
+        try {
+            // JSON 문자열을 파싱하고 따옴표 제거
+            const responses = JSON.parse(userData.prompt.replace(/\\n/g, ' '));
+            
+            // 배열이면 문장들을 연결
+            if (Array.isArray(responses)) {
+                return responses
+                    .filter(text => text) // 빈 문자열 제거
+                    .map(text => text.replace(/^["']|["']$/g, '').trim()) // 앞뒤 따옴표 제거
+                    .join('\n\n'); // 단락으로 구분
+            }
+            
+            // 문자열이면 따옴표만 제거
+            return responses.replace(/^["']|["']$/g, '').trim();
+        } catch {
+            // JSON 파싱 실패시 원본 텍스트에서 따옴표만 제거
+            return userData.prompt.replace(/^["']|["']$/g, '').replace(/\\n/g, ' ').trim();
+        }
+    }, [userData?.prompt]);
 
     // geometry 생성
     const customGeometry = useMemo(() => {
@@ -76,8 +101,8 @@ const CustomObject = forwardRef(({ geometry, position, color, material, label, u
             
             {label && (
                 <Text
-                    position={[position[0], position[1] + 4.5, position[2]]}
-                    fontSize={1}
+                    position={[position[0], position[1] + 6, position[2]]}
+                    fontSize={1.5}
                     color="white"
                     anchorX="center"
                     anchorY="middle"
@@ -87,32 +112,17 @@ const CustomObject = forwardRef(({ geometry, position, color, material, label, u
                 </Text>
             )}
 
-            {/* 상세 정보 표시 */}
             {showDetails && (
-                <group position={[position[0], position[1] + 15, position[2]]}>
-                    <Text
-                        position={[0, 2, 0]}
-                        fontSize={0.8}
-                        color="white"
-                        anchorX="center"
-                        anchorY="middle"
-                        font='/assets/fonts/NeoCode.woff'
-                        maxWidth={20}
-                    >
-                        {`작성자: ${userData?.username || '익명'}`}
-                    </Text>
-                    <Text
-                        position={[0, 0, 0]}
-                        fontSize={0.8}
-                        color="white"
-                        anchorX="center"
-                        anchorY="middle"
-                        font='/assets/fonts/NeoCode.woff'
-                        maxWidth={20}
-                    >
-                        {userData?.prompt || ''}
-                    </Text>
-                </group>
+                <Html
+                    position={[position[0] + 6, position[1], position[2]]}
+                    center
+                    className={styles.detailsContainer}
+                >
+                    <div className={styles.details}>
+                        <p className={styles.username}>작성자: {username || '익명'}</p>
+                        <p className={styles.prompt}>{formatResponses}</p>
+                    </div>
+                </Html>
             )}
         </group>
     );

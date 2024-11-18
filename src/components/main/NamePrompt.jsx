@@ -28,7 +28,7 @@ export default function NamePrompt({ onComplete }) {
 
       if (error) throw error;
       
-      return data.id;
+      return { id: data.id, username };
     } catch (error) {
       console.error('사용자 저장 중 오류 발생:', error);
       throw error;
@@ -38,15 +38,20 @@ export default function NamePrompt({ onComplete }) {
   const handleKeyPress = useCallback(async (e) => {
     if (e.key === 'Enter' && name.trim()) {
       try {
-        const userId = await saveUserName(name.trim());
-        console.log('저장된 사용자 ID:', userId);
+        const userData = await saveUserName(name.trim());
+        console.log('저장된 사용자 정보:', userData);
+        
+        sessionStorage.setItem('userData', JSON.stringify({
+          username: userData.username,
+          userId: userData.id
+        }));
         
         gsap.to(containerRef.current, {
           opacity: 0,
           y: -20,
           duration: 1,
           ease: 'power3.inOut',
-          onComplete: () => onComplete(name, userId)
+          onComplete: () => onComplete(userData.username, userData.id)
         });
       } catch (error) {
         console.error('이름 입력 중 오류 발생:', error);

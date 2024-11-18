@@ -58,7 +58,7 @@ export const SCENE_SOUNDS = {
     },
     UTOPIA: {
         BGM: {
-            url: '/assets/audio/main/utopia.wav',  // 파일경로 수정
+            url: '/assets/audio/main/Utopia.wav',  // 파일경로 수정
             options: {
                 volume: -15,
                 loop: true,
@@ -67,7 +67,7 @@ export const SCENE_SOUNDS = {
             }
         },
         LANDMARK: {
-            url: '/assets/audio/main/landmark.wav',  // 파일경로 수정
+            url: '/assets/audio/main/Landmark.wav',  // 파일경로 수정
             options: {
                 volume: -10,
                 loop: true,

@@ -1,20 +1,48 @@
 'use client';
 
 import { useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, Text } from '@react-three/drei';
+import { OrbitControls, Text, Html } from '@react-three/drei';
 import Particles from './Particles.jsx';
 import { useState, useRef, useEffect } from 'react';
 import * as THREE from 'three'
 import { Noise , EffectComposer, Grid } from '@react-three/postprocessing';
 import { useSpring } from '@react-spring/three';
 import gsap from 'gsap';
-//
-//
-//
+import { soundManager } from '@/app/SoundManager';
+import { SCENE_SOUNDS } from '@/app/sounds';
+import AudioVisualizer from '@/components/common/AudioVisualizer';
+import * as Tone from 'tone';
+
 export default function Experience({ onShowNamePrompt }) {
   const { camera, mouse } = useThree();
+  const [audio, setAudio] = useState(null);
 
   useEffect(() => {
+    const initSound = async () => {
+      try {
+        await soundManager.init();
+        soundManager.setScene('MAIN');
+        
+        await Promise.all([
+          soundManager.loadSound('BGM', SCENE_SOUNDS.MAIN.BGM.url, SCENE_SOUNDS.MAIN.BGM.options),
+          soundManager.loadSound('HOLD', SCENE_SOUNDS.MAIN.HOLD.url, SCENE_SOUNDS.MAIN.HOLD.options)
+        ]);
+
+        await soundManager.playSound('BGM', { fadeIn: 2 });
+        
+        setAudio({
+          context: Tone.context,
+          gain: soundManager.mainVolume,
+          setVolume: (val) => {
+            soundManager.mainVolume.volume.value = val;
+          }
+        });
+      } catch (error) {
+        console.error('Error initializing sound:', error);
+      }
+    };
+    
+    initSound();
     camera.position.z = 0;
     
     gsap.timeline()
@@ -28,6 +56,10 @@ export default function Experience({ onShowNamePrompt }) {
         duration: 1,
         ease: 'power2.inOut'
       });
+
+    return () => {
+      soundManager.stopAllSounds();
+    };
   }, [camera.position]);
 
   // useControls 대신 고정된 값 사용
@@ -94,9 +126,24 @@ export default function Experience({ onShowNamePrompt }) {
     };
   }, [isHolding, onShowNamePrompt]);
 
+  const handleHoldStart = () => {
+    setIsHolding(true);
+    soundManager.playSound('HOLD');
+    const bgmSound = soundManager.players.get('BGM');
+    if (bgmSound) {
+      bgmSound.player.volume.rampTo(-30, 0.5);
+    }
+  };
+
   return (
     <>
       <color args={['black']} attach="background" />
+
+      <Html fullscreen>
+        <div style={{ position: 'absolute', top: '20px', left: '50%', transform: 'translateX(-50%)' }}>
+          <AudioVisualizer audio={audio} />
+        </div>
+      </Html>
 
       <OrbitControls
         makeDefault
@@ -117,9 +164,7 @@ export default function Experience({ onShowNamePrompt }) {
 
       <Text
         position={[0, 0, 2]}
-        // font="./assets/fonts/Montserrat-VariableFont_wght.ttf"
         font="/assets/fonts/NeoCode.woff"
-        // fontWeight={700}
         fontSize={0.3}
         color="#dddddd"
         anchorX="center"
@@ -133,7 +178,6 @@ export default function Experience({ onShowNamePrompt }) {
       <Text
         position={[0, -0.55, 2]}
         font="/assets/fonts/Montserrat-VariableFont_wght.ttf"
-        // font="./assets/fonts/NeoCode.woff"
         fontWeight={100}
         fontSize={0.1}
         color="#ededed"
@@ -141,9 +185,7 @@ export default function Experience({ onShowNamePrompt }) {
         anchorY="middle"
         maxWidth={5}
         bevel={1}
-        onPointerDown={() => {
-          setIsHolding(true);
-        }}
+        onPointerDown={handleHoldStart}
         onPointerUp={() => {
           setIsHolding(false);
         }}
@@ -155,12 +197,10 @@ export default function Experience({ onShowNamePrompt }) {
       </Text>
 
       <group position={[0, -0.7, 2]}>
-        {/* 배경 게이지 */}
         <mesh>
           <planeGeometry args={[0.5, 0.05]} />
           <meshBasicMaterial color="gray" opacity={0.3} transparent />
         </mesh>
-        {/* 채워지는 게이지 */}
         <mesh
           position={[-0.25 + (0.25 * holdProgress), 0, 0.01]}
           scale={[holdProgress, 1, 1]}

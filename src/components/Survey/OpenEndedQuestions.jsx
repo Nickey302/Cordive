@@ -1,24 +1,32 @@
 import { useState } from 'react';
 import styles from './SurveyOverlay.module.css';
+import { soundManager } from '@/app/SoundManager';
 
 export default function OpenEndedQuestions({ questions, onComplete }) {
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [answers, setAnswers] = useState([]);
     const [currentAnswer, setCurrentAnswer] = useState('');
 
-    const handleNext = () => {
+    const handleNext = async () => {
         if (currentAnswer.trim()) {
-            const newAnswers = [...answers, currentAnswer];
-            setAnswers(newAnswers);
-            
-            if (currentQuestion < questions.length - 1) {
-                setCurrentQuestion(prev => prev + 1);
-                setCurrentAnswer('');
-            } else {
-                const formattedResponses = {
-                    text: newAnswers
-                };
-                onComplete(formattedResponses);
+            try {
+                // PONG 사운드 재생
+                await soundManager.playSound('PONG');
+                
+                const newAnswers = [...answers, currentAnswer];
+                setAnswers(newAnswers);
+                
+                if (currentQuestion < questions.length - 1) {
+                    setCurrentQuestion(prev => prev + 1);
+                    setCurrentAnswer('');
+                } else {
+                    const formattedResponses = {
+                        text: newAnswers
+                    };
+                    onComplete(formattedResponses);
+                }
+            } catch (error) {
+                console.error('Error playing sound:', error);
             }
         }
     };
@@ -39,4 +47,4 @@ export default function OpenEndedQuestions({ questions, onComplete }) {
             </button>
         </div>
     );
-} 
+}

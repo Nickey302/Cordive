@@ -30,7 +30,7 @@
     "three-stdlib": "^2.34.0",
     "tone": "^15.0.4",
     "uuid": "^9.0.0",
-    "vercel": "^37.14.0"
+    "vercel": "^39.0.2"
   },
   "devDependencies": {
     "@react-three/drei": "^9.114.0",

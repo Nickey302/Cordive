@@ -12,7 +12,7 @@ export default function Overlay({ cameraY }) {
         setDepth(Number(Math.abs(cameraY - 0.2).toFixed(1)))
         
         if (cameraY < -38) {
-            const progress = ((Math.abs(cameraY) - 38) / (123 - 38)) * 100
+            const progress = ((Math.abs(cameraY) - 38) / (119 - 38)) * 100
             setHoldingProgress(Math.min(Math.round(progress), 100))
         } else {
             setHoldingProgress(0)
@@ -56,7 +56,7 @@ export default function Overlay({ cameraY }) {
                                     }}
                                 />
                             </svg>
-                            <p className={styles.progressText}>{holdingProgress + 4}%</p>
+                            <p className={styles.progressText}>{holdingProgress}%</p>
                         </div>
                     </div>
                 )}

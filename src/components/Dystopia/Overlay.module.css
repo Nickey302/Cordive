@@ -55,19 +55,18 @@
 
 .progressRingBg {
     fill: none;
-    stroke: rgba(255, 255, 255, 0.2);
     stroke-width: 4;
 }
 
 .progressRingPath {
     fill: none;
-    stroke: #4facfe;
+    stroke: #252a35;
     stroke-width: 4;
     stroke-linecap: round;
     stroke-dasharray: 283px;
     stroke-dashoffset: 283px;
     transition: stroke-dashoffset 0.3s ease;
-    filter: drop-shadow(0 0 4px rgba(79, 172, 254, 0.5));
+    filter: drop-shadow(0 0 4px #0e0f10);
 }
 
 .progressText {

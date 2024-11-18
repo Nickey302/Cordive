@@ -53,9 +53,13 @@ export default function SurveyOverlay({ onComplete, onSurveyComplete, initialDat
             const objectData = {
                 geometry: answers.geometry,
                 material: answers.material,
-                position: [position.x * 300, position.y * 300, position.z * 300],
+                position: [position.x * 250, position.y * 250, position.z * 250],
                 label: keyword,
-                color: `rgb(${position.x * 255}, ${position.y * 255}, ${position.z * 255})`,
+                color: `hsl(
+                    ${(position.x + 1) * 180},
+                    ${(position.y + 1) * 50}%,
+                    ${(position.z + 1) * 50}%
+                )`,
                 responses: results.text,
                 username: initialData?.username || 'Anonymous',
                 created_at: new Date().toISOString()

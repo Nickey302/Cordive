@@ -16,29 +16,57 @@ import * as Tone from 'tone';
 export default function Experience({ onShowNamePrompt }) {
   const { camera, mouse } = useThree();
   const [audio, setAudio] = useState(null);
+  const [audioInitialized, setAudioInitialized] = useState(false);
 
   useEffect(() => {
     const initSound = async () => {
-      try {
-        await soundManager.init();
-        soundManager.setScene('MAIN');
-        
-        await Promise.all([
-          soundManager.loadSound('BGM', SCENE_SOUNDS.MAIN.BGM.url, SCENE_SOUNDS.MAIN.BGM.options),
-          soundManager.loadSound('HOLD', SCENE_SOUNDS.MAIN.HOLD.url, SCENE_SOUNDS.MAIN.HOLD.options)
-        ]);
+      if (!audioInitialized) {
+        try {
+          await soundManager.init();
+          soundManager.setScene('MAIN');
+          
+          await Promise.all([
+            soundManager.loadSound('BGM', SCENE_SOUNDS.MAIN.BGM.url, SCENE_SOUNDS.MAIN.BGM.options),
+            soundManager.loadSound('HOLD', SCENE_SOUNDS.MAIN.HOLD.url, SCENE_SOUNDS.MAIN.HOLD.options)
+          ]);
 
-        await soundManager.playSound('BGM', { fadeIn: 2 });
-        
-        setAudio({
-          context: Tone.context,
-          gain: soundManager.mainVolume,
-          setVolume: (val) => {
-            soundManager.mainVolume.volume.value = val;
-          }
-        });
-      } catch (error) {
-        console.error('Error initializing sound:', error);
+          const startAudio = async () => {
+            try {
+              if (!audioInitialized) {
+                await Tone.start();
+                await soundManager.playSound('BGM', { 
+                  fadeIn: 2,
+                  loop: true,
+                  volume: SCENE_SOUNDS.MAIN.BGM.options.volume 
+                });
+                
+                setAudioInitialized(true);
+                setAudio({
+                  context: Tone.context,
+                  gain: soundManager.mainVolume,
+                  setVolume: (val) => {
+                    soundManager.mainVolume.volume.value = val;
+                  }
+                });
+
+                window.removeEventListener('click', startAudio);
+                window.removeEventListener('touchstart', startAudio);
+                document.removeEventListener('keydown', startAudio);
+              }
+            } catch (error) {
+              console.error('오디오 시작 실패:', error);
+            }
+          };
+
+          window.addEventListener('click', startAudio);
+          window.addEventListener('touchstart', startAudio);
+          document.addEventListener('keydown', startAudio);
+
+          startAudio();
+          
+        } catch (error) {
+          console.error('Error initializing sound:', error);
+        }
       }
     };
     
@@ -59,8 +87,14 @@ export default function Experience({ onShowNamePrompt }) {
 
     return () => {
       soundManager.stopAllSounds();
+      if (!audioInitialized) {
+        const startAudio = () => {};
+        window.removeEventListener('click', startAudio);
+        window.removeEventListener('touchstart', startAudio);
+        document.removeEventListener('keydown', startAudio);
+      }
     };
-  }, [camera.position]);
+  }, [camera.position, audioInitialized]);
 
   // useControls 대신 고정된 값 사용
   const focus = 5.1;
@@ -140,7 +174,7 @@ export default function Experience({ onShowNamePrompt }) {
       <color args={['black']} attach="background" />
 
       <Html fullscreen>
-        <div style={{ position: 'absolute', top: '20px', left: '50%', transform: 'translateX(-50%)' }}>
+        <div style={{ position: 'absolute', top: '15px', right: '15px', transform: 'translateX(-50%)' }}>
           <AudioVisualizer audio={audio} />
         </div>
       </Html>

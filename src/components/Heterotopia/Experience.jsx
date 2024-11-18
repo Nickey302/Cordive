@@ -182,10 +182,9 @@ export default function Experience() {
             <Html fullscreen>
                 <div style={{ 
                     position: 'absolute', 
-                    top: '20px', 
-                    left: '50%', 
-                    transform: 'translateX(-50%)',
-                    zIndex: 1000 
+                    top: '5px', 
+                    right: '15px', 
+                    transform: 'translateX(-50%)'
                 }}>
                     <AudioVisualizer audio={audio} />
                     {!audioInitialized && (
@@ -214,7 +213,7 @@ export default function Experience() {
                 <Text
                     receiveShadow
                     castShadow
-                    position={[0, 50, 10]}
+                    position={[0, 50, 12]}
                     fontSize={8}
                     color="#ffffff"
                     anchorX="center"

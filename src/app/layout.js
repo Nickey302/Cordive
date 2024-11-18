@@ -16,7 +16,6 @@ export default function RootLayout({ children }) {
       </head>
       <body style={{ fontFamily: 'NeoCode, sans-serif' }}>
         <Header />
-        <GlobalAudioVisualizer />
         {children}
       </body>
     </html>

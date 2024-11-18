@@ -1,7 +1,9 @@
 'use client'
 
 import * as Tone from 'tone';
-
+//
+//
+//
 class SoundManager {
     constructor() {
         if (typeof window !== 'undefined') {
@@ -14,8 +16,7 @@ class SoundManager {
     async init() {
         if (typeof window !== 'undefined') {
             try {
-                // 사용자 상호작용 없이도 오디오를 재생할 수 있도록 시도
-                await Tone.start();
+                // Tone.js 컨텍스트 초기화만 수행
                 await Tone.loaded();
                 
                 // 자동 재생 정책을 우회하기 위한 추가 설정
@@ -24,11 +25,6 @@ class SoundManager {
                         await Tone.context.resume();
                     }
                 });
-
-                // 페이지 로드 시 자동으로 컨텍스트 시작 시도
-                if (Tone.context.state !== 'running') {
-                    await Tone.context.resume();
-                }
             } catch (error) {
                 console.error('오디오 초기화 에러:', error);
             }
@@ -85,14 +81,17 @@ class SoundManager {
             const { volume = 0, loop = false, fadeIn = 0 } = options;
             sound.player.loop = loop;
             
-            if (!sound.player.playing) {
-                sound.player.volume.value = fadeIn > 0 ? -100 : volume;
-                await sound.player.start();
-                if (fadeIn > 0) {
-                    sound.player.volume.rampTo(volume, fadeIn);
-                }
-            } else {
+            // 이미 재생 중인 경우 볼륨만 조절
+            if (sound.player.playing) {
                 sound.player.volume.rampTo(volume, 0.1);
+                return;
+            }
+
+            // 재생 중이 아닌 경우에만 새로 시작
+            sound.player.volume.value = fadeIn > 0 ? -100 : volume;
+            await sound.player.start();
+            if (fadeIn > 0) {
+                sound.player.volume.rampTo(volume, fadeIn);
             }
         } catch (error) {
             console.error(`Error playing sound ${name}:`, error);

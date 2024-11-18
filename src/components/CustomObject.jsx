@@ -101,8 +101,8 @@ const CustomObject = forwardRef(({ geometry, position, color, material, label, u
             
             {label && (
                 <Text
-                    position={[position[0], position[1] + 6, position[2]]}
-                    fontSize={1.5}
+                    position={[position[0] + 3, position[1] + 3.5, position[2]]}
+                    fontSize={1}
                     color="white"
                     anchorX="center"
                     anchorY="middle"
@@ -114,9 +114,9 @@ const CustomObject = forwardRef(({ geometry, position, color, material, label, u
 
             {showDetails && (
                 <Html
-                    position={[position[0] + 6, position[1], position[2]]}
+                    position={[position[0] + 3, position[1], position[2]]}
                     center
-                    className={styles.detailsContainer}
+                    className={`${styles.detailsContainer} ${showDetails ? styles.visible : ''}`}
                 >
                     <div className={styles.details}>
                         <p className={styles.username}>작성자: {username || '익명'}</p>

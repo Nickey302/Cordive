@@ -1,26 +1,60 @@
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
 .detailsContainer {
     pointer-events: none;
     width: 300px;
+    opacity: 0;
+    animation: fadeOut 0.3s ease-in-out forwards;
+}
+
+.detailsContainer.visible {
+    animation: fadeIn 0.3s ease-in-out forwards;
 }
 
 .details {
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     padding: 15px;
     border-radius: 8px;
     color: white;
     text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .username {
     font-size: 16px;
     margin-bottom: 16px;
-    color: #fff;
+    color: #b8cfdf;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .prompt {
     font-size: 14px;
     line-height: 0.7;
-    color: #ddd;
+    color: rgba(255, 255, 255, 0.7);
     white-space: pre-wrap;
     word-break: break-word;
+    font-family: '/assets/fonts/Pretendard-ExtraLight.woff';
 } 

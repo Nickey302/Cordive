@@ -1,8 +1,19 @@
 'use client'
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
+
+const MODEL_IMAGES = {
+    'Love': '/assets/images/Love.png',     
+    'Liberation': '/assets/images/Liberation.png',
+    'Adjust': '/assets/images/Adjust.png',
+    'Isolation': '/assets/images/Isolation.png',
+    'Resist': '/assets/images/Resist.png',
+    'Aversion': '/assets/images/Aversion.png'
+};
 
 const ObjectsOverlay = ({ activeObject, setActiveObject, customObjects }) => {
+    const [isArchiveOpen, setIsArchiveOpen] = useState(true);
+
     const defaultObjects = [
         'Love',
         'Aversion',
@@ -42,83 +53,165 @@ const ObjectsOverlay = ({ activeObject, setActiveObject, customObjects }) => {
         textAlign: 'left'
     });
 
+    // 두 점 사이의 거리를 계산하는 함수
+    const calculateDistance = (pos1, pos2) => {
+        return Math.sqrt(
+            Math.pow(pos1[0] - pos2[0], 2) + 
+            Math.pow(pos1[1] - pos2[1], 2) + 
+            Math.pow(pos1[2] - pos2[2], 2)
+        );
+    };
+
+    // 가장 가까운 기본 모델을 찾는 함수
+    const findNearestModel = (position) => {
+        const modelPositions = {
+            'Love': [150, 0, 0],         // 30 * positionAdd(5)
+            'Liberation': [0, 0, -125],   // -25 * positionAdd(5)
+            'Adjust': [0, 120, 0],       // 24 * positionAdd(5)
+            'Isolation': [0, 0, 150],    // 30 * positionAdd(5)
+            'Resist': [0, -120, 0],      // -24 * positionAdd(5)
+            'Aversion': [-125, 0, 0],    // -25 * positionAdd(5)
+        };
+
+        let nearestModel = 'Love';
+        let minDistance = Infinity;
+
+        Object.entries(modelPositions).forEach(([model, pos]) => {
+            const distance = calculateDistance(position, pos);
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearestModel = model;
+            }
+        });
+
+        return nearestModel;
+    };
+
     return (
-        <div style={{
-            position: 'fixed',
-            right: '20px',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            zIndex: 10,
-            display: 'flex',
-            gap: '20px'
-        }}>
-            {/* 커스텀 오브젝트 파일 리스트 (왼쪽) */}
+        <>
+            {/* Archive 섹션 (왼쪽) */}
             {otherCustomObjects?.length > 0 && (
                 <div style={{
-                    background: 'rgba(0, 0, 0, 0.7)',
+                    position: 'fixed',
+                    left: '20px',
+                    top: '15%',
+                    background: 'rgba(0, 0, 0, 0.0)',
                     padding: '15px',
                     borderRadius: '5px',
-                    maxHeight: '70vh',
-                    overflowY: 'auto'
+                    width: '250px',
+                    zIndex: 10,
+                    display: 'flex',
+                    flexDirection: 'column'
                 }}>
-                    <div style={{
-                        color: 'white',
-                        fontFamily: "Neocode",
-                        fontSize: '14px',
-                        marginBottom: '10px',
-                        opacity: 0.7
-                    }}>
-                        ARCHIVE
+                    <div 
+                        onClick={() => setIsArchiveOpen(!isArchiveOpen)}
+                        style={{
+                            color: 'white',
+                            fontFamily: "Neocode",
+                            fontSize: '14px',
+                            marginBottom: '10px',
+                            opacity: 0.7,
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            userSelect: 'none'
+                        }}
+                    >
+                        <span>ARCHIVE</span>
+                        <span style={{ 
+                            transform: isArchiveOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                            transition: 'transform 0.3s ease'
+                        }}>
+                            ▼
+                        </span>
                     </div>
-                    {otherCustomObjects.map((obj) => (
-                        <div
-                            key={obj.id}
-                            onClick={() => setActiveObject({ type: 'custom', id: obj.id })}
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                                padding: '8px',
-                                cursor: 'pointer',
-                                background: activeObject?.id === obj.id ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-                                borderRadius: '3px',
-                                marginBottom: '5px'
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-                            }}
-                            onMouseLeave={(e) => {
-                                if (activeObject?.id !== obj.id) {
-                                    e.currentTarget.style.background = 'transparent';
-                                }
-                            }}
-                        >
-                            <span style={{ 
-                                fontSize: '18px', 
-                                color: obj.color 
-                            }}>📄</span>
-                            <div style={{ flex: 1 }}>
-                                <div style={{ 
-                                    fontSize: '12px',
-                                    color: 'white' 
-                                }}>{obj.label || '무제'}</div>
-                                <div style={{ 
-                                    fontSize: '10px',
-                                    color: 'rgba(255, 255, 255, 0.5)' 
-                                }}>{new Date(obj.created_at).toLocaleDateString()}</div>
+                    <div style={{
+                        height: isArchiveOpen ? '60vh' : '0',
+                        overflowY: 'auto',
+                        transition: 'all 0.3s ease',
+                        opacity: isArchiveOpen ? 1 : 0,
+                        visibility: isArchiveOpen ? 'visible' : 'hidden',
+                        paddingRight: '10px',
+                        marginRight: '-10px',
+                        scrollbarWidth: 'thin',
+                        scrollbarColor: 'rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1)',
+                        '&::-webkit-scrollbar': {
+                            width: '5px',
+                        },
+                        '&::-webkit-scrollbar-track': {
+                            background: 'rgba(255, 255, 255, 0.1)',
+                            borderRadius: '5px',
+                        },
+                        '&::-webkit-scrollbar-thumb': {
+                            background: 'rgba(255, 255, 255, 0.3)',
+                            borderRadius: '5px',
+                        }
+                    }}>
+                        {otherCustomObjects.map((obj) => (
+                            <div
+                                key={obj.id}
+                                onClick={() => setActiveObject({ type: 'custom', id: obj.id })}
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    padding: '8px',
+                                    cursor: 'pointer',
+                                    background: activeObject?.id === obj.id ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+                                    borderRadius: '3px',
+                                    marginBottom: '5px',
+                                    transition: 'background 0.2s ease'
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    if (activeObject?.id !== obj.id) {
+                                        e.currentTarget.style.background = 'transparent';
+                                    }
+                                }}
+                            >
+                                <img 
+                                    src={MODEL_IMAGES[findNearestModel(obj.position)]}
+                                    alt="model icon"
+                                    style={{ 
+                                        width: '24px',
+                                        height: '24px',
+                                        objectFit: 'cover',
+                                        margin: '0 auto',
+                                        padding: '0px',
+                                        transform: 'scale(1.5)'
+                                    }}
+                                />
+                                <div style={{ flex: 1 }}>
+                                    <div style={{ 
+                                        fontSize: '12px',
+                                        color: 'white' 
+                                    }}>{obj.label || '무제'}</div>
+                                    <div style={{ 
+                                        fontSize: '10px',
+                                        color: 'rgba(255, 255, 255, 0.5)' 
+                                    }}>{obj.username || '익명'}</div>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
             )}
 
-            {/* 메인 네비게이션 (오른쪽) */}
+            {/* 기존 UI (오른쪽) */}
             <div style={{
+                position: 'fixed',
+                right: '20px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                zIndex: 10,
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '10px',
                 padding: '20px',
-                background: 'rgba(0, 0, 0, 0.7)',
+                background: 'rgba(0, 0, 0, 0.0)',
                 borderRadius: '5px',
             }}>
                 {/* 기본 오브젝트 버튼들 */}
@@ -144,7 +237,7 @@ const ObjectsOverlay = ({ activeObject, setActiveObject, customObjects }) => {
                     </button>
                 ))}
 
-                {/* 구분선 */}
+                {/* 구분선과 My Model */}
                 {myLatestObject && (
                     <>
                         <div style={{
@@ -172,22 +265,30 @@ const ObjectsOverlay = ({ activeObject, setActiveObject, customObjects }) => {
                                 background: activeObject?.id === myLatestObject.id ? 'rgba(255, 255, 255, 0.1)' : 'transparent'
                             }}
                         >
-                            <span style={{ 
-                                fontSize: '18px', 
-                                color: myLatestObject.color 
-                            }}>📄</span>
+                            <img 
+                                src={MODEL_IMAGES[findNearestModel(myLatestObject.position)]}
+                                alt="model icon"
+                                style={{ 
+                                    width: '24px',
+                                    height: '24px',
+                                    objectFit: 'cover',
+                                    margin: '0 auto',
+                                    padding: '0px',
+                                    transform: 'scale(1.5)'
+                                }}
+                            />
                             <div>
                                 <div style={{ fontSize: '12px' }}>{myLatestObject.label || '무제'}</div>
                                 <div style={{ 
                                     fontSize: '10px',
                                     opacity: 0.7 
-                                }}>{myLatestObject.geometry}</div>
+                                }}>{myLatestObject.username || '익명'}</div>
                             </div>
                         </button>
                     </>
                 )}
             </div>
-        </div>
+        </>
     );
 };
 

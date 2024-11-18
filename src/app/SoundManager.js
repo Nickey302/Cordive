@@ -13,8 +13,25 @@ class SoundManager {
 
     async init() {
         if (typeof window !== 'undefined') {
-            await Tone.start();
-            await Tone.loaded();
+            try {
+                // 사용자 상호작용 없이도 오디오를 재생할 수 있도록 시도
+                await Tone.start();
+                await Tone.loaded();
+                
+                // 자동 재생 정책을 우회하기 위한 추가 설정
+                document.addEventListener('click', async () => {
+                    if (Tone.context.state !== 'running') {
+                        await Tone.context.resume();
+                    }
+                });
+
+                // 페이지 로드 시 자동으로 컨텍스트 시작 시도
+                if (Tone.context.state !== 'running') {
+                    await Tone.context.resume();
+                }
+            } catch (error) {
+                console.error('오디오 초기화 에러:', error);
+            }
         }
     }
 
@@ -60,6 +77,11 @@ class SoundManager {
         }
 
         try {
+            // 사운드 재생 전에 컨텍스트 상태 확인 및 재시작
+            if (Tone.context.state !== 'running') {
+                await Tone.context.resume();
+            }
+
             const { volume = 0, loop = false, fadeIn = 0 } = options;
             sound.player.loop = loop;
             

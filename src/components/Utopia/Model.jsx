@@ -106,13 +106,13 @@ const Model = forwardRef(({ activeObject }, ref) => {
     }, [activeObject, camera, refs])
 
     const positions = {
-        Love: [30 * positionAdd, 0, 0],
-        Aversion: [-25 * positionAdd, 0, 0],
-        Adjust: [0, 24 * positionAdd, 0],
-        Resist: [0, -24 * positionAdd, 0],
-        Isolation: [0, 0, 30 * positionAdd],
-        Liberation: [0, 0, -25 * positionAdd],
-        Landmark: [0, -15, 0]
+        Landmark: [0, -15, 0],          // 중심점 (변경 없음)
+        Liberation: [30 * positionAdd, 0, 0],    // 동
+        Isolation: [-25 * positionAdd, 0, 0],    // 서
+        Adjust: [0, 0, 30 * positionAdd],        // 남
+        Resist: [0, 0, -25 * positionAdd],       // 북
+        Love: [0, 24 * positionAdd, 0],          // 위
+        Aversion: [0, -24 * positionAdd, 0]      // 아래
     }
 
     return(

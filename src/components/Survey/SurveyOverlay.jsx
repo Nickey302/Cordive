@@ -49,19 +49,33 @@ export default function SurveyOverlay({ onComplete, onSurveyComplete, initialDat
             }
 
             setStep('loading');
-
-            const result = await fetch(process.env.NEXT_PUBLIC_NLP_API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                mode: 'cors',
-                body: JSON.stringify(results)
-            });
             
-            const data = await result.json();
-            const { position, keyword } = data.data;
+            let position, keyword;
+            
+            try {
+                const result = await fetch(process.env.NEXT_PUBLIC_NLP_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    mode: 'cors',
+                    body: JSON.stringify(results)
+                });
+                
+                const data = await result.json();
+                position = data.data.position;
+                keyword = data.data.keyword;
+            } catch (error) {
+                console.error('API 요청 실패:', error);
+                // API 실패시 랜덤 값으로 대체
+                position = {
+                    x: Math.random() * 2 - 1,  // -1 ~ 1 사이 랜덤값
+                    y: Math.random() * 2 - 1,
+                    z: Math.random() * 2 - 1
+                };
+                keyword = '무제';  // 또는 다른 기본값
+            }
             
             const objectData = {
                 geometry: answers.geometry,
@@ -69,9 +83,9 @@ export default function SurveyOverlay({ onComplete, onSurveyComplete, initialDat
                 position: [position.x * 250, position.y * 250, position.z * 250],
                 label: keyword,
                 color: `rgb(
-                    ${Math.min(255, Math.max(0, Math.floor(Math.abs(position.x * 255))))},
-                    ${Math.min(255, Math.max(0, Math.floor(Math.abs(position.y * 255))))},
-                    ${Math.min(255, Math.max(0, Math.floor(Math.abs(position.z * 255))))}
+                    ${Math.min(255, Math.max(180, Math.floor(Math.abs(position.x * 255))))},
+                    ${Math.min(255, Math.max(180, Math.floor(Math.abs(position.y * 255))))},
+                    ${Math.min(255, Math.max(180, Math.floor(Math.abs(position.z * 255))))}
                 )`,
                 responses: results.text,
                 username: initialData?.username || 'Anonymous',

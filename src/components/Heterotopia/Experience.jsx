@@ -33,6 +33,8 @@ export default function Experience() {
     const [audio, setAudio] = useState(null);
     const [audioInitialized, setAudioInitialized] = useState(false);
     const [userData, setUserData] = useState(null);
+    const [shapes, setShapes] = useState([]);
+    const shapeCount = useRef(0);
 
     useEffect(() => {
         let mounted = true;
@@ -81,7 +83,7 @@ export default function Experience() {
             }
         };
     
-        // 컴포넌트 마운트 시 바로 초기화 시작
+        // 컴포넌트 마운트 시 ��로 초기화 시작
         initSound();
     
         return () => {
@@ -196,6 +198,50 @@ export default function Experience() {
         }, 2000);
     };
 
+    // 클릭 이벤트 리스너 추가
+    useEffect(() => {
+        const handleClick = (event) => {
+            if (surveyStep >= 3 && shapeCount.current < 150) {
+                // 마우스 좌표를 -1에서 1 사이의 값으로 정규화
+                const mouse = new THREE.Vector2(
+                    (event.clientX / window.innerWidth) * 2 - 1,
+                    -(event.clientY / window.innerHeight) * 2 + 1
+                );
+
+                // 랜덤하게 shape 타입 결정 ('box' 또는 'sphere')
+                const shapeType = Math.random() > 0.5 ? 'box' : 'sphere';
+                
+                // 파스텔톤 색상 생성
+                const hue = Math.random() * 360;
+                const pastelColor = `hsl(${hue}, 65%, 85%)`;
+                
+                // 크기 랜덤 생성
+                const size = 3 + Math.random() * 2;
+
+                // 클릭 위치 기반으로 x, z 좌표 계산
+                const x = mouse.x * 50; // 적절한 범위로 조정
+                const z = mouse.y * 50; // 적절한 범위로 조정
+                
+                const newShape = {
+                    id: shapeCount.current,
+                    type: shapeType,
+                    position: [x, 80, z],
+                    size: [size, size, size],
+                    color: pastelColor
+                };
+                
+                setShapes(prev => [...prev, newShape]);
+                shapeCount.current += 1;
+            }
+        };
+
+        window.addEventListener('click', handleClick);
+        
+        return () => {
+            window.removeEventListener('click', handleClick);
+        };
+    }, [surveyStep]);
+
     return (
         <>
             <color attach="background" args={['#A6AEBF']} />
@@ -213,7 +259,7 @@ export default function Experience() {
             />
 
             <ambientLight intensity={3} />
-            <directionalLight position={[10, 10, 10]} intensity={1} color="#ffffff" />
+            <directionalLight position={[30, 30, 10]} intensity={1.5} color="#cccccc" />
 
             <OrbitControls
                 makeDefault
@@ -272,7 +318,57 @@ export default function Experience() {
                 </Text>
             </Float>
 
-            <ObstractObject position={[0 , 50, 0]} scale={15} />
+            <Physics gravity={[0, -30, 0]}>
+                <RigidBody type="fixed" colliders="cuboid">
+                    <ObstractObject position={[0, 50, 0]} scale={15} />
+                </RigidBody>
+
+                <Suspense fallback={null}>
+                    <SelectionScene 
+                        step={surveyStep}
+                        onGeometrySelect={handleGeometrySelect}
+                        onMaterialSelect={handleMaterialSelect}
+                    />
+                </Suspense>
+
+                {customObject && (
+                    <RigidBody type="fixed" colliders="cuboid">
+                        <CustomObject 
+                            geometry={customObject.geometry}
+                            position={customObject.position}
+                            color={customObject.color}
+                            material={customObject.material}
+                            label={customObject.label}
+                            username={customObject.username}
+                            userData={{
+                                prompt: customObject.responses
+                            }}
+                            onClick={() => {
+                                if (audioInitialized) {
+                                    soundManager.playSound('CLICK');
+                                }
+                                alert(customObject.label);
+                            }}
+                        />
+                    </RigidBody>
+                )}
+
+                {shapes.map((shape) => (
+                    <RigidBody key={shape.id}>
+                        {shape.type === 'box' ? (
+                            <mesh position={shape.position} castShadow receiveShadow>
+                                <boxGeometry args={shape.size} />
+                                <meshStandardMaterial color={shape.color} />
+                            </mesh>
+                        ) : (
+                            <mesh position={shape.position} castShadow receiveShadow>
+                                <sphereGeometry args={[shape.size[0] / 2]} />
+                                <meshStandardMaterial color={shape.color} />
+                            </mesh>
+                        )}
+                    </RigidBody>
+                ))}
+            </Physics>
 
             {showSurvey && (
                 <>
@@ -293,14 +389,6 @@ export default function Experience() {
                     )}
                 </>
             )}
-
-            <Suspense fallback={null}>
-                <SelectionScene 
-                    step={surveyStep}
-                    onGeometrySelect={handleGeometrySelect}
-                    onMaterialSelect={handleMaterialSelect}
-                />
-            </Suspense>
 
             {showSurvey && surveyStep === 3 && (
                 <Html
@@ -349,26 +437,6 @@ export default function Experience() {
                 />
                 <Noise opacity={0.07} />
             </EffectComposer>
-
-            {customObject && (
-                <CustomObject 
-                    geometry={customObject.geometry}
-                    position={customObject.position}
-                    color={customObject.color}
-                    material={customObject.material}
-                    label={customObject.label}
-                    username={customObject.username}
-                    userData={{
-                        prompt: customObject.responses
-                    }}
-                    onClick={() => {
-                        if (audioInitialized) {
-                            soundManager.playSound('CLICK');
-                        }
-                        alert(customObject.label);
-                    }}
-                />
-            )}
         </>
     )
 }

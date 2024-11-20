@@ -65,12 +65,12 @@ const ObjectsOverlay = ({ activeObject, setActiveObject, customObjects }) => {
     // 가장 가까운 기본 모델을 찾는 함수
     const findNearestModel = (position) => {
         const modelPositions = {
-            'Love': [150, 0, 0],         // 30 * positionAdd(5)
-            'Liberation': [0, 0, -125],   // -25 * positionAdd(5)
-            'Adjust': [0, 120, 0],       // 24 * positionAdd(5)
-            'Isolation': [0, 0, 150],    // 30 * positionAdd(5)
-            'Resist': [0, -120, 0],      // -24 * positionAdd(5)
-            'Aversion': [-125, 0, 0],    // -25 * positionAdd(5)
+            'Liberation': [150, 0, 0],      // 동
+            'Isolation': [-125, 0, 0],      // 서
+            'Adjust': [0, 0, 150],          // 남
+            'Resist': [0, 0, -125],         // 북
+            'Love': [0, 120, 0],            // 위
+            'Aversion': [0, -120, 0]        // 아래
         };
 
         let nearestModel = 'Love';
@@ -118,7 +118,7 @@ const ObjectsOverlay = ({ activeObject, setActiveObject, customObjects }) => {
                             userSelect: 'none'
                         }}
                     >
-                        <span>ARCHIVE</span>
+                        <span>ARCHIVE ({otherCustomObjects?.length || 0})</span>
                         <span style={{
                             transform: isArchiveOpen ? 'rotate(180deg)' : 'rotate(0deg)',
                             transition: 'transform 0.3s ease',
@@ -138,14 +138,14 @@ const ObjectsOverlay = ({ activeObject, setActiveObject, customObjects }) => {
                         marginRight: '-10px',
                         scrollbarWidth: 'thin',
                         scrollbarColor: 'rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1)',
-                        '&::-webkit-scrollbar': {
+                        '&::WebkitScrollbar': {
                             width: '5px',
                         },
-                        '&::-webkit-scrollbar-track': {
+                        '&::WebkitScrollbarTrack': {
                             background: 'rgba(255, 255, 255, 0.1)',
                             borderRadius: '5px',
                         },
-                        '&::-webkit-scrollbar-thumb': {
+                        '&::WebkitScrollbarThumb': {
                             background: 'rgba(255, 255, 255, 0.3)',
                             borderRadius: '5px',
                         }

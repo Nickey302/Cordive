@@ -87,23 +87,18 @@ export default function GeometrySelector({ onSelect }) {
     };
 
     return (
-        <Physics gravity={[0, -30, 0]}>
-            <RigidBody type="fixed" position={[0, -1.001, 0]}>
-                <mesh rotation-x={-Math.PI / 2}>
-                    <planeGeometry args={[1000, 1000]} />
-                    <meshBasicMaterial visible={false} />
-                </mesh>
-            </RigidBody>
-
-            <group>
-                {GEOMETRIES.map(({ name, position }) => (
-                    <group key={name}>
-                        <RigidBody
+        <group>
+            {GEOMETRIES.map(({ name, position }) => (
+                <group key={name}>
+                    <RigidBody
                             ref={(el) => rigidBodyRefs.current[name] = el}
                             type="dynamic"
                             colliders="hull"
-                            restitution={0.3}
+                            restitution={0.2}
                             friction={0.7}
+                            linearDamping={0.5}
+                            angularDamping={0.5}
+                            mass={1}
                         >
                             <mesh
                                 ref={(el) => meshRefs.current[name] = el}
@@ -113,16 +108,15 @@ export default function GeometrySelector({ onSelect }) {
                                 castShadow
                             >
                                 <GeometryComponent type={name} />
-                                <meshStandardMaterial 
-                                    color="#bbbbbb" 
+                                <meshStandardMaterial
+                                    color="#bbbbbb"
                                     metalness={0.2}
                                     roughness={0.8}
                                 />
                             </mesh>
-                        </RigidBody>
-                    </group>
-                ))}
-            </group>
-        </Physics>
+                    </RigidBody>
+                </group>
+            ))}
+        </group>
     );
 }

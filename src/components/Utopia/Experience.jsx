@@ -121,18 +121,7 @@ export default function Experience({ activeObject }) {
                 return;
             }
 
-            const updatePromises = data.map(async (obj) => {
-                const { error: updateError } = await supabase
-                    .from('custom_objects')
-                    .update({ completed: true })
-                    .eq('id', obj.id);
-
-                if (updateError) {
-                    console.error('Error updating object:', updateError);
-                }
-            });
-
-            await Promise.all(updatePromises);
+            console.log("Loaded custom objects:", data);
             setCustomObjects(data);
         };
 
@@ -204,7 +193,7 @@ export default function Experience({ activeObject }) {
         const minCameraDistance = 10;  // OrbitControls의 minDistance와 동일
         const maxCameraDistance = 500; // OrbitControls의 maxDistance와 동일
         
-        // 카메라 거리에 따른 볼륨 스케일 계산 (가까울록 1, 멀수록 0.3)
+        // 카메라 거리에 따른 볼륨 스케일 계산 (가까울수록 1, 멀수록 0.3)
         const volumeScale = THREE.MathUtils.lerp(
             1,
             0.3,
@@ -263,35 +252,6 @@ export default function Experience({ activeObject }) {
         updateVolumes()
     })
 
-    useEffect(() => {
-        const initAudio = async () => {
-            if (soundManager) {
-                await soundManager.init();
-                
-                // 페이지 진입 시 자동 재생 시도
-                const startAudio = async () => {
-                    try {
-                        await soundManager.playSound('yourSoundName', { loop: true });
-                    } catch (error) {
-                        console.error('사운드 재생 에러:', error);
-                    }
-                };
-                
-                startAudio();
-
-                // 클릭 이벤트로도 시도
-                const handleClick = () => {
-                    startAudio();
-                };
-
-                document.addEventListener('click', handleClick);
-                return () => document.removeEventListener('click', handleClick);
-            }
-        };
-
-        initAudio();
-    }, []);
-
     return (
         <>  
             <OrbitControls 
@@ -324,9 +284,7 @@ export default function Experience({ activeObject }) {
                     material={obj.material}
                     label={obj.label}
                     username={obj.username}
-                    userData={{
-                        prompt: obj.responses
-                    }}
+                    prompt={obj.responses}
                 />
             ))}
 

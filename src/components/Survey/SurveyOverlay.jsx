@@ -18,8 +18,19 @@ export default function SurveyOverlay({ onComplete, onSurveyComplete, initialDat
 
     const handleNext = async () => {
         try {
+            // PONG 사운드 재생 전에 볼륨 직접 설정
+            const pongSound = soundManager.players.get('PONG');
+            if (pongSound) {
+                if (pongSound.player.playing) {
+                    pongSound.player.stop();
+                }
+                pongSound.player.volume.value = -80;  // 볼륨을 -80dB로 설정
+            }
+            
             // PONG 사운드 재생
-            await soundManager.playSound('PONG');
+            await soundManager.playSound('PONG', {
+                volume: -80  // 볼륨을 -80dB로 설정
+            });
             
             if (currentQuestionIndex < questions.length - 1) {
                 setCurrentQuestionIndex(prev => prev + 1);

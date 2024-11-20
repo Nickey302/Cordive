@@ -201,7 +201,7 @@ export default function Experience() {
     // 클릭 이벤트 리스너 추가
     useEffect(() => {
         const handleClick = (event) => {
-            if (surveyStep >= 3 && shapeCount.current < 100) {
+            if (surveyStep >= 3 && shapeCount.current < 150) {
                 // 마우스 좌표를 -1에서 1 사이의 값으로 정규화
                 const mouse = new THREE.Vector2(
                     (event.clientX / window.innerWidth) * 2 - 1,

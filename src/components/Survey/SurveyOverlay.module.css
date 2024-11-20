@@ -61,6 +61,11 @@
     gap: 1rem;
 }
 
+.question {
+    font-size: 1.2rem;
+    font-family: 'NeoCode';
+}
+
 .optionsGrid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);

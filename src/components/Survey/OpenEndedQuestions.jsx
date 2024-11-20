@@ -33,7 +33,7 @@ export default function OpenEndedQuestions({ questions, onComplete }) {
 
     return (
         <div className={styles.questionContainer}>
-            <h2>{questions[currentQuestion]}</h2>
+            <h1 className={styles.question}>{questions[currentQuestion]}</h1>
             <textarea
                 value={currentAnswer}
                 onChange={(e) => setCurrentAnswer(e.target.value)}

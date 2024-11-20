@@ -26,7 +26,7 @@ const MATERIALS = [
         name: 'Crystal', 
         color: '#4E7FA0',
         note: 'D4',
-        position: [-33.75, 20, 40],
+        position: [-33.75, 20, -20],
         properties: {
             metalness: 0.8,
             roughness: 0.2,

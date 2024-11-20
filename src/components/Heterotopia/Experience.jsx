@@ -33,6 +33,8 @@ export default function Experience() {
     const [audio, setAudio] = useState(null);
     const [audioInitialized, setAudioInitialized] = useState(false);
     const [userData, setUserData] = useState(null);
+    const [boxes, setBoxes] = useState([]);
+    const boxCount = useRef(0);
 
     useEffect(() => {
         let mounted = true;
@@ -196,6 +198,39 @@ export default function Experience() {
         }, 2000);
     };
 
+    // 클릭 이벤트 리스너 추가
+    useEffect(() => {
+        const handleClick = (event) => {
+            if (surveyStep >= 3 && boxCount.current < 50) {
+                // 랜덤 위치 계산 (-50 ~ 50 범위)
+                const x = (Math.random() - 0.5) * 100;
+                const z = (Math.random() - 0.5) * 100;
+                
+                const size = 3 + Math.random() * 2;
+                
+                // 파스텔톤 색상 생성
+                const hue = Math.random() * 360;
+                const pastelColor = `hsl(${hue}, 70%, 85%)`; // 채도를 70%로, 명도를 85%로 높여 파스텔톤 구현
+                
+                const newBox = {
+                    id: boxCount.current,
+                    position: [x, 80, z],
+                    size: [size, size, size],
+                    color: pastelColor
+                };
+                
+                setBoxes(prev => [...prev, newBox]);
+                boxCount.current += 1;
+            }
+        };
+
+        window.addEventListener('click', handleClick);
+        
+        return () => {
+            window.removeEventListener('click', handleClick);
+        };
+    }, [surveyStep]); // showSurvey 대신 surveyStep을 의존성으로 변경
+
     return (
         <>
             <color attach="background" args={['#A6AEBF']} />
@@ -306,6 +341,19 @@ export default function Experience() {
                         />
                     </RigidBody>
                 )}
+
+                {boxes.map((box) => (
+                    <RigidBody key={box.id} colliders="cuboid">
+                        <mesh 
+                            position={box.position}
+                            castShadow
+                            receiveShadow
+                        >
+                            <boxGeometry args={box.size} />
+                            <meshStandardMaterial color={box.color} />
+                        </mesh>
+                    </RigidBody>
+                ))}
             </Physics>
 
             {showSurvey && (

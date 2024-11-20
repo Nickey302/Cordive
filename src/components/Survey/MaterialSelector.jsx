@@ -11,73 +11,90 @@ import { RigidBody, CuboidCollider } from '@react-three/rapier';
 const MATERIALS = [
     { 
         name: 'Holographic', 
-        color: '#ffffff',
+        color: '#FFffff',
         note: 'C4',
         position: [-56.25, 20, 30],
         properties: {
-            metalness: 1,
+            metalness: 0.3,
             roughness: 0.1,
-            transmission: 0.5,
+            transmission: 0.8,
             clearcoat: 1,
             iridescence: 1,
+            iridescenceIOR: 2,
+            iridescenceThicknessRange: [100, 400],
         }
     },
     { 
         name: 'Crystal', 
-        color: '#4E7FA0',
+        color: '#ccFFFF',
         note: 'D4',
-        position: [-33.75, 20, -20],
+        position: [-33.75, 20, 30],
         properties: {
-            metalness: 0.8,
-            roughness: 0.2,
-            transmission: 0.8,
+            metalness: 0.1,
+            roughness: 0.1,
+            transmission: 0.9,
+            thickness: 0.5,
             clearcoat: 1,
+            ior: 2.4,
         }
     },
     { 
         name: 'Neon', 
-        color: '#48546D',
+        color: '#FF9ECD',
         note: 'E4',
         position: [-11.25, 20, 30],
         properties: {
-            metalness: 0.5,
-            roughness: 0.2,
-            emissive: '#48546D',
-            emissiveIntensity: 2,
+            metalness: 0,
+            roughness: 0.1,
+            emissive: '#FF9ECD',
+            emissiveIntensity: 4,
+            clearcoat: 0.3,
+            transmission: 0.4,
+            ior: 1.2
         }
     },
     { 
         name: 'Mirror', 
-        color: '#3c7475',
+        color: '#C0C0C0',
         note: 'F4',
         position: [11.25, 20, 30],
         properties: {
             metalness: 1,
             roughness: 0,
-            envMapIntensity: 2,
+            envMapIntensity: 3,
+            clearcoat: 1,
         }
     },
     { 
         name: 'Glitch', 
-        color: '#426363',
+        color: '#aaFF9F',
         note: 'G4',
         position: [33.75, 20, 30],
         properties: {
-            metalness: 0.7,
-            roughness: 0.3,
-            clearcoat: 0.5,
+            metalness: 0.9,
+            roughness: 0.6,
+            clearcoat: 1,
+            emissive: '#aaFF9F',
+            emissiveIntensity: 2,
+            iridescence: 1,
+            iridescenceIOR: 2.5,
+            transmission: 0.3,
+            sheen: 0.8
         }
     },
     { 
         name: 'Plasma', 
-        color: '#333355',
+        color: '#7B68EE',
         note: 'A4',
         position: [56.25, 20, 30],
         properties: {
-            metalness: 0.9,
-            roughness: 0.1,
-            emissive: '#333355',
-            emissiveIntensity: 0.5,
+            metalness: 0.5,
+            roughness: 0.2,
+            emissive: '#7B68EE',
+            emissiveIntensity: 3,
+            clearcoat: 0.8,
+            transmission: 0.6,
+            ior: 2,
         }
     }
 ];
@@ -107,7 +124,7 @@ export default function MaterialSelector({ onSelect, isActive }) {
                 if (rigidBodyRefs.current[material.name]) {
                     rigidBodyRefs.current[material.name].setTranslation({
                         x: material.position[0],
-                        y: material.position[1] + 200,
+                        y: material.position[1] + 100,
                         z: material.position[2]
                     });
                 }
@@ -117,7 +134,7 @@ export default function MaterialSelector({ onSelect, isActive }) {
                 if (rigidBodyRefs.current[material.name]) {
                     rigidBodyRefs.current[material.name].setTranslation({
                         x: material.position[0],
-                        y: material.position[1] + 50,
+                        y: material.position[1] + 100,
                         z: material.position[2]
                     });
                 }

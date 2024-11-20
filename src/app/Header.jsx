@@ -33,10 +33,10 @@ export default function Header()
           <Link href="/Dystopia">Dystopia</Link>
           <Link href="/Heterotopia">Heterotopia</Link>
           <Link href="/Utopia">Utopia</Link>
-          <a onClick={(e) => {
+          {/* <a onClick={(e) => {
             e.stopPropagation();
             setIsAboutOpen(true);
-          }}>About</a>
+          }}>About</a> */}
         </nav>
       </header>
 

@@ -31,17 +31,19 @@ export default function Experience({ onCameraYChange, onAudioInit }) {
     const isAnimating = useRef(false)
     const [isHolding, setIsHolding] = useState(false)
     const returnAnimationRef = useRef(null)
+    const targetRef = useRef(new THREE.Vector3(0, 2, 0))  // 초기 시점
     
-    const oscillationAmplitude = 0.5  // 진폭 (-1 ~ 1)
-    const oscillationFrequency = 0.5  // 주기 (1초)
+    const oscillationAmplitude = 0.2  // 진폭 (-1 ~ 1)
+    const oscillationFrequency = 0.8  // 주기 (1초)
 
     useEffect(() => {
         camera.add(audioListener)
         camera.position.set(0, 4, 10)
         camera.lookAt(0, 2, 0)
+        targetRef.current.set(0, 2, 0)  // 초기 lookAt 타겟과 동일하게 설정
         
         const handleScroll = (event) => {
-            scrollSpeed.current = Math.abs(event.deltaY) * 0.001
+            scrollSpeed.current = Math.abs(event.deltaY) * 0.00025
         }
 
         const handleKeyDown = (event) => {
@@ -94,11 +96,38 @@ export default function Experience({ onCameraYChange, onAudioInit }) {
             return
         }
 
-        if (camera.position.y > -38) {
+        if (camera.position.y >= -38) {
             cameraY.current -= scrollSpeed.current * 2.25
             const baseY = Math.max(-38, cameraY.current)
-            const oscillation = Math.sin(state.clock.elapsedTime * Math.PI * 2 * oscillationFrequency) * oscillationAmplitude
-            camera.position.y = baseY + oscillation
+            camera.position.y = baseY
+            
+            // y좌표가 -38에 도달했을 때 카메라 애니메이션 시작
+            if (baseY <= -38) {
+                // 현재 카메라가 바라보는 방향 계산
+                const direction = new THREE.Vector3()
+                camera.getWorldDirection(direction)
+                const currentTarget = new THREE.Vector3()
+                currentTarget.copy(camera.position).add(direction.multiplyScalar(10))
+                targetRef.current.copy(currentTarget)
+
+                gsap.to(camera.position, {
+                    x: 0,
+                    y: -39,
+                    z: 0,
+                    duration: 2,
+                    ease: "power2.inOut"
+                })
+
+                // 타겟 포인트 애니메이션
+                gsap.to(targetRef.current, {
+                    y: -119,
+                    duration: 2,
+                    ease: "power2.inOut",
+                    onUpdate: () => {
+                        camera.lookAt(targetRef.current)
+                    }
+                })
+            }
         } else if (isHolding && !isAnimating.current) {
             // 마우스 홀딩 시에만 아래로 내려가는 애니메이션 시작
             if (returnAnimationRef.current) {
@@ -110,7 +139,7 @@ export default function Experience({ onCameraYChange, onAudioInit }) {
             gsap.to(camera.position, {
                 x: 0.1,
                 z: -0.5,
-                y: -119,
+                y: -120,
                 duration: 10,
                 ease: "power2.inOut",
                 onComplete: () => {

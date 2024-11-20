@@ -34,15 +34,15 @@ export default function Overlay({ cameraY }) {
         } else if (y > - 10) {
             return "스크롤을 통해 위로 올라가세요"
         } else if (y > -16) {
-            return "음성부력의 세계에서는 아무리 몸 부리쳐도 아래로 가라앉습니다"
-        } else if (y > -25) {
-            return "소용돌이는 모든 것을 뒤집어 버립니다"
-        } else if (y > -30) {
+            return "음성부력의 세계에서는 아무리 몸부림쳐도 아래로 가라앉습니다"
+        } else if (y > -20) {
+            return "소용돌이로 빨려 들어갑니다"
+        } else if (y > -28) {
             return "소용돌이에 빠졌을 때는 수면에서 나오려 하지 말고"
-        } else if (y > -35) {
+        } else if (y > -38) {
             return "숨을 참고 밑바닥까지 잠수해서 빠져나와야 합니다"
-        } else if (y > -45) {
-            return "마우스 홀딩을 통해 더 깊이 잠수하세요"
+        } else if (y > -42) {
+            return "마우스 왼쪽 클릭을 홀딩하여 더 깊이 잠수하세요"
         } else return ""
     }
 

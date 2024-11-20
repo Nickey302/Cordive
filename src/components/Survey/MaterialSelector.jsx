@@ -26,7 +26,7 @@ const MATERIALS = [
         name: 'Crystal', 
         color: '#4E7FA0',
         note: 'D4',
-        position: [-33.75, 20, 30],
+        position: [-33.75, 20, 40],
         properties: {
             metalness: 0.8,
             roughness: 0.2,
@@ -70,13 +70,13 @@ const MATERIALS = [
     },
     { 
         name: 'Plasma', 
-        color: '#45474c',
+        color: '#333355',
         note: 'A4',
         position: [56.25, 20, 30],
         properties: {
             metalness: 0.9,
             roughness: 0.1,
-            emissive: '#45474c',
+            emissive: '#333355',
             emissiveIntensity: 0.5,
         }
     }
@@ -168,8 +168,11 @@ export default function MaterialSelector({ onSelect, isActive }) {
                     key={material.name}
                     ref={(el) => rigidBodyRefs.current[material.name] = el}
                     colliders="hull"
-                    restitution={0.1}
-                    friction={0.5}
+                    restitution={0.2}
+                    friction={0.7}
+                    linearDamping={0.5}
+                    angularDamping={0.5}
+                    mass={1}
                     onCollisionEnter={handleCollision}
                 >
                     <mesh

@@ -213,7 +213,7 @@ export default function Experience() {
             />
 
             <ambientLight intensity={3} />
-            <directionalLight position={[10, 10, 10]} intensity={1} color="#ffffff" />
+            <directionalLight position={[30, 30, 10]} intensity={1.5} color="#cccccc" />
 
             <OrbitControls
                 makeDefault
@@ -272,7 +272,41 @@ export default function Experience() {
                 </Text>
             </Float>
 
-            <ObstractObject position={[0 , 50, 0]} scale={15} />
+            <Physics gravity={[0, -30, 0]}>
+                <RigidBody type="fixed" colliders="cuboid">
+                    <ObstractObject position={[0, 50, 0]} scale={15} />
+                </RigidBody>
+
+                <Suspense fallback={null}>
+                    <SelectionScene 
+                        step={surveyStep}
+                        onGeometrySelect={handleGeometrySelect}
+                        onMaterialSelect={handleMaterialSelect}
+                    />
+                </Suspense>
+
+                {customObject && (
+                    <RigidBody type="fixed" colliders="cuboid">
+                        <CustomObject 
+                            geometry={customObject.geometry}
+                            position={customObject.position}
+                            color={customObject.color}
+                            material={customObject.material}
+                            label={customObject.label}
+                            username={customObject.username}
+                            userData={{
+                                prompt: customObject.responses
+                            }}
+                            onClick={() => {
+                                if (audioInitialized) {
+                                    soundManager.playSound('CLICK');
+                                }
+                                alert(customObject.label);
+                            }}
+                        />
+                    </RigidBody>
+                )}
+            </Physics>
 
             {showSurvey && (
                 <>
@@ -293,14 +327,6 @@ export default function Experience() {
                     )}
                 </>
             )}
-
-            <Suspense fallback={null}>
-                <SelectionScene 
-                    step={surveyStep}
-                    onGeometrySelect={handleGeometrySelect}
-                    onMaterialSelect={handleMaterialSelect}
-                />
-            </Suspense>
 
             {showSurvey && surveyStep === 3 && (
                 <Html
@@ -349,26 +375,6 @@ export default function Experience() {
                 />
                 <Noise opacity={0.07} />
             </EffectComposer>
-
-            {customObject && (
-                <CustomObject 
-                    geometry={customObject.geometry}
-                    position={customObject.position}
-                    color={customObject.color}
-                    material={customObject.material}
-                    label={customObject.label}
-                    username={customObject.username}
-                    userData={{
-                        prompt: customObject.responses
-                    }}
-                    onClick={() => {
-                        if (audioInitialized) {
-                            soundManager.playSound('CLICK');
-                        }
-                        alert(customObject.label);
-                    }}
-                />
-            )}
         </>
     )
 }

@@ -38,8 +38,8 @@ export default function SelectionScene({ step, onGeometrySelect, onMaterialSelec
     };
 
     return (
-        <Physics>
-            <RigidBody type="fixed">
+        <>
+            <RigidBody type="fixed" colliders="trimesh">
                 <mesh receiveShadow position={[0, -1, 0]} rotation={[-Math.PI / 2, 0, 0]}>
                     <planeGeometry args={[400, 400]} />
                     <MeshReflectorMaterial
@@ -61,10 +61,13 @@ export default function SelectionScene({ step, onGeometrySelect, onMaterialSelec
             </RigidBody>
 
             <GeometrySelector onSelect={handleGeometrySelect} />
-            <MaterialSelector 
-                onSelect={onMaterialSelect} 
-                isActive={step === 2}  // MaterialSelector에 활성화 상태 전달
-            />
-        </Physics>
+            
+            {step >= 2 && (  // step이 2 이상일 때만 MaterialSelector 렌더링
+                <MaterialSelector 
+                    onSelect={onMaterialSelect} 
+                    isActive={step === 2}
+                />
+            )}
+        </>
     );
 } 

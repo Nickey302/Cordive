@@ -16,6 +16,8 @@ import Vortex from './Whirl'
 import { Model as Object1 } from './Object/Object1'
 import { Model as Object2 } from './Object/Object2'
 import { Model as Object5 } from './Object/Object5'
+import { soundManager } from '@/app/SoundManager';
+import { SCENE_SOUNDS } from '@/app/sounds';
 //
 //
 //
@@ -35,6 +37,7 @@ export default function Experience({ onCameraYChange, onAudioInit }) {
     
     const oscillationAmplitude = 0.2  // 진폭 (-1 ~ 1)
     const oscillationFrequency = 0.8  // 주기 (1초)
+    const [soundsLoaded, setSoundsLoaded] = useState(false);
 
     useEffect(() => {
         camera.add(audioListener)
@@ -63,8 +66,18 @@ export default function Experience({ onCameraYChange, onAudioInit }) {
     }, [camera, audioListener])
 
     useEffect(() => {
-        const handleMouseDown = () => setIsHolding(true)
-        const handleMouseUp = () => setIsHolding(false)
+        const handleMouseDown = () => {
+            // 카메라가 -38 이하일 때만 클릭 이벤트 활성화
+            if (camera.position.y <= -38) {
+                setIsHolding(true);
+            }
+        }
+        const handleMouseUp = () => {
+            // 카메라가 -38 이하일 때만 클릭 이벤트 활성화
+            if (camera.position.y <= -38) {
+                setIsHolding(false);
+            }
+        }
         
         window.addEventListener('mousedown', handleMouseDown)
         window.addEventListener('mouseup', handleMouseUp)
@@ -73,7 +86,7 @@ export default function Experience({ onCameraYChange, onAudioInit }) {
             window.removeEventListener('mousedown', handleMouseDown)
             window.removeEventListener('mouseup', handleMouseUp)
         }
-    }, [])
+    }, [camera.position.y])
 
     useFrame((state) => {
         if (isAnimating.current && !isHolding) {
@@ -163,6 +176,53 @@ export default function Experience({ onCameraYChange, onAudioInit }) {
             lightRef.current.lookAt(0, -30, 0)
         }
     })
+
+    useEffect(() => {
+        const initSound = async () => {
+            try {
+                console.log('Starting audio initialization...');
+                await soundManager.init();
+                await soundManager.setScene('DYSTOPIA');
+                
+                // 사운드 로드
+                await Promise.all([
+                    soundManager.loadSound('BGM', SCENE_SOUNDS.DYSTOPIA.BGM.url, SCENE_SOUNDS.DYSTOPIA.BGM.options),
+                    soundManager.loadSound('CLICK_DIVE', SCENE_SOUNDS.DYSTOPIA.CLICK_DIVE.url, SCENE_SOUNDS.DYSTOPIA.CLICK_DIVE.options)
+                ]);
+
+                console.log('Sounds loaded successfully');
+                setSoundsLoaded(true);  // 사운드 로드 완료 표시
+            } catch (error) {
+                console.error('Error initializing audio:', error);
+            }
+        };
+
+        initSound();
+    }, []);
+
+    // isHolding 효과
+    useEffect(() => {
+        if (!soundsLoaded || !isHolding) return;  // 사운드가 로드되지 않았으면 리턴
+
+        const playClickSound = async () => {
+            try {
+                await soundManager.playSound('CLICK_DIVE', {
+                    loop: true,
+                    volume: SCENE_SOUNDS.DYSTOPIA.CLICK_DIVE.options.volume
+                });
+            } catch (error) {
+                console.error('Error playing click sound:', error);
+            }
+        };
+
+        playClickSound();
+
+        return () => {
+            if (soundsLoaded) {  // cleanup에서도 확인
+                soundManager.stopSound('CLICK_DIVE', 0.1);
+            }
+        };
+    }, [isHolding, soundsLoaded]);  // soundsLoaded 의존성 추가
 
     return (
         <>
@@ -261,7 +321,7 @@ export default function Experience({ onCameraYChange, onAudioInit }) {
                 distance={1}
                 loop
                 autoplay
-                volume={10}
+                volume={80}
             />
         </>
     );

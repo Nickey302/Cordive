@@ -68,9 +68,9 @@ export default function Experience({ onShowNamePrompt }) {
             console.log('Playing BGM...');
             
             await soundManager.playSound('BGM', { 
-              fadeIn: 2,
               volume: SCENE_SOUNDS.MAIN.BGM.options.volume,
-              loop: true
+              loop: true,
+              fadeIn: 2
             });
             
             setAudio({

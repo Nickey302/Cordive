@@ -83,7 +83,7 @@ export default function Experience() {
             }
         };
     
-        // 컴포넌트 마운트 시 ��로 초기화 시작
+        // 컴포넌트 마운트 시 로 초기화 시작
         initSound();
     
         return () => {
@@ -102,31 +102,24 @@ export default function Experience() {
     const handleGeometrySelect = async (geometry) => {
         try {
             if (audioInitialized) {
-                await soundManager.playSound('CLICK', {
-                    volume: -20
-                });
+                await soundManager.playSound('CLICK');
             }
             setSelectedGeometry(geometry);
-            setTimeout(() => setSurveyStep(2), 1000);
+            setSurveyStep(2);
         } catch (error) {
-            console.error('Error in handleGeometrySelect:', error);
+            console.error('Error playing click sound:', error);
         }
     };
 
     const handleMaterialSelect = async (material) => {
         try {
             if (audioInitialized) {
-                const clickSound = soundManager.players.get('CLICK');
-                if (clickSound) {
-                    clickSound.player.volume.value = -20;
-                }
-                await soundManager.playSound('CLICK', {
-                    volume: -20
-                });
+                await soundManager.playSound('CLICK');
             }
             setSelectedMaterial(material);
+            setSurveyStep(3);
         } catch (error) {
-            console.error('Error in handleMaterialSelect:', error);
+            console.error('Error playing click sound:', error);
         }
     };
 

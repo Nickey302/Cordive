@@ -38,9 +38,14 @@ class SoundManager {
                 volume: options.volume || 0,
                 loop: options.loop || false,
                 onload: () => {
-                    console.log(`Loaded: ${name}`);
+                    console.log(`Loaded: ${name} with volume:`, options.volume);
+                    const volumeNode = new Tone.Volume(options.volume || 0).toDestination();
+                    player.disconnect();
+                    player.connect(volumeNode);
+                    
                     this.players.set(name, {
                         player,
+                        volumeNode,  // 볼륨 노드 저장
                         scene: options.scene,
                         type: options.type || 'sfx'
                     });
@@ -50,7 +55,7 @@ class SoundManager {
                     console.error(`Error loading sound ${name}:`, error);
                     reject(error);
                 }
-            }).connect(this.mainVolume);
+            });
         });
     }
 
@@ -78,7 +83,7 @@ class SoundManager {
         console.log(`Scene changed to: ${sceneName}`);
     }
 
-    async playSound(name, options = {}) {
+    async playSound(name, { volume, loop = false, fadeIn = 0 } = {}) {
         const sound = this.players.get(name);
         if (!sound) {
             console.warn(`Sound ${name} not found`);
@@ -90,26 +95,41 @@ class SoundManager {
                 await Tone.context.resume();
             }
 
-            const { volume = 0, loop = false, fadeIn = 0 } = options;
-            
-            // 기존 재생 중지
+            // 이전 재생 중지
             if (sound.player.playing) {
                 sound.player.stop();
             }
 
-            // 볼륨 설정 (dB 단위)
-            const volumeInDB = Math.max(-100, Math.min(0, volume)); // 볼륨 범위 제한
-            sound.player.volume.value = volumeInDB;
+            // 볼륨 설정
+            const targetVolume = volume ?? sound.player.volume.value;
+            console.log(`Setting volume for ${name}:`, targetVolume);
+
+            // 볼륨 노드 설정
+            const volumeNode = new Tone.Volume(targetVolume).toDestination();
+            sound.player.disconnect();
+            sound.player.connect(volumeNode);
             
             // 루프 설정
             sound.player.loop = loop;
 
-            // 새로운 재생 시작
-            await sound.player.start();
+            // 재생 시작
+            sound.player.start();
 
-            // 디버깅
-            console.log(`Playing ${name} with volume:`, volumeInDB);
-            console.log(`Actual volume:`, sound.player.volume.value);
+            // fadeIn이 있는 경우에만 볼륨 페이드 적용
+            if (fadeIn > 0) {
+                const now = Tone.now();
+                volumeNode.volume.setValueAtTime(targetVolume - 40, now);  // 시작 볼륨을 타겟보다 40dB 낮게 설정
+                volumeNode.volume.linearRampToValueAtTime(targetVolume, now + fadeIn);
+            } else {
+                volumeNode.volume.value = targetVolume;
+            }
+
+            console.log(`Playing ${name} with target volume:`, targetVolume);
+            
+            // 현재 볼륨 값 확인을 위한 타이머 설정
+            setTimeout(() => {
+                console.log(`Current volume for ${name}:`, volumeNode.volume.value);
+            }, fadeIn * 1000 + 100);
 
         } catch (error) {
             console.error(`Error playing sound ${name}:`, error);

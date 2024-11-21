@@ -3,7 +3,7 @@ export const SCENE_SOUNDS = {
         BGM: {
             url: '/assets/audio/main/main.wav',
             options: {
-                volume: -20,
+                volume: -10,
                 loop: true,
                 type: 'bgm',
                 scene: 'MAIN'
@@ -12,7 +12,7 @@ export const SCENE_SOUNDS = {
         HOLD: {
             url: '/assets/audio/main/hold.wav',
             options: {
-                volume: -12,
+                volume: -6,
                 type: 'sfx',
                 scene: 'MAIN'
             }
@@ -20,11 +20,20 @@ export const SCENE_SOUNDS = {
     },
     DYSTOPIA: {
         BGM: {
-            url: '/assets/audio/dystopia/Underwater.wav',
+            url: './assets/audio/main/underwater.wav',
+            options: {
+                volume: 3,
+                loop: true,
+                type: 'bgm',
+                scene: 'DYSTOPIA'
+            }
+        },
+        CLICK_DIVE: {
+            url: './assets/audio/main/click_dive.wav',
             options: {
                 volume: -10,
                 loop: true,
-                type: 'bgm',
+                type: 'sfx',
                 scene: 'DYSTOPIA'
             }
         }
@@ -42,7 +51,7 @@ export const SCENE_SOUNDS = {
         CLICK: {
             url: '/assets/audio/main/Hetero_click.wav',
             options: {
-                volume: -80,
+                volume: -10,
                 type: 'sfx',
                 scene: 'HETEROTOPIA'
             }
@@ -50,7 +59,7 @@ export const SCENE_SOUNDS = {
         PONG: {
             url: '/assets/audio/main/pong.wav',
             options: {
-                volume: -80,
+                volume: -10,
                 type: 'sfx',
                 scene: 'HETEROTOPIA'
             }
